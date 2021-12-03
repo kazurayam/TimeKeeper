@@ -11,4 +11,13 @@ public class TestHelper {
         attrs.put("ID", "\u0027#0000\u0027");
         return attrs;
     }
+
+    static TreeMap makeAttributes2() {
+        TreeMap<String, String> attrs = new TreeMap();
+        attrs.put("testCaseName", "Test Cases/printID - Iteration 2");
+        attrs.put("testCaseId", "Test Cases/printID");
+        attrs.put("ID", "\u0027#0001\u0027");
+        return attrs;
+    }
+
 }

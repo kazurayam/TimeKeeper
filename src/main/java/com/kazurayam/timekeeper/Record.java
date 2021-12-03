@@ -6,30 +6,35 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.SortedMap;
 import java.time.format.DateTimeFormatter;
+import java.util.TreeMap;
 
-public class Measurement implements Comparable<Measurement> {
+public class Record implements Comparable<Record> {
 
     public static DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private SortedMap<String, String> attributes;
     LocalDateTime startAt;
     LocalDateTime endAt;
 
-    public Measurement(SortedMap<String, String> attr) {
+    public Record(SortedMap<String, String> attr) {
         attributes = attr;
         startAt = LocalDateTime.MIN;
         endAt = LocalDateTime.MAX;
     }
 
     public void setStartAt(LocalDateTime startAt) {
-       this.startAt = startAt;
-    }
-
-    public LocalDateTime getStartAt() {
-        return startAt;
+        this.startAt = startAt;
     }
 
     public void setEndAt(LocalDateTime endAt) {
         this.endAt = endAt;
+    }
+
+    public SortedMap<String, String> getAttributes() {
+        return new TreeMap<String, String>(this.attributes);
+    }
+
+    public LocalDateTime getStartAt() {
+        return startAt;
     }
 
     public LocalDateTime getEndAt() {
@@ -44,16 +49,16 @@ public class Measurement implements Comparable<Measurement> {
         return this.getDuration().toMillis();
     }
 
-    public boolean hasEqualAttributes(Measurement other) {
+    public boolean hasEqualAttributes(Record other) {
         return this.attributes.equals(other.attributes);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (! (obj instanceof Measurement)) {
+        if (! (obj instanceof Record)) {
             return false;
         }
-        Measurement other = (Measurement)obj;
+        Record other = (Record)obj;
         return this.attributes.equals(other.attributes) &&
                 this.getDuration().equals(other.getDuration());
     }
@@ -69,7 +74,7 @@ public class Measurement implements Comparable<Measurement> {
         String thisAttrs = gson.toJson(this.attributes);
         StringBuilder sb = new StringBuilder();
         sb.append("{");
-        sb.append("\"attribute\":");
+        sb.append("\"attributes\":");
         sb.append(thisAttrs);
         sb.append(",");
         sb.append("\"startAt\":\"");
@@ -87,7 +92,7 @@ public class Measurement implements Comparable<Measurement> {
     }
 
     @Override
-    public int compareTo(Measurement other) {
+    public int compareTo(Record other) {
         Gson gson = new Gson();
         String thisAttrs = gson.toJson(this.attributes);
         String otherAttrs = gson.toJson(other.attributes);

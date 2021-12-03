@@ -19,9 +19,9 @@ public class TimeKeeperTest {
     public void test_void_add_get_size() {
         TimeKeeper tk = new TimeKeeper();
         TreeMap attrs = TestHelper.makeAttributes();
-        Measurement m = new Measurement(attrs);
+        Record m = new Record(attrs);
         tk.add(m);
-        Measurement got = tk.get(0);
+        Record got = tk.get(0);
         assertNotNull(got);
         assertEquals(1, tk.size());
     }
