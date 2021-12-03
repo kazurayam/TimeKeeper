@@ -23,18 +23,18 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-commons/1.7.0/84e309fbf21d857aac079a3c1fffd84284e1114d/junit-platform-commons-1.7.0.jar!/"/>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-params/5.7.0/521dbecace93d5d7ef13a74aab231befd7954424/junit-jupiter-params-5.7.0.jar!/"/>
         </CLASSES>
         <JAVADOC/>
         <SOURCES>
-          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-commons/1.7.0/a382c78ca35b240e3b88b4d68ef6884a365631f0/junit-platform-commons-1.7.0-sources.jar!/"/>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-params/5.7.0/c8ff07ae25b187531ca9336a1ce997618cb0b816/junit-jupiter-params-5.7.0-sources.jar!/"/>
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-api/5.7.0/b25f3815c4c1860a73041e733a14a0379d00c4d5/junit-jupiter-api-5.7.0.jar!/"/>
@@ -45,7 +45,40 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-commons/1.7.0/84e309fbf21d857aac079a3c1fffd84284e1114d/junit-platform-commons-1.7.0.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-commons/1.7.0/a382c78ca35b240e3b88b4d68ef6884a365631f0/junit-platform-commons-1.7.0-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter/5.7.0/3152d152da916ccbb0715f89f7f873f45362ad7f/junit-jupiter-5.7.0.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter/5.7.0/7009caa171d1d6af0f6f09dff25f9f574826a490/junit-jupiter-5.7.0-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.9/8a432c1d6825781e21a02db2e2c33c5fde2833b9/gson-2.8.9.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.8.9/e1167849f172a0b75d6ffe4e4b2f34b9259795bb/gson-2.8.9-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.1.0/fc9dff4bb36d627bdc553de77e1f17efd790876c/apiguardian-api-1.1.0.jar!/"/>
@@ -56,7 +89,7 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library">
       <library>
         <CLASSES>
           <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.opentest4j/opentest4j/1.2.0/28c11eb91f9b6d8e200631d46e20a7f407f2a046/opentest4j-1.2.0.jar!/"/>
@@ -67,7 +100,18 @@
         </SOURCES>
       </library>
     </orderEntry>
-    <orderEntry type="module-library" scope="TEST">
+    <orderEntry type="module-library" scope="RUNTIME">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-engine/5.7.0/d9044d6b45e2232ddd53fa56c15333e43d1749fd/junit-jupiter-engine-5.7.0.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-engine/5.7.0/9c4b766f5e598d39ea76858dcc5a6e3d8fa5ca7f/junit-jupiter-engine-5.7.0-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
           <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-engine/1.7.0/eadb73c5074a4ac71061defd00fc176152a4d12c/junit-platform-engine-1.7.0.jar!/"/>
@@ -86,6 +130,17 @@
         <JAVADOC/>
         <SOURCES>
           <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-engine/5.7.0/9c4b766f5e598d39ea76858dcc5a6e3d8fa5ca7f/junit-jupiter-engine-5.7.0-sources.jar!/"/>
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" scope="TEST">
+      <library>
+        <CLASSES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-engine/1.7.0/eadb73c5074a4ac71061defd00fc176152a4d12c/junit-platform-engine-1.7.0.jar!/"/>
+        </CLASSES>
+        <JAVADOC/>
+        <SOURCES>
+          <root url="jar:///Users/kazuakiurayama/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-engine/1.7.0/987bee3f7c9ae0c219bae82e3cfe073708cbadad/junit-platform-engine-1.7.0-sources.jar!/"/>
         </SOURCES>
       </library>
     </orderEntry>
