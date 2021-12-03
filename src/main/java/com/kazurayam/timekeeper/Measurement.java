@@ -16,10 +16,20 @@ public class Measurement implements Comparable<Measurement> {
 
     public Measurement(SortedMap<String, String> attr) {
         attributes = attr;
+        startAt = LocalDateTime.MIN;
+        endAt = LocalDateTime.MAX;
+    }
+
+    public void setStartAt(LocalDateTime startAt) {
+       this.startAt = startAt;
     }
 
     public LocalDateTime getStartAt() {
         return startAt;
+    }
+
+    public void setEndAt(LocalDateTime endAt) {
+        this.endAt = endAt;
     }
 
     public LocalDateTime getEndAt() {
@@ -30,7 +40,7 @@ public class Measurement implements Comparable<Measurement> {
         return Duration.between(startAt, endAt);
     }
 
-    public long durationMillis() {
+    public long getDurationMillis() {
         return this.getDuration().toMillis();
     }
 
@@ -69,6 +79,7 @@ public class Measurement implements Comparable<Measurement> {
         sb.append("\"endAt\":\"");
         sb.append(this.endAt.format(FORMAT));
         sb.append("\"");
+        sb.append(",");
         sb.append("\"durationMillis\":");
         sb.append(this.getDuration().toMillis());
         sb.append("}");
