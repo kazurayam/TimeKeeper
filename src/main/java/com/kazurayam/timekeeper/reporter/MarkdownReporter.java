@@ -18,9 +18,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,12 +87,14 @@ public class MarkdownReporter implements Reporter {
                 sb2.append("|");
             }
             // print duration
-            String format = "mm:ss";
-            if (record.getDurationMillis() >= 60 * 60 * 1000L) {
-                format = "hh:mm:ss";
+            int s = (int)record.getDurationMillis() / 1000;
+            String formattedDuration;
+            if (s >= 60 * 60) {
+                formattedDuration = String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+            } else {
+                formattedDuration = String.format("%02d:%02d", (s % 3600) / 60, (s % 60));
             }
-            sb2.append(DurationFormatUtils.formatDuration(
-                    record.getDurationMillis(), format,true));
+            sb2.append(formattedDuration);
             sb2.append("|");
             // print duration graph
             sb2.append("`" + getDurationGraph(record.getDuration()) + "`");
