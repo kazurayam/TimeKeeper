@@ -16,3 +16,6 @@ gradle-app.setting
 # IntelliJ IDEA
 .idea/**/workspace.xml
 .idea/**/tasks.xml
+
+
+*.log
