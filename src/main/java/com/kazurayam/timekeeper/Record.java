@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.time.format.DateTimeFormatter;
@@ -119,6 +120,10 @@ public class Record implements Comparable<Record> {
             Objects.requireNonNull(key);
             Objects.requireNonNull(value);
             attributes.put(key, value);
+            return this;
+        }
+        public Builder attributes(Map<String, String> attributes) {
+            this.attributes = new TreeMap<String, String>(attributes);
             return this;
         }
         public Record build() {

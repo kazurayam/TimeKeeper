@@ -5,27 +5,22 @@ import java.util.List;
 
 public class TimeKeeper {
 
-    private List<Record> records;
+    private List<Measurement> measurements;
 
     public TimeKeeper() {
-        records = new ArrayList<Record>();
+        measurements = new ArrayList<Measurement>();
     }
 
-    public void add(Record m) {
-        records.add(m);
+    public void add(Measurement m) {
+        measurements.add(m);
     }
 
-    public Record get(int index) {
-        return records.get(index);
-    }
-
-    public int search(Record m) {
-        return 0;
+    public Measurement get(int index) {
+        return measurements.get(index);
     }
 
     public int size() {
-        return records.size();
+        return measurements.size();
     }
-
 
 }

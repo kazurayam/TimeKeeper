@@ -4,10 +4,12 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -28,6 +30,21 @@ public class RecordTest {
         logger.info("Hello Info");
         logger.warn("Hello Warn");
         logger.error("Hello Error");
+    }
+
+    @Test
+    public void test_Builder_attributes() {
+        HashMap<String, String> m = new HashMap<String, String>();
+        m.put("case", "Y1");
+        m.put("Suite", "TS2");
+        m.put("Step Execution Log", "Enabled");
+        m.put("Log Viewer", "Attached");
+        m.put("Mode", "Tree");
+        Record.Builder b = new Record.Builder();
+        b.attributes(m);
+        Record r = b.build();
+        assertNotNull(r);
+        assertEquals("Y1", r.getAttributes().get("case"));
     }
 
     @Test
