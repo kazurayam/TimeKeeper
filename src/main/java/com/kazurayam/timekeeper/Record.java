@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
@@ -11,21 +12,24 @@ import java.util.TreeMap;
 public class Record implements Comparable<Record> {
 
     public static DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-    private SortedMap<String, String> attributes;
-    LocalDateTime startAt;
-    LocalDateTime endAt;
 
-    public Record(SortedMap<String, String> attr) {
-        attributes = attr;
-        startAt = LocalDateTime.MIN;
-        endAt = LocalDateTime.MAX;
+    private SortedMap<String, String> attributes;
+    private LocalDateTime startAt;
+    private LocalDateTime endAt;
+
+    private Record(Builder builder) {
+        this.attributes = builder.attributes;
+        this.startAt = builder.startAt;
+        this.endAt = builder.endAt;
     }
 
     public void setStartAt(LocalDateTime startAt) {
+        Objects.requireNonNull(startAt);
         this.startAt = startAt;
     }
 
     public void setEndAt(LocalDateTime endAt) {
+        Objects.requireNonNull(endAt);
         this.endAt = endAt;
     }
 
@@ -50,11 +54,13 @@ public class Record implements Comparable<Record> {
     }
 
     public boolean hasEqualAttributes(Record other) {
+        Objects.requireNonNull(other);
         return this.attributes.equals(other.attributes);
     }
 
     @Override
     public boolean equals(Object obj) {
+        Objects.requireNonNull(obj);
         if (! (obj instanceof Record)) {
             return false;
         }
@@ -93,9 +99,30 @@ public class Record implements Comparable<Record> {
 
     @Override
     public int compareTo(Record other) {
+        Objects.requireNonNull(other);
         Gson gson = new Gson();
         String thisAttrs = gson.toJson(this.attributes);
         String otherAttrs = gson.toJson(other.attributes);
         return thisAttrs.compareTo(otherAttrs);
+    }
+
+    public static class Builder {
+        private SortedMap<String, String> attributes;
+        private LocalDateTime startAt;
+        private LocalDateTime endAt;
+        public Builder() {
+            attributes = new TreeMap<String, String>();
+            startAt = LocalDateTime.now();
+            endAt = startAt;
+        }
+        public Builder attr(String key, String value) {
+            Objects.requireNonNull(key);
+            Objects.requireNonNull(value);
+            attributes.put(key, value);
+            return this;
+        }
+        public Record build() {
+            return new Record(this);
+        }
     }
 }

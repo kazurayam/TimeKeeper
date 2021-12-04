@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
 
 public class RecordTest {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Logger logger = LoggerFactory.getLogger(TestHelper.getClassName());
 
     @Test
     public void testLogger() {
@@ -31,16 +31,8 @@ public class RecordTest {
     }
 
     @Test
-    public void test_constructor() {
-        TreeMap<String, String> attrs = TestHelper.makeAttributes();
-        Record m = new Record(attrs);
-        assertNotNull(m);
-    }
-
-    @Test
     public void test_getDurationMillis() throws Exception {
-        TreeMap<String, String> attrs = TestHelper.makeAttributes();
-        Record m = new Record(attrs);
+        Record m = TestHelper.makeRecord1();
         m.setStartAt(LocalDateTime.now());
         Thread.sleep(1000);
         m.setEndAt(LocalDateTime.now());
@@ -57,8 +49,7 @@ public class RecordTest {
 
     @Test
     public void test_toString() throws Exception {
-        TreeMap<String, String> attrs = TestHelper.makeAttributes();
-        Record m = new Record(attrs);
+        Record m = TestHelper.makeRecord1();
         m.setStartAt(LocalDateTime.now());
         Thread.sleep(1000);
         m.setEndAt(LocalDateTime.now());
@@ -78,8 +69,8 @@ public class RecordTest {
     public void test_compareTo() throws Exception {
         List<Record> list = new ArrayList<Record>();
         // input is "Iteration 2" -> "Iteration 1"
-        list.add(new Record(TestHelper.makeAttributes2()));
-        list.add(new Record(TestHelper.makeAttributes()));
+        list.add(TestHelper.makeRecord2());
+        list.add(TestHelper.makeRecord1());
         List<Record> sorted = list.stream().sorted().collect(Collectors.toList());
         // sorted is "Iteration 1" -> "Iteration 2"
         assertTrue(sorted.get(0).getAttributes().get("testCaseName").contains("Iteration 1"));
@@ -88,8 +79,8 @@ public class RecordTest {
 
     @Test
     public void test_hasEqualAttributes() {
-        Record m1 = new Record(TestHelper.makeAttributes());
-        Record m2 = new Record(TestHelper.makeAttributes());
-        assertTrue(m1.hasEqualAttributes(m2));
+        Record mX = TestHelper.makeRecord1();
+        Record mY = TestHelper.makeRecord1();
+        assertTrue(mX.hasEqualAttributes(mY));
     }
 }

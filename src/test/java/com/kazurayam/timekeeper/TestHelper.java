@@ -4,20 +4,24 @@ import java.util.TreeMap;
 
 public class TestHelper {
 
-    static TreeMap makeAttributes() {
-        TreeMap<String, String> attrs = new TreeMap();
-        attrs.put("testCaseName", "Test Cases/printID - Iteration 1");
-        attrs.put("testCaseId", "Test Cases/printID");
-        attrs.put("ID", "\u0027#0000\u0027");
-        return attrs;
+    public static String getClassName() {
+        return Thread.currentThread().getStackTrace()[2].getClassName();
     }
 
-    static TreeMap makeAttributes2() {
-        TreeMap<String, String> attrs = new TreeMap();
-        attrs.put("testCaseName", "Test Cases/printID - Iteration 2");
-        attrs.put("testCaseId", "Test Cases/printID");
-        attrs.put("ID", "\u0027#0001\u0027");
-        return attrs;
+    static Record makeRecord1() {
+        Record.Builder builder = new Record.Builder();
+        builder.attr("testCaseName", "Test Cases/printID - Iteration 1");
+        builder.attr("testCaseId", "Test Cases/printID");
+        builder.attr("ID", "\u0027#0000\u0027");
+        return builder.build();
+    }
+
+    static Record makeRecord2() {
+        Record.Builder builder = new Record.Builder();
+        builder.attr("testCaseName", "Test Cases/printID - Iteration 2");
+        builder.attr("testCaseId", "Test Cases/printID");
+        builder.attr("ID", "\u0027#0001\u0027");
+        return builder.build();
     }
 
 }
