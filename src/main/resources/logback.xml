@@ -13,7 +13,7 @@
     <appender name="FOO-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- 日毎にログファイルを切り替える -->
-            <fileNamePattern>foo-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>logs/foo-%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- 保持しておくログアーカイブファイルの最大数 -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>

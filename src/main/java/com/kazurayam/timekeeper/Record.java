@@ -69,7 +69,7 @@ public class Record implements Comparable<Record> {
 
     /**
      *
-     * @param durationStr "2:34" -> 2 minutes 34 seconds; "17" -> 17 seconds;
+     * @param durationStr "2:34" means 2 minutes 34 seconds; "17" means 17 seconds;
      */
     public void setDuration(String durationStr) {
         int parsed = parseDurationString(durationStr);

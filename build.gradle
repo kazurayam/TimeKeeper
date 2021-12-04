@@ -39,4 +39,77 @@ tasks.withType(JavaCompile) {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+    options.locale = "en_US"
+}
+task copyJavadoc(type: Copy) {
+    from 'build/docs/javadoc'
+    into 'docs/api'
+}
+javadoc.finalizedBy copyJavadoc
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                groupId = project.group
+                name = project.rootProject.name
+                description = 'a java clas library that supports time-based measurements and authoring markdown documents'
+                url = 'https://kazurayam.github.io/TimeKeeper/'
+                from components.java
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'https://www.apache.org.licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'kazurayam'
+                        name = 'URAYAMA,kazuaki'
+                        email = 'kazuaki.urayama@gmail.com'
+                    }
+                }
+                scm {
+                    connection = "scm:git:https://github.com/kazurayam/${project.rootProject.name}.git"
+                    developerConnection = "scm:git:git@github.com:kazurayam/${project.rootProject.name}.git"
+                    url = "https://github.com/kazurayam/${project.rootProject.name}"
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releaseRepo = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotRepo = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+            url = isReleaseVersion ? releaseRepo: snapshotRepo
+            credentials {
+                username = project.hasProperty('ossrhUsername') ? ossrhUsername : "Unknown user"
+                password = project.hasProperty('ossrhPassword') ? ossrhPassword : "Unknown password"
+            }
+        }
+    }
+}
+
+
+signing {
+    sign publishing.publications.mavenJava
+}
+// I do not want to sign the SNAPSHOT
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
 }
