@@ -1,4 +1,4 @@
-package com.kazurayam.timekeeper.reporter;
+package com.kazurayam.timekeeper;
 
 import com.kazurayam.timekeeper.Measurement;
 
@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Measurements implements Iterable<Measurement> {
+public class MeasurementList implements Iterable<Measurement> {
 
     private List<Measurement> list;
 
-    public Measurements() {
+    public MeasurementList() {
         list = new ArrayList<Measurement>();
     }
 

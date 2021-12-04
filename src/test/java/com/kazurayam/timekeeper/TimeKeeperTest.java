@@ -1,7 +1,12 @@
 package com.kazurayam.timekeeper;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -9,12 +14,24 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TimeKeeperTest {
 
     private final Logger logger = LoggerFactory.getLogger(TestHelper.getClassName());
+
+    private static Path classOutput;
+
+    @BeforeAll
+    static void beforeAll() throws IOException {
+        classOutput = Paths.get(".")
+                .resolve("build/tmp/testOutput")
+                .resolve(TimeKeeperTest.class.getSimpleName());
+        Files.createDirectories(classOutput);
+    }
 
     @Test
     public void test_constructor() {
@@ -25,7 +42,7 @@ public class TimeKeeperTest {
     @Test
     public void test_void_add_get_size() {
         TimeKeeper tk = new TimeKeeper();
-        Measurement m = makeFixture();
+        Measurement m = TestHelper.makeMeasurement();
         tk.add(m);
         Measurement result = tk.get(0);
         assertNotNull(result);
@@ -33,53 +50,14 @@ public class TimeKeeperTest {
     }
 
     @Test
-    public void test_search() {
-        Measurement m = makeFixture();
-        assertNotNull(m);
-
+    public void test_report() throws IOException {
+        Path caseOutputDir = classOutput.resolve("test_report");
+        Path markdown = caseOutputDir.resolve("report.md");
+        TimeKeeper tk = new TimeKeeper();
+        Measurement m = TestHelper.makeMeasurement();
+        tk.add(m);
+        tk.report(markdown, TimeKeeper.FORMAT.MARKDOWN);
+        assertTrue(Files.exists(markdown));
     }
 
-    private Measurement makeFixture() {
-        Measurement m = new Measurement("M1");
-        //
-        Map<String, String> attrsY1 = new HashMap<String, String>();
-        attrsY1.put("case", "Y1");
-        attrsY1.put("Suite", "TS2");
-        attrsY1.put("Step Execution Log", "Enabled");
-        attrsY1.put("Log Viewer", "Attached");
-        attrsY1.put("Mode", "Tree");
-        LocalDateTime startAtY1 = LocalDateTime.now();
-        long durationMillisY1 = 167000;   // 25 minutes 17 seconds
-        m.add(makeRecord(attrsY1, startAtY1, durationMillisY1));
-        //
-        Map<String, String> attrsY2 = new HashMap<String, String>();
-        attrsY1.put("case", "Y2");
-        attrsY1.put("Suite", "TS2");
-        attrsY1.put("Step Execution Log", "Disabled");
-        attrsY1.put("Log Viewer", "Attached");
-        attrsY1.put("Mode", "Tree");
-        LocalDateTime startAtY2 = LocalDateTime.now();
-        long durationMillisY2 = 371000;   // 6 minutes 11 seconds
-        m.add(makeRecord(attrsY2, startAtY2, durationMillisY2));
-        //
-        Map<String, String> attrsY3 = new HashMap<String, String>();
-        attrsY1.put("case", "Y3");
-        attrsY1.put("Suite", "TS2");
-        attrsY1.put("Step Execution Log", "Disabled");
-        attrsY1.put("Log Viewer", "Closed");
-        attrsY1.put("Mode", "-");
-        LocalDateTime startAtY3 = LocalDateTime.now();
-        long durationMillisY3 = 43000;   // 0 minutes 43 seconds
-        m.add(makeRecord(attrsY3, startAtY3, durationMillisY3));
-        //
-        return m;
-    }
-
-    private Record makeRecord(Map<String, String> attrs, LocalDateTime startAt, long durationMillis) {
-        Record r= new Record.Builder().attributes(attrs).build();
-        LocalDateTime endAt = startAt.plus(Duration.ofMillis(durationMillis));
-        r.setStartAt(startAt);
-        r.setEndAt(endAt);
-        return r;
-    }
 }

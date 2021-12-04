@@ -1,6 +1,8 @@
 package com.kazurayam.timekeeper;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -12,6 +14,8 @@ import java.util.TreeMap;
 
 public class Record implements Comparable<Record> {
 
+    private final Logger logger = LoggerFactory.getLogger(Helper.getClassName());
+
     public static DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private SortedMap<String, String> attributes;
@@ -22,6 +26,16 @@ public class Record implements Comparable<Record> {
         this.attributes = builder.attributes;
         this.startAt = builder.startAt;
         this.endAt = builder.endAt;
+    }
+
+    public void putAttribute(String key, String value) {
+        Objects.requireNonNull(key);
+        Objects.requireNonNull(value);
+        if (this.attributes.containsKey(key)) {
+            this.attributes.put(key, value);
+        } else {
+            logger.warn("specified \"" + key + "\" is not contained in the keys of the record");
+        }
     }
 
     public void setStartAt(LocalDateTime startAt) {

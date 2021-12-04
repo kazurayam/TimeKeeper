@@ -1,6 +1,9 @@
 package com.kazurayam.timekeeper;
 
-import java.util.TreeMap;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 public class TestHelper {
 
@@ -8,7 +11,7 @@ public class TestHelper {
         return Thread.currentThread().getStackTrace()[2].getClassName();
     }
 
-    static Record makeRecord1() {
+    public static Record makeRecord1() {
         Record.Builder builder = new Record.Builder();
         builder.attr("testCaseName", "Test Cases/printID - Iteration 1");
         builder.attr("testCaseId", "Test Cases/printID");
@@ -16,12 +19,55 @@ public class TestHelper {
         return builder.build();
     }
 
-    static Record makeRecord2() {
+    public static Record makeRecord2() {
         Record.Builder builder = new Record.Builder();
         builder.attr("testCaseName", "Test Cases/printID - Iteration 2");
         builder.attr("testCaseId", "Test Cases/printID");
         builder.attr("ID", "\u0027#0001\u0027");
         return builder.build();
+    }
+
+    public static List<String> getColumnNames() {
+        return Arrays.asList("case", "Suite", "Step Execution Log", "Log Viewer", "Mode");
+    }
+
+    public static Measurement makeMeasurement() {
+        Measurement m = new Measurement("M1",
+                getColumnNames());
+        //
+        Record y1 = m.formRecord();
+        y1.putAttribute("case", "Y1");
+        y1.putAttribute("Suite", "TS2");
+        y1.putAttribute("Step Execution Log", "Enabled");
+        y1.putAttribute("Log Viewer", "Attached");
+        y1.putAttribute("Mode", "Tree");
+        LocalDateTime startAtY1 = LocalDateTime.now();
+        long durationMillisY1 = 167000;   // 25 minutes 17 seconds
+        y1.setStartAt(startAtY1);
+        y1.setEndAt(startAtY1.plus(Duration.ofMillis(durationMillisY1)));
+        m.add(y1);
+        //
+        Record y2 = m.formRecord();
+        y2.putAttribute("case", "Y2");
+        y2.putAttribute("Suite", "TS2");
+        y2.putAttribute("Step Execution Log", "Disabled");
+        y2.putAttribute("Log Viewer", "Attached");
+        y2.putAttribute("Mode", "Tree");
+        LocalDateTime startAtY2 = LocalDateTime.now();
+        long durationMillisY2 = 371000;   // 6 minutes 11 seconds
+        m.add(y2);
+        //
+        Record y3 = m.formRecord();
+        y3.putAttribute("case", "Y3");
+        y3.putAttribute("Suite", "TS2");
+        y3.putAttribute("Step Execution Log", "Disabled");
+        y3.putAttribute("Log Viewer", "Closed");
+        y3.putAttribute("Mode", "-");
+        LocalDateTime startAtY3 = LocalDateTime.now();
+        long durationMillisY3 = 43000;   // 0 minutes 43 seconds
+        m.add(y3);
+        //
+        return m;
     }
 
 }

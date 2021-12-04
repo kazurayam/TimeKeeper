@@ -15,7 +15,7 @@ public class MeasurementTest {
 
     @BeforeEach
     public void setup() {
-        m = new Measurement("foo");
+        m = new Measurement("foo", TestHelper.getColumnNames());
         m.add(TestHelper.makeRecord1());
         m.add(TestHelper.makeRecord2());
     }
