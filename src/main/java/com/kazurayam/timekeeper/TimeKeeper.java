@@ -1,14 +1,23 @@
 package com.kazurayam.timekeeper;
 
+import com.kazurayam.timekeeper.reporter.MarkdownReporter;
+import com.kazurayam.timekeeper.reporter.Measurements;
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TimeKeeper {
 
-    private List<Measurement> measurements;
+    public static enum FORMAT {
+        MARKDOWN
+    }
+
+    private Measurements measurements;
 
     public TimeKeeper() {
-        measurements = new ArrayList<Measurement>();
+        measurements = new Measurements();
     }
 
     public void add(Measurement m) {
@@ -23,4 +32,14 @@ public class TimeKeeper {
         return measurements.size();
     }
 
+    public void write(Path output, FORMAT format) throws IOException {
+        switch (format) {
+            case MARKDOWN:
+                Reporter reporter = new MarkdownReporter(measurements);
+                reporter.report(output);
+                break;
+            default :
+                ;
+        }
+    }
 }
