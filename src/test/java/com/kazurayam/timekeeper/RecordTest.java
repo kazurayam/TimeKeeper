@@ -2,11 +2,13 @@ package com.kazurayam.timekeeper;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -99,5 +101,37 @@ public class RecordTest {
         Record mX = TestHelper.makeRecord1();
         Record mY = TestHelper.makeRecord1();
         assertTrue(mX.hasEqualAttributes(mY));
+    }
+
+    @Test
+    public void test_DURATION_PATTERN() {
+        Matcher m0 = Record.DURATION_PATTERN.matcher(" 0 ");
+        assertTrue(m0.matches(), "\" 0 \" does not match");
+        Matcher m1 = Record.DURATION_PATTERN.matcher("1");
+        assertTrue(m1.matches(), "1 does not match");
+        Matcher m23 = Record.DURATION_PATTERN.matcher("2:3");
+        assertTrue(m23.matches(), "2:3 does not match");
+        Matcher m456 = Record.DURATION_PATTERN.matcher("4 : 56");
+        assertTrue(m456.matches(), "\"4 : 56\" does not match");
+    }
+
+    @Test
+    public void test_parseDurationString() {
+        int result = Record.parseDurationString("10 : 11");
+        assertEquals(611, result);
+    }
+
+
+    @Test
+    public void test_setDuration_string() {
+        Record r = TestHelper.makeRecord1();
+        r.setDuration("1 : 1");   // 1 minutes 1 seconds = 61 seconds
+        assertEquals(61000L, r.getDurationMillis());
+        //
+        r.setDuration("10 : 1");   // 10 minutes 1 seconds = 601 seconds
+        assertEquals(601000L, r.getDurationMillis());
+        //
+        r.setDuration("10 : 11");   // 10 minutes 1 seconds = 601 seconds
+        assertEquals(611000L, r.getDurationMillis());
     }
 }

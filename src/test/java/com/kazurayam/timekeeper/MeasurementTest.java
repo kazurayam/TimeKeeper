@@ -4,8 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Set;
 
 public class MeasurementTest {
 
@@ -42,4 +46,13 @@ public class MeasurementTest {
         Record r = m.get(0);
         assertEquals("Test Cases/printID", r.getAttributes().get("testCaseId"));
     }
+
+    @Test
+    public void test_formRecord() {
+        Record record = m.formRecord();
+        Set<String> keySet = record.getAttributes().keySet();
+        assertTrue(keySet.size() > 0);
+        assertTrue(keySet.contains("case"));
+    }
+
 }

@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.time.format.DateTimeFormatter;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Record implements Comparable<Record> {
 
@@ -34,7 +36,9 @@ public class Record implements Comparable<Record> {
         if (this.attributes.containsKey(key)) {
             this.attributes.put(key, value);
         } else {
-            logger.warn("specified \"" + key + "\" is not contained in the keys of the record");
+            logger.warn("key=\"" + key + "\",value=\"" + value +
+                    "\"; key is not contained in the keys:" +
+                    this.attributes.keySet());
         }
     }
 
@@ -46,6 +50,54 @@ public class Record implements Comparable<Record> {
     public void setEndAt(LocalDateTime endAt) {
         Objects.requireNonNull(endAt);
         this.endAt = endAt;
+    }
+
+    protected static Pattern DURATION_PATTERN = Pattern.compile("\\s*((\\d*)\\s*:\\s*)?(\\d+)\\s*");
+
+    protected static int parseDurationString(String durationStr) {
+        Matcher m = DURATION_PATTERN.matcher(durationStr);
+        if (m.find()) {
+            int minutes = 0;
+            if (m.group(2) != null) {
+                minutes = Integer.parseInt(m.group(2));
+            }
+            return (minutes * 60 + Integer.parseInt(m.group(3)));
+        } else {
+            throw new IllegalArgumentException("\"" + durationStr + "\" is not acceptable.");
+        }
+    }
+
+    /**
+     *
+     * @param durationStr "2:34" -> 2 minutes 34 seconds; "17" -> 17 seconds;
+     */
+    public void setDuration(String durationStr) {
+        int parsed = parseDurationString(durationStr);
+        this.setDuration(parsed);
+    }
+
+    public void setDuration(int durationSeconds) {
+        this.setDuration(durationSeconds * 1000L);
+    }
+
+    public void setDuration(long durationMillis) {
+        Duration duration = Duration.ofMillis(durationMillis);
+        this.setDuration(duration);
+    }
+
+    public void setDuration(Duration duration) {
+        this.endAt = LocalDateTime.now();
+        this.startAt = this.endAt.minus(duration);
+    }
+
+    public void setDuration(LocalDateTime startAt, Duration duration) {
+        this.startAt = startAt;
+        this.endAt = this.startAt.plus(duration);
+    }
+
+    public void setDuration(Duration duration, LocalDateTime endAt) {
+        this.endAt = endAt;
+        this.startAt = this.endAt.minus(duration);
     }
 
     public SortedMap<String, String> getAttributes() {

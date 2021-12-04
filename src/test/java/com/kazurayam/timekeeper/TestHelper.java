@@ -41,10 +41,7 @@ public class TestHelper {
         y1.putAttribute("Step Execution Log", "Enabled");
         y1.putAttribute("Log Viewer", "Attached");
         y1.putAttribute("Mode", "Tree");
-        LocalDateTime startAtY1 = LocalDateTime.now();
-        long durationMillisY1 = 167000;   // 25 minutes 17 seconds
-        y1.setStartAt(startAtY1);
-        y1.setEndAt(startAtY1.plus(Duration.ofMillis(durationMillisY1)));
+        y1.setDuration("25:17");
         m.add(y1);
         //
         Record y2 = m.formRecord();
@@ -53,8 +50,7 @@ public class TestHelper {
         y2.putAttribute("Step Execution Log", "Disabled");
         y2.putAttribute("Log Viewer", "Attached");
         y2.putAttribute("Mode", "Tree");
-        LocalDateTime startAtY2 = LocalDateTime.now();
-        long durationMillisY2 = 371000;   // 6 minutes 11 seconds
+        y2.setDuration("6:11");
         m.add(y2);
         //
         Record y3 = m.formRecord();
@@ -63,8 +59,7 @@ public class TestHelper {
         y3.putAttribute("Step Execution Log", "Disabled");
         y3.putAttribute("Log Viewer", "Closed");
         y3.putAttribute("Mode", "-");
-        LocalDateTime startAtY3 = LocalDateTime.now();
-        long durationMillisY3 = 43000;   // 0 minutes 43 seconds
+        y3.setDuration("43");
         m.add(y3);
         //
         return m;
