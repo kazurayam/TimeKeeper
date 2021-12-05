@@ -1,7 +1,5 @@
 package com.kazurayam.timekeeper;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class TestHelper {
         Measurement m = new Measurement("M1",
                 getColumnNames());
         //
-        Record y1 = m.formRecord();
+        Record y1 = m.newRecord();
         y1.putAttribute("case", "Y1");
         y1.putAttribute("Suite", "TS2");
         y1.putAttribute("Step Execution Log", "Enabled");
@@ -44,7 +42,7 @@ public class TestHelper {
         y1.setDuration("25:17");
         m.add(y1);
         //
-        Record y2 = m.formRecord();
+        Record y2 = m.newRecord();
         y2.putAttribute("case", "Y2");
         y2.putAttribute("Suite", "TS2");
         y2.putAttribute("Step Execution Log", "Disabled");
@@ -53,7 +51,7 @@ public class TestHelper {
         y2.setDuration("6:11");
         m.add(y2);
         //
-        Record y3 = m.formRecord();
+        Record y3 = m.newRecord();
         y3.putAttribute("case", "Y3");
         y3.putAttribute("Suite", "TS2");
         y3.putAttribute("Step Execution Log", "Disabled");

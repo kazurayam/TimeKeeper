@@ -48,8 +48,8 @@ public class MeasurementTest {
     }
 
     @Test
-    public void test_formRecord() {
-        Record record = m.formRecord();
+    public void test_newRecord() {
+        Record record = m.newRecord();
         Set<String> keySet = record.getAttributes().keySet();
         assertTrue(keySet.size() > 0);
         assertTrue(keySet.contains("case"));

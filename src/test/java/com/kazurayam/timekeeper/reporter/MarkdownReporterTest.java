@@ -35,6 +35,7 @@ public class MarkdownReporterTest {
         MarkdownReporter reporter = new MarkdownReporter();
         reporter.setOutput(md);
         Measurement measurement = TestHelper.makeMeasurement();
+        //logger.debug("measurement.size() is " + measurement.size());
         reporter.report(measurement);
         assertTrue(Files.exists(md), "no output");
         assertTrue(Files.size(md) > 0, "empty output");

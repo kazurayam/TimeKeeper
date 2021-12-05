@@ -50,11 +50,12 @@ public class MarkdownReporter implements Reporter {
                 e.printStackTrace();
             }
         });
+        //
+        pw_.close();
     }
 
     public void report(Measurement measurement) throws IOException {
-        pw_.println("----");
-        pw_.println(measurement.getId());
+        pw_.println("## " + measurement.getId());
         pw_.println("");
         StringBuilder sb0 = new StringBuilder();
         sb0.append("|");
@@ -77,7 +78,7 @@ public class MarkdownReporter implements Reporter {
         sb1.append(":----|");
         pw_.println(sb1.toString());
         //
-        logger.debug("measurement.size()=" + measurement.size());
+        //logger.debug("measurement.size()=" + measurement.size());
         for (Record record : measurement) {
             StringBuilder sb2 = new StringBuilder();
             sb2.append("|");
@@ -104,11 +105,9 @@ public class MarkdownReporter implements Reporter {
         }
         //
         pw_.println("");
-        pw_.println("The format of duration is \"minutes:seconds\"");
-        pw_.println("");
-        //
+        //pw_.println("The format of duration is \"minutes:seconds\"");
+        pw_.println("----");
         pw_.flush();
-        pw_.close();
     }
 
     protected String getDurationGraph(Duration duration) {

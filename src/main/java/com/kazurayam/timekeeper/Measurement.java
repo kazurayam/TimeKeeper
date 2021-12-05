@@ -1,5 +1,8 @@
 package com.kazurayam.timekeeper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -8,6 +11,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Measurement implements Iterable<Record> {
+
+    private final Logger logger = LoggerFactory.getLogger(Helper.getClassName());
 
     private String id;   // "M1"
     private List<String> columnNames;   // ["case", "Suite", "Step Execution Log", "Log Viewer", "Mode"]
@@ -47,11 +52,25 @@ public class Measurement implements Iterable<Record> {
         return this.records.iterator();
     }
 
-    public Record formRecord() {
+    public Record newRecord() {
+        Map<String, String> pairs = new HashMap<String, String>();
+        return this.newRecord(pairs);
+    }
+
+    public Record newRecord(Map<String, String> pairs) {
         Map<String, String> attributes = new HashMap<String, String>();
         for (String columnName : getColumnNames()) {
             attributes.put(columnName, "");
         }
-        return new Record.Builder().attributes(attributes).build();
+        for (String key : pairs.keySet()) {
+            if (attributes.containsKey(key)) {
+                attributes.put(key, pairs.get(key));
+            } else {
+                logger.warn("key=\"" + key + "\" is not contained in the Measurement's attribute");
+            }
+        }
+        Record record = new Record.Builder().attributes(attributes).build();
+        this.add(record);
+        return record;
     }
 }

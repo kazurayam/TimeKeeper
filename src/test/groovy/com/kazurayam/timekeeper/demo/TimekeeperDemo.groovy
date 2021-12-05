@@ -68,28 +68,30 @@ class TimekeeperDemo {
     @Test
     void test_demo() {
         Timekeeper tk = new Timekeeper()
-        Measurement ms = tk.newMeasurement("How long it takes to take screenshot", ["URL"])
-        //
+        Measurement navigation = tk.newMeasurement("How long seconds to navigate to URLs", ["URL"])
+        Measurement screenshot = tk.newMeasurement("How long seconds to take shootshots", ["URL"])
+        // process all URLs in the CSV file
         Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
-        for (Tuple t in getURLs(csv)) {
+        for (Tuple t in parseCSVfile(csv)) {
             String url = t.get(0)
             String filename = t.get(1)
+            // navigate to the URL, record the duration
             driver_.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS)
+            Record rc1 = navigation.newRecord(["URL": url])
+            rc1.setStartAt(LocalDateTime.now())
             driver_.navigate().to(url)
-            //
-            Record rc = ms.formRecord()
-            rc.putAttribute("URL", url)
-            rc.setStartAt(LocalDateTime.now())
-            //
-            this.saveFullPageScreenshot(driver_, outdir_, filename)
-            //
-            rc.setEndAt(LocalDateTime.now())
-            ms.add(rc)
+            rc1.setEndAt(LocalDateTime.now())
+            // take a screenshot of the page, record the duration
+            Record rc2 = screenshot.newRecord(["URL": url])
+            rc2.setStartAt(LocalDateTime.now())
+            this.takeFullPageScreenshot(driver_, outdir_, filename)
+            rc2.setEndAt(LocalDateTime.now())
         }
+        // now print the report
         tk.report(outdir_.resolve("report.md"))
     }
 
-    private void saveFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {
+    private void takeFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {
         BufferedImage image = AShotWrapper.takeEntirePageImage(driver,
                 new AShotWrapper.Options.Builder().build());
         assertNotNull(image);
@@ -109,7 +111,7 @@ class TimekeeperDemo {
      * @param csv
      * @return
      */
-    private List<Tuple2> getURLs(Path csv) {
+    private List<Tuple2> parseCSVfile(Path csv) {
         List<Tuple2> result = new ArrayList<Tuple2>()
         List<String> lines = csv.toFile() as List<String>
         for (String line in lines) {
