@@ -74,7 +74,7 @@ public class MarkdownReporter implements Reporter {
             sb1.append("|");
         }
         sb1.append("----:|");
-        sb1.append(":----");
+        sb1.append(":----|");
         pw_.println(sb1.toString());
         //
         logger.debug("measurement.size()=" + measurement.size());
@@ -103,8 +103,8 @@ public class MarkdownReporter implements Reporter {
             pw_.println(sb2.toString());
         }
         //
-        pw_.println("The format of duration is \"minutes:seconds\"");
         pw_.println("");
+        pw_.println("The format of duration is \"minutes:seconds\"");
         pw_.println("");
         //
         pw_.flush();
@@ -112,7 +112,7 @@ public class MarkdownReporter implements Reporter {
     }
 
     protected String getDurationGraph(Duration duration) {
-        long tens = duration.toMillis() / 10000;
+        int tens = (int)(duration.toMillis() / 10000) + 1;
         StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= tens; i++) {
             if ((i % 10) == 0) {

@@ -4,6 +4,8 @@ import com.kazurayam.timekeeper.reporter.MarkdownReporter;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
 
 public class TimeKeeper {
 
@@ -17,6 +19,14 @@ public class TimeKeeper {
         mList = new MeasurementList();
     }
 
+    public Measurement newMeasurement(String id, List<String> columnNames) {
+        Objects.requireNonNull(id);
+        Objects.requireNonNull(columnNames);
+        assert columnNames.size() > 0;
+        Measurement m = new Measurement(id, columnNames);
+        this.mList.add(m);
+        return m;
+    }
     public void add(Measurement m) {
         mList.add(m);
     }
