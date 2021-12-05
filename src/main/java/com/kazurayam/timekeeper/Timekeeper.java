@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Objects;
 
-public class TimeKeeper {
+public class Timekeeper {
 
     public static enum FORMAT {
         MARKDOWN
@@ -15,7 +15,7 @@ public class TimeKeeper {
 
     private MeasurementList mList;
 
-    public TimeKeeper() {
+    public Timekeeper() {
         mList = new MeasurementList();
     }
 
