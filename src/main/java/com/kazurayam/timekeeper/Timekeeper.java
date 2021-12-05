@@ -39,11 +39,15 @@ public class Timekeeper {
         return mList.size();
     }
 
-    public void report(Path output, FORMAT format) throws IOException {
+    public void report(Path outputFile) throws IOException {
+        this.report(outputFile, FORMAT.MARKDOWN);
+    }
+
+    public void report(Path outputFile, FORMAT format) throws IOException {
         switch (format) {
             case MARKDOWN:
                 Reporter reporter = new MarkdownReporter();
-                reporter.setOutput(output);
+                reporter.setOutput(outputFile);
                 reporter.report(mList);
                 break;
             default :
