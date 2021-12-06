@@ -3,6 +3,7 @@ package com.kazurayam.timekeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -37,6 +38,12 @@ public class Measurement implements Iterable<Record> {
 
     public void add(Record record) {
         this.records.add(record);
+    }
+
+    public void record(Map<String, String> attrs, LocalDateTime startAt, LocalDateTime endAt) {
+        Record record = this.newRecord(attrs);
+        record.setStartAt(startAt);
+        record.setEndAt(endAt);
     }
 
     public int size() {

@@ -2,7 +2,6 @@ package com.kazurayam.timekeeper.demo
 
 import com.kazurayam.ashotwrapper.AShotWrapper
 import com.kazurayam.timekeeper.Measurement
-import com.kazurayam.timekeeper.Record
 import com.kazurayam.timekeeper.Timekeeper
 import io.github.bonigarcia.wdm.WebDriverManager
 import org.junit.jupiter.api.AfterEach
@@ -68,24 +67,24 @@ class TimekeeperDemo {
     @Test
     void test_demo() {
         Timekeeper tk = new Timekeeper()
-        Measurement navigation = tk.newMeasurement("How long seconds to navigate to URLs", ["URL"])
-        Measurement screenshot = tk.newMeasurement("How long seconds to take shootshots", ["URL"])
+        Measurement navigation = tk.newMeasurement("How long it took to navigate to URLs", ["URL"])
+        Measurement screenshot = tk.newMeasurement("How long it took to take shootshots", ["URL"])
         // process all URLs in the CSV file
         Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
         for (Tuple t in parseCSVfile(csv)) {
             String url = t.get(0)
             String filename = t.get(1)
-            // navigate to the URL, record the duration
             driver_.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS)
-            Record rc1 = navigation.newRecord(["URL": url])
-            rc1.setStartAt(LocalDateTime.now())
+            // navigate to the URL, record the duration
+            LocalDateTime beforeNavigate = LocalDateTime.now()
             driver_.navigate().to(url)
-            rc1.setEndAt(LocalDateTime.now())
+            LocalDateTime afterNavigate = LocalDateTime.now()
+            navigation.record(["URL": url], beforeNavigate, afterNavigate)
             // take a screenshot of the page, record the duration
-            Record rc2 = screenshot.newRecord(["URL": url])
-            rc2.setStartAt(LocalDateTime.now())
+            LocalDateTime beforeScreenshot = LocalDateTime.now()
             this.takeFullPageScreenshot(driver_, outdir_, filename)
-            rc2.setEndAt(LocalDateTime.now())
+            LocalDateTime afterScreenshot = LocalDateTime.now()
+            screenshot.record(["URL": url], beforeScreenshot, afterScreenshot)
         }
         // now print the report
         tk.report(outdir_.resolve("report.md"))
