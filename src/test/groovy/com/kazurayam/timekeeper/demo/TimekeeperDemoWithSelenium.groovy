@@ -25,26 +25,22 @@ import java.time.LocalDateTime
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * learned "How to Take Screenshot in Selenium WebDriver" of Guru99
- * https://www.guru99.com/take-screenshot-selenium-webdriver.html
- */
-class TimekeeperDemo {
+class TimekeeperDemoWithSelenium {
 
+    private static Path outDir_
     private WebDriver driver_
-    static private Path outdir_
     private AShotWrapper.Options aswOptions_ = null
 
     @BeforeAll
     static void setupClass() {
         WebDriverManager.chromedriver().setup();
-        outdir_ = Paths.get(".")
+        outDir_ = Paths.get(".")
                 .resolve("build/tmp/testOutput")
-                .resolve(TimekeeperDemo.class.getSimpleName())
-        if (Files.exists(outdir_)) {
-            outdir_.toFile().deleteDir();
+                .resolve(TimekeeperDemoWithSelenium.class.getSimpleName())
+        if (Files.exists(outDir_)) {
+            outDir_.toFile().deleteDir();
         }
-        Files.createDirectory(outdir_)
+        Files.createDirectory(outDir_)
     }
 
     @BeforeEach
@@ -69,7 +65,7 @@ class TimekeeperDemo {
     }
 
     @Test
-    void demo_selenium() {
+    void demo_with_selenium() {
         Timekeeper tk = new Timekeeper()
         Measurement navigation = tk.newMeasurement("How long it took to navigate to URLs", ["URL"])
         Measurement screenshot = tk.newMeasurement("How long it took to take shootshots", ["URL"])
@@ -86,14 +82,14 @@ class TimekeeperDemo {
             navigation.recordDuration(["URL": url], beforeNavigate, afterNavigate)
             // take a screenshot of the page, record the duration
             LocalDateTime beforeScreenshot = LocalDateTime.now()
-            Path imageFile = this.takeFullPageScreenshot(driver_, outdir_, filename)
+            Path imageFile = this.takeFullPageScreenshot(driver_, outDir_, filename)
             LocalDateTime afterScreenshot = LocalDateTime.now()
             screenshot.recordSizeAndDuration(["URL": url],
                     imageFile.toFile().size(),
                     beforeScreenshot, afterScreenshot)
         }
         // now print the report
-        tk.report(outdir_.resolve("report.md"))
+        tk.report(outDir_.resolve("report.md"))
     }
 
     private Path takeFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {

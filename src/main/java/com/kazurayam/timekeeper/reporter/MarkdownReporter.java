@@ -131,7 +131,7 @@ public class MarkdownReporter implements Reporter {
         }
         if (measurement.hasRecordWithDuration()) {
             sb3.append(formatDuration(measurement.getAverageDuration()));
-            sb3.append("|");
+            sb3.append("| |");
         }
         pw_.println(sb3.toString());
         //
@@ -143,7 +143,7 @@ public class MarkdownReporter implements Reporter {
         if (measurement.hasRecordWithDuration()) {
             pw_.println("The format of duration is \"minutes:seconds\"");
             pw_.println("");
-            pw_.println("In duration graph, one # represents 10 seconds");
+            pw_.println("one # represents 10 seconds in the duration graph");
             pw_.println("");
         }
         pw_.println("----");
