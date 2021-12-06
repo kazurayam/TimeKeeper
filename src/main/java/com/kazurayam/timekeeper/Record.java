@@ -45,6 +45,9 @@ public class Record implements Comparable<Record> {
     }
 
     public void setSize(long size) {
+        if (size < 0) {
+            throw new IllegalArgumentException("size=" + size + " must be >= 0");
+        }
         this.size = size;
     }
 

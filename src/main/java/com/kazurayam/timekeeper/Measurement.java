@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Measurement implements Iterable<Record> {
 
@@ -40,8 +41,23 @@ public class Measurement implements Iterable<Record> {
         this.records.add(record);
     }
 
-    public void recordDuration(Map<String, String> attrs, LocalDateTime startAt, LocalDateTime endAt) {
+    public void recordDuration(Map<String, String> attrs,
+                               LocalDateTime startAt, LocalDateTime endAt) {
         Record record = this.newRecord(attrs);
+        record.setStartAt(startAt);
+        record.setEndAt(endAt);
+    }
+
+    public void recordSize(Map<String, String> attrs, long size) {
+        Record record = this.newRecord(attrs);
+        record.setSize(size);
+    }
+
+    public void recordSizeAndDuration(Map<String, String> attrs,
+                                   long size,
+                                   LocalDateTime startAt, LocalDateTime endAt) {
+        Record record = this.newRecord(attrs);
+        record.setSize(size);
         record.setStartAt(startAt);
         record.setEndAt(endAt);
     }
@@ -79,5 +95,19 @@ public class Measurement implements Iterable<Record> {
         Record record = new Record.Builder().attributes(attributes).build();
         this.add(record);
         return record;
+    }
+
+    public boolean hasRecordWithSize() {
+        List<Record> recordsWithSize = records.stream()
+                .filter(rc -> rc.getSize() > 0)
+                .collect(Collectors.toList());
+        return recordsWithSize.size() > 0;
+    }
+
+    public boolean hasRecordWithDuration() {
+        List<Record> recordsWithDuration = records.stream()
+                .filter(rc -> rc.getDurationMillis() > 0)
+                .collect(Collectors.toList());
+        return recordsWithDuration.size() > 0;
     }
 }

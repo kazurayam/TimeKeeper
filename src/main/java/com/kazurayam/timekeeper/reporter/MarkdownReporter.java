@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
@@ -64,8 +65,13 @@ public class MarkdownReporter implements Reporter {
             sb0.append(cn);
             sb0.append("|");
         }
-        sb0.append("duration|");
-        sb0.append("duration graph|");
+        if (measurement.hasRecordWithSize()) {
+            sb0.append("size|");
+        }
+        if (measurement.hasRecordWithDuration()) {
+            sb0.append("duration|");
+            sb0.append("graph|");
+        }
         pw_.println(sb0.toString());
         //
         StringBuilder sb1 = new StringBuilder();
@@ -74,8 +80,13 @@ public class MarkdownReporter implements Reporter {
             sb1.append(":----");
             sb1.append("|");
         }
-        sb1.append("----:|");
-        sb1.append(":----|");
+        if (measurement.hasRecordWithSize()) {
+            sb1.append("----:|");  // size
+        }
+        if (measurement.hasRecordWithDuration()) {
+            sb1.append("----:|");  // duration
+            sb1.append(":----|");  // duration graph
+        }
         pw_.println(sb1.toString());
         //
         //logger.debug("measurement.size()=" + measurement.size());
@@ -87,25 +98,41 @@ public class MarkdownReporter implements Reporter {
                 sb2.append(record.getAttributes().get(colName));
                 sb2.append("|");
             }
-            // print duration
-            int s = (int)record.getDurationMillis() / 1000;
-            String formattedDuration;
-            if (s >= 60 * 60) {
-                formattedDuration = String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
-            } else {
-                formattedDuration = String.format("%02d:%02d", (s % 3600) / 60, (s % 60));
+            if (measurement.hasRecordWithSize()) {
+                // print size
+                sb2.append(NumberFormat.getIntegerInstance().format(record.getSize()));
+                sb2.append("|");
             }
-            sb2.append(formattedDuration);
-            sb2.append("|");
-            // print duration graph
-            sb2.append("`" + getDurationGraph(record.getDuration()) + "`");
-            sb2.append("|");
+            if (measurement.hasRecordWithDuration()) {
+                // print duration
+                int s = (int) record.getDurationMillis() / 1000;
+                String formattedDuration;
+                if (s >= 60 * 60) {
+                    formattedDuration = String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
+                } else {
+                    formattedDuration = String.format("%02d:%02d", (s % 3600) / 60, (s % 60));
+                }
+                sb2.append(formattedDuration);
+                sb2.append("|");
+                // print duration graph
+                sb2.append("`" + getDurationGraph(record.getDuration()) + "`");
+                sb2.append("|");
+            }
             //
             pw_.println(sb2.toString());
         }
         //
         pw_.println("");
-        //pw_.println("The format of duration is \"minutes:seconds\"");
+        if (measurement.hasRecordWithSize()) {
+            pw_.println("The unit of size is bytes");
+            pw_.println("");
+        }
+        if (measurement.hasRecordWithDuration()) {
+            pw_.println("The format of duration is \"minutes:seconds\"");
+            pw_.println("");
+            pw_.println("In duration graph, one # represents 10 seconds");
+            pw_.println("");
+        }
         pw_.println("----");
         pw_.flush();
     }

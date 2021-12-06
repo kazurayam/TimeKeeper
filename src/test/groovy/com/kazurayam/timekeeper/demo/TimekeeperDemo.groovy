@@ -69,7 +69,7 @@ class TimekeeperDemo {
     }
 
     @Test
-    void test_demo() {
+    void demo_selenium() {
         Timekeeper tk = new Timekeeper()
         Measurement navigation = tk.newMeasurement("How long it took to navigate to URLs", ["URL"])
         Measurement screenshot = tk.newMeasurement("How long it took to take shootshots", ["URL"])
@@ -86,21 +86,24 @@ class TimekeeperDemo {
             navigation.recordDuration(["URL": url], beforeNavigate, afterNavigate)
             // take a screenshot of the page, record the duration
             LocalDateTime beforeScreenshot = LocalDateTime.now()
-            this.takeFullPageScreenshot(driver_, outdir_, filename)
+            Path imageFile = this.takeFullPageScreenshot(driver_, outdir_, filename)
             LocalDateTime afterScreenshot = LocalDateTime.now()
-            screenshot.recordDuration(["URL": url], beforeScreenshot, afterScreenshot)
+            screenshot.recordSizeAndDuration(["URL": url],
+                    imageFile.toFile().size(),
+                    beforeScreenshot, afterScreenshot)
         }
         // now print the report
         tk.report(outdir_.resolve("report.md"))
     }
 
-    private void takeFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {
+    private Path takeFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {
         // using my AShotWrapper lib at https://kazurayam.github.io/ashotwrapper/
         BufferedImage image = AShotWrapper.takeEntirePageImage(driver, aswOptions_);
         assertNotNull(image);
-        File screenshotFile = outDir.resolve(fileName).toFile();
-        ImageIO.write(image, "PNG", screenshotFile);
-        assertTrue(screenshotFile.exists());
+        Path screenshotFile = outDir.resolve(fileName);
+        ImageIO.write(image, "PNG", screenshotFile.toFile());
+        assertTrue(Files.exists(screenshotFile));
+        return screenshotFile;
     }
 
     /**
