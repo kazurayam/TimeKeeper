@@ -153,6 +153,7 @@ public class MarkdownReporter implements Reporter {
     /**
      * to "minutes:seconds", or "hours:minutes:secodns"
      *
+     * @param duration value in milliseconds to be formated into "mm:ss"
      * @return 45 seconds will be "00:45"
      */
     protected String formatDuration(Duration duration) {
