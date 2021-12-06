@@ -1,6 +1,7 @@
 package com.kazurayam.timekeeper.demo
 
 import com.kazurayam.ashotwrapper.AShotWrapper
+import com.kazurayam.ashotwrapper.DevicePixelRatioResolver
 import com.kazurayam.timekeeper.Measurement
 import com.kazurayam.timekeeper.Timekeeper
 import io.github.bonigarcia.wdm.WebDriverManager
@@ -30,9 +31,9 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class TimekeeperDemo {
 
-
-    WebDriver driver_
-    static Path outdir_
+    private WebDriver driver_
+    static private Path outdir_
+    private AShotWrapper.Options aswOptions_ = null
 
     @BeforeAll
     static void setupClass() {
@@ -55,6 +56,9 @@ class TimekeeperDemo {
         driver_ = new ChromeDriver(options);
         driver_.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
         driver_.manage().window().setSize(new Dimension(1200, 800));
+        //
+        float dpr = DevicePixelRatioResolver.resolveDPR(driver_);
+        aswOptions_ = new AShotWrapper.Options.Builder().devicePixelRatio(dpr).build();
     }
 
     @AfterEach
@@ -91,8 +95,8 @@ class TimekeeperDemo {
     }
 
     private void takeFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {
-        BufferedImage image = AShotWrapper.takeEntirePageImage(driver,
-                new AShotWrapper.Options.Builder().build());
+        // using my AShotWrapper lib at https://kazurayam.github.io/ashotwrapper/
+        BufferedImage image = AShotWrapper.takeEntirePageImage(driver, aswOptions_);
         assertNotNull(image);
         File screenshotFile = outDir.resolve(fileName).toFile();
         ImageIO.write(image, "PNG", screenshotFile);

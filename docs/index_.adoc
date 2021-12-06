@@ -1,0 +1,44 @@
+The Timekeeper library helps Java/Groovy test codes to record performance measurement statistics and compiling reports in Markdown format.
+
+
+### API
+
+Javadoc is link:./api/index.html[here]
+
+### Example
+
+`Timekeeper` object lets you create **one or more** `Measurement` objects. A `Measurement` object stands for a table which contains a header and one or more `Record` set. A `Record` contains columns and a duration in `mm:ss` format (minutes:seconds). My test will put an instance of `LocalDateTime.now()` just before the test calls a long running method call (such as Selenium navite, and taking screenshot). This timestatmp is recorded as `startAt`. Also my test will put another instance of `LocalDateTime.now()` just after the long-running method call. This timestamp is recorded `endAt`. Each record object can calculate the duration = endAt minus startAt. And finally Timekeeper's `report(Path)` method can generate a text report in Markdown syntax.
+
+I will show you a demo. Input CSV file is here:
+
+----
+include::../src/test/fixtures/URLs.csv[]
+----
+
+The code is here:
+----
+include::../src/test/groovy/com/kazurayam/timekeeper/demo/TimeKeeperDemo.groovy[]
+----
+
+
+This will emit the following output:
+
+[code]
+```
+include::../build/tmp/testOutput/TimekeeperDemo/report.md[]
+```
+
+On browser, this will look like this:
+
+image::../docs/images/report.png[]
+
+## Motivation, etc.
+
+I developed some Web UI tests in Groovy using Selenium. I wanted to measure their performances; how long (seconds) they take to navigate browsers to many URLs, how long they take to take and save screenshots of the web pages. I wanted to examine many URLS; say 100 or more. It was a hard task to record the durations with a stopwatch and to write a report in a Markdown table format. I desperately wanted to automate this task.
+
+
+## published at Maven Central
+
+The artifact is available at the Maven Central repository:
+
+- https://mvnrepository.com/artifact/com.kazurayam/timekeeper
