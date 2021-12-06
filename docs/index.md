@@ -14,6 +14,10 @@ I want to examine many URLs; 100 or more. In practice, most of URLs respond in 3
 
 It is bothersome recording the duration with a stopwatch. It is tiresome to write a statistics report in Markdown table format. I desperately want to automate this task. I want my WebUI tests to perform performance measurement and reporting as well.
 
+# API
+
+Javadoc is [here](./api/index.html)
+
 # Example
 
 A `Timekeeper` object lets you create **one or more** `Measurement` objects. A `Measurement` object stands for a table which contains a header and one or more `Record` set. A `Record` contains columns and a duration in `mm:ss` format (minutes:seconds). My test will put an instance of `LocalDateTime.now()` just before the test calls a long running method call (such as Selenium navite, and taking screenshot). This timestatmp is recorded as `startAt`. Also my test will put another instance of `LocalDateTime.now()` just after the long-running method call. This timestamp is recorded `endAt`. Each record object can calculate the duration = endAt minus startAt. And finally Timekeeper’s `report(Path)` method can generate a text report in Markdown syntax.
@@ -195,11 +199,7 @@ The artifact is available at the Maven Central repository:
 
 Timekeeper was tested on Java8.
 
-See [build.gradle](../build.gradle) for external dependencies.
-
-# API
-
-Javadoc is [here](./api/index.html)
+See `build.gradle` at <https://github.com/kazurayam/timekeeper/> for external dependencies.
 
 # Repository
 
