@@ -169,11 +169,8 @@ This will emit the following output:
 
 On browser, this will look like this:
 
-![report](../docs/images/report.png)
+![report](images/report.png)
 
-# Motivation, etc.
-
-I developed some Web UI tests in Groovy using Selenium. I wanted to measure their performances; how long (seconds) they take to navigate browsers to many URLs, how long they take to take and save screenshots of the web pages. I wanted to examine many URLS; say 100 or more. It was a hard task to record the durations with a stopwatch and to write a report in a Markdown table format. I desperately wanted to automate this task.
 
 # published at Maven Central
 
