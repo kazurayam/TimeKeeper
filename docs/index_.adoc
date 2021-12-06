@@ -12,7 +12,7 @@ I want to examine many URLs; 100 or more. In practice, most of URLs respond with
 
 The 1st problem is that it is bothersome recording the duration with a stopwatch. So I introduced the Apache Commonns https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/time/StopWatch.html[StopWatch] library to measure the duration and print the figure in console messages. Still, it is difficult to find useful information out of bulky console messages. So I want to summerise the staticstics. The 2nd problem is that it is too tiresome to write a statistics report in Markdown table format manually. I want to automate this task.
 
-I want my WebUI tests to perform not only performance measurement but also reporting as well. Here comes the Timekeeper!
+I want my WebUI tests to perform not only performance measurement but also compiling a concise report in Markdown format as well. Here comes the Timekeeper!
 
 == API
 
