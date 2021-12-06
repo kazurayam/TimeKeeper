@@ -40,7 +40,7 @@ public class Measurement implements Iterable<Record> {
         this.records.add(record);
     }
 
-    public void record(Map<String, String> attrs, LocalDateTime startAt, LocalDateTime endAt) {
+    public void recordDuration(Map<String, String> attrs, LocalDateTime startAt, LocalDateTime endAt) {
         Record record = this.newRecord(attrs);
         record.setStartAt(startAt);
         record.setEndAt(endAt);

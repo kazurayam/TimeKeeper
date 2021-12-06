@@ -1,1 +1,1 @@
-see https://kazurayam.github.com/timekeeper/
+see https://kazurayam.github.io/timekeeper/

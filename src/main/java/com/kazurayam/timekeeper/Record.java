@@ -21,11 +21,13 @@ public class Record implements Comparable<Record> {
     public static DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private SortedMap<String, String> attributes;
+    private long size;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
 
     private Record(Builder builder) {
         this.attributes = builder.attributes;
+        this.size = builder.size;
         this.startAt = builder.startAt;
         this.endAt = builder.endAt;
     }
@@ -40,6 +42,10 @@ public class Record implements Comparable<Record> {
                     "\"; key is not contained in the keys:" +
                     this.attributes.keySet());
         }
+    }
+
+    public void setSize(long size) {
+        this.size = size;
     }
 
     public void setStartAt(LocalDateTime startAt) {
@@ -104,6 +110,8 @@ public class Record implements Comparable<Record> {
         return new TreeMap<String, String>(this.attributes);
     }
 
+    public long getSize() { return size; }
+
     public LocalDateTime getStartAt() {
         return startAt;
     }
@@ -150,6 +158,9 @@ public class Record implements Comparable<Record> {
         sb.append("\"attributes\":");
         sb.append(thisAttrs);
         sb.append(",");
+        sb.append("\"size\":");
+        sb.append(this.size);
+        sb.append(",");
         sb.append("\"startAt\":\"");
         sb.append(this.startAt.format(FORMAT));
         sb.append("\"");
@@ -175,10 +186,12 @@ public class Record implements Comparable<Record> {
 
     public static class Builder {
         private SortedMap<String, String> attributes;
+        private long size;
         private LocalDateTime startAt;
         private LocalDateTime endAt;
         public Builder() {
             attributes = new TreeMap<String, String>();
+            size = 0L;
             startAt = LocalDateTime.now();
             endAt = startAt;
         }

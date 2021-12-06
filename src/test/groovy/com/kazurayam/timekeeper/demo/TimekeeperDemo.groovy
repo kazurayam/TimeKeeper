@@ -52,7 +52,7 @@ class TimekeeperDemo {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--headless");
+        options.addArguments("--headless");   // use Headless Chrome browser
         driver_ = new ChromeDriver(options);
         driver_.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
         driver_.manage().window().setSize(new Dimension(1200, 800));
@@ -78,17 +78,17 @@ class TimekeeperDemo {
         for (Tuple t in parseCSVfile(csv)) {
             String url = t.get(0)
             String filename = t.get(1)
-            driver_.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS)
+            driver_.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS)
             // navigate to the URL, record the duration
             LocalDateTime beforeNavigate = LocalDateTime.now()
             driver_.navigate().to(url)
             LocalDateTime afterNavigate = LocalDateTime.now()
-            navigation.record(["URL": url], beforeNavigate, afterNavigate)
+            navigation.recordDuration(["URL": url], beforeNavigate, afterNavigate)
             // take a screenshot of the page, record the duration
             LocalDateTime beforeScreenshot = LocalDateTime.now()
             this.takeFullPageScreenshot(driver_, outdir_, filename)
             LocalDateTime afterScreenshot = LocalDateTime.now()
-            screenshot.record(["URL": url], beforeScreenshot, afterScreenshot)
+            screenshot.recordDuration(["URL": url], beforeScreenshot, afterScreenshot)
         }
         // now print the report
         tk.report(outdir_.resolve("report.md"))
