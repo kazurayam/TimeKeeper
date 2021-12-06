@@ -3,6 +3,7 @@ package com.kazurayam.timekeeper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,5 +110,17 @@ public class Measurement implements Iterable<Record> {
                 .filter(rc -> rc.getDurationMillis() > 0)
                 .collect(Collectors.toList());
         return recordsWithDuration.size() > 0;
+    }
+
+    public long getAverageSize() {
+        long accumulatedSize = records.stream().mapToLong(Record::getSize).sum();
+        return accumulatedSize / records.size();
+    }
+
+    public Duration getAverageDuration() {
+        long accumulatedDurationMillis =
+                records.stream().mapToLong(Record::getDurationMillis).sum();
+        long average = accumulatedDurationMillis / records.size();
+        return Duration.ofMillis(average);
     }
 }
