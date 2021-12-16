@@ -1,9 +1,11 @@
 package com.kazurayam.timekeeper;
 
+import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.slf4j.Logger;
@@ -57,6 +59,7 @@ public class MeasurementTest {
         assertTrue(keySet.contains("case"));
     }
 
+
     @Test
     public void test_getLatestRecordDurationMillis() throws InterruptedException {
         Measurement m = new Measurement("some", Arrays.asList("URL"));
@@ -68,6 +71,22 @@ public class MeasurementTest {
         long millis = m.getLastRecordDurationMillis();
         assertTrue(millis < 1000);
         // System.out.println(millis);
+    }
+
+    @Test
+    public void test_toString() {
+        Gson gson = new Gson();
+        String json = m.toString();
+        //System.out.println(json);
+        Object obj = gson.fromJson(json, Object.class);
+        assertNotNull(obj);
+    }
+
+    @Test
+    public void test_toJson() {
+        String json = m.toJson();
+        System.out.println(json);
+        assertNotNull(json);
     }
 
 }

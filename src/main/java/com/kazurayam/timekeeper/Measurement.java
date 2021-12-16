@@ -1,5 +1,7 @@
 package com.kazurayam.timekeeper;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -165,4 +167,46 @@ public class Measurement implements Iterable<Record> {
         long average = accumulatedDurationMillis / records.size();
         return Duration.ofMillis(average);
     }
+
+    public String toJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Object obj = gson.fromJson(this.toString(), Object.class);
+        return gson.toJson(obj);
+    }
+
+    /**
+     * TODO
+     * should construct JSON using Gson, rather than StringBuilder
+     * because current implementation does not support escaping characters
+     * that are sensitive for JSON syntax.
+     *
+     * https://www.baeldung.com/java-json-escaping
+     */
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"id\":\"");
+        sb.append(this.id);
+        sb.append("\",\"columnNames\":[");
+        for (int i = 0; i < columnNames.size(); i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append("\"");
+            sb.append(columnNames.get(i));
+            sb.append("\"");
+        }
+        sb.append("],\"records\":[");
+        for (int i = 0; i < records.size(); i++) {
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append(records.get(i));
+        }
+        sb.append("]");
+        sb.append("}");
+        return sb.toString();
+    }
+
 }

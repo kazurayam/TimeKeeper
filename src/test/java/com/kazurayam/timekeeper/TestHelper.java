@@ -1,7 +1,18 @@
 package com.kazurayam.timekeeper;
 
+import com.kazurayam.timekeeper.reporter.MarkdownReporter;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Stream;
 
 public class TestHelper {
 
@@ -63,4 +74,28 @@ public class TestHelper {
         return m;
     }
 
+    public static Measurement makeRichMeasurement() throws IOException {
+        Path fixtureFile = Paths.get(".").resolve("src/test/fixtures/measurement.md");
+        Measurement m = new Measurement("foo", Arrays.asList("URL"));
+        Stream<String> stream = Files.lines(fixtureFile);
+        stream.forEach( line -> {
+            List<String> items = Arrays.asList(line.split("\\|"));
+                /*
+                for (int i = 1; i < items.size(); i++) {
+                    System.out.println(i + " " + items.get(i));
+                }
+                ->
+                0
+                1 https://example.com/
+                2 736,042
+                3 00:38
+                4 `####`
+                 */
+            Record r = new Record.Builder().attr("URL", items.get(1)).build();
+            r.setSize(MarkdownReporter.parseSize(items.get(2)));
+            r.setDuration(MarkdownReporter.parseDuration(items.get(3)));
+            m.add(r);
+        });
+        return m;
+    }
 }

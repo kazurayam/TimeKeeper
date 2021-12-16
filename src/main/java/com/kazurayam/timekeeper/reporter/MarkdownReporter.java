@@ -16,9 +16,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +104,7 @@ public class MarkdownReporter implements Reporter {
             }
             if (measurement.hasRecordWithSize()) {
                 // print size
-                sb2.append(NumberFormat.getIntegerInstance().format(record.getSize()));
+                sb2.append(formatSize(record.getSize()));
                 sb2.append("|");
             }
             if (measurement.hasRecordWithDuration()) {
@@ -126,7 +130,7 @@ public class MarkdownReporter implements Reporter {
             sb3.append("|");
         }
         if (measurement.hasRecordWithSize()) {
-            sb3.append(NumberFormat.getIntegerInstance().format(measurement.getAverageSize()));
+            sb3.append(formatSize(measurement.getAverageSize()));
             sb3.append("|");
         }
         if (measurement.hasRecordWithDuration()) {
@@ -151,17 +155,61 @@ public class MarkdownReporter implements Reporter {
     }
 
     /**
-     * to "minutes:seconds", or "hours:minutes:secodns"
+     * stringify a Duration to "minutes:seconds", or "hours:minutes:seconds"
      *
      * @param duration value in milliseconds to be formated into "mm:ss"
      * @return 45 seconds will be "00:45"
      */
-    protected String formatDuration(Duration duration) {
+    public static final String formatDuration(Duration duration) {
         int s = (int) duration.toMillis() / 1000;
         if (s >= 60 * 60) {
             return String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
         } else {
             return String.format("%02d:%02d", (s % 3600) / 60, (s % 60));
+        }
+    }
+
+    public static final Pattern DURATION_PATTERN =
+            Pattern.compile("((\\d+)\\s*:\\s*)?(\\d+)\\s*:\\s*(\\d+)");
+
+    public static final Duration parseDuration(String duration) {
+        Matcher m = DURATION_PATTERN.matcher(duration);
+        if (m.matches()) {
+            boolean hasHour = (m.group(2) != null);
+            if (hasHour) {
+                int hours = Integer.valueOf(m.group(2));
+                int minutes = Integer.valueOf(m.group(3));
+                int seconds = Integer.valueOf(m.group(4));
+                long dur = 60 * 60 * hours + 60 * minutes + seconds;
+                return Duration.ofSeconds(dur);
+            } else {
+                int minutes = Integer.valueOf(m.group(3));
+                int seconds = Integer.valueOf(m.group(4));
+                long dur = 60 * minutes + seconds;
+                return Duration.ofSeconds(dur);
+            }
+        } else {
+            throw new IllegalArgumentException("duration=" + duration +
+                    " does not match " + DURATION_PATTERN.toString());
+        }
+    }
+
+    /**
+     * stringify 123456L to "123,456"
+     *
+     * @param size
+     * @return
+     */
+    public static final String formatSize(long size) {
+        return NumberFormat.getIntegerInstance().format(size);
+    }
+
+    public static final long parseSize(String size) {
+        try {
+            long result = (long)NumberFormat.getIntegerInstance().parse(size);
+            return result;
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
