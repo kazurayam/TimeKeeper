@@ -9,7 +9,7 @@ plugins {
 
 group = 'com.kazurayam'
 archivesBaseName = "timekeeper"
-version = '0.1.1'
+version = '0.1.3-SNAPSHOT'
 
 ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
@@ -75,8 +75,8 @@ publishing {
             pom {
                 groupId = project.group
                 name = project.rootProject.name
-                description = 'a java clas library that supports time-based measurements and authoring markdown documents'
-                url = 'https://kazurayam.github.io/TimeKeeper/'
+                description = 'a java clas library that supports time-based performance measurements and compiling text reports in Markdown format'
+                url = 'https://kazurayam.github.io/timekeeper/'
                 from components.java
                 licenses {
                     license {

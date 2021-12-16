@@ -11,6 +11,8 @@ gradle-app.setting
 # Cache of project
 .gradletasknamecache
 
+# Mac
+.DS_Store
 
 
 # IntelliJ IDEA

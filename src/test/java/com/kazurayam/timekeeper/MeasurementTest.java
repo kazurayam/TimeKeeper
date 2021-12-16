@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Set;
 
 public class MeasurementTest {
@@ -53,6 +55,19 @@ public class MeasurementTest {
         Set<String> keySet = record.getAttributes().keySet();
         assertTrue(keySet.size() > 0);
         assertTrue(keySet.contains("case"));
+    }
+
+    @Test
+    public void test_getLatestRecordDurationMillis() throws InterruptedException {
+        Measurement m = new Measurement("some", Arrays.asList("URL"));
+        Record r = new Record.Builder().attr("URL", "http://example.com").build();
+        r.setStartAt(LocalDateTime.now());
+        Thread.sleep(300);
+        r.setEndAt(LocalDateTime.now());
+        m.add(r);
+        long millis = m.getLastRecordDurationMillis();
+        assertTrue(millis < 1000);
+        // System.out.println(millis);
     }
 
 }

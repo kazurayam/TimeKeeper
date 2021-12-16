@@ -67,8 +67,50 @@ public class Measurement implements Iterable<Record> {
         return records.size();
     }
 
+    /**
+     * get the clone of the record stored at the index
+     * @param index index of the inner List of Records
+     * @return the clone of the Record stored at the index
+     */
     public Record get(int index) {
-        return this.records.get(index);
+        return Record.clone(records.get(index));
+    }
+
+    public Record getLast() {
+        if (records.size() > 0) {
+            return get(this.size() - 1);
+        } else {
+            return Record.NULL;
+        }
+    }
+
+    /**
+     *
+     * @return if one or more records are there, return the duration between
+     * endAt and startAt of the latest record.
+     * if no records are there, returns Duration.ZERO
+     */
+    public Duration getLastRecordDuration() {
+        if (records.size() > 0) {
+            return this.getLast().getDuration();
+        } else {
+            return Duration.ZERO;
+        }
+    }
+
+    /**
+     *
+     * @return if one or more records are there, return the duration between
+     * endAt and startAt of the latest record in the unit of milli-seconds.
+     * if no records are there, returns -1.
+     */
+    public long getLastRecordDurationMillis() {
+        Duration dur = this.getLastRecordDuration();
+        if (dur != Duration.ZERO) {
+            return dur.toMillis();
+        } else {
+            return -1;
+        }
     }
 
     @Override

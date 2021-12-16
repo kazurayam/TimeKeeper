@@ -16,6 +16,8 @@ import java.util.regex.Pattern;
 
 public class Record implements Comparable<Record> {
 
+    public static Record NULL = new Record.Builder().build();
+
     private final Logger logger = LoggerFactory.getLogger(Helper.getClassName());
 
     public static DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
@@ -24,6 +26,14 @@ public class Record implements Comparable<Record> {
     private long size;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
+
+    public static Record clone(Record source) {
+        Record r = new Record.Builder().attributes(source.getAttributes()).build();
+        r.setStartAt(source.getStartAt());
+        r.setEndAt(source.getEndAt());
+        r.setSize(source.getSize());
+        return r;
+    }
 
     private Record(Builder builder) {
         this.attributes = builder.attributes;
@@ -51,9 +61,17 @@ public class Record implements Comparable<Record> {
         this.size = size;
     }
 
+    public void startAt() {
+        this.setStartAt(LocalDateTime.now());
+    }
+
     public void setStartAt(LocalDateTime startAt) {
         Objects.requireNonNull(startAt);
         this.startAt = startAt;
+    }
+
+    public void endAt() {
+        this.setEndAt(LocalDateTime.now());
     }
 
     public void setEndAt(LocalDateTime endAt) {
