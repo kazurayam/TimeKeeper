@@ -386,7 +386,7 @@ Here I use a term "Attributes" to categorise the column names such as "Case", "U
 
 You can find a sample code at
 
--   [../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy](../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy)
+-   [TimekeeperDemoHttpInteraction.groovy](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy)
 
 ## Table sorted by Attributes
 
@@ -466,7 +466,7 @@ The output looks like this:
 
 ## Table sorted by selected items among Attributes
 
-You can choose columns out of the Attributes.
+You can choose columns as sort key out of the Attributes.
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
@@ -540,7 +540,7 @@ The output is like this:
 
 ## Table sorted by Attributes, then by duration
 
-You can sort rows by Attributes first, the by duration. Perhaps this sorting condition is most useful.
+You can sort rows by Attributes first, then secondly by duration. Perhaps this sorting condition is most useful.
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
@@ -572,7 +572,7 @@ The output looks like this:
 
 ## Table sorted by Size
 
-You can sort rows by duration.
+You can sort rows by size, of course.
 
         @Test
         void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
@@ -606,7 +606,7 @@ The output is like this:
 
 Please have a look at the source code of
 
--   [Measurement.Builder](../src/main/java/com/kazurayam/timekeeper/Measurement.java)
+-   [Measurement.Builder](https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Measurement.java)
 
 to find out full list of `sortBy*()` methods supported.
 

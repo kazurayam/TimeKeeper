@@ -122,7 +122,7 @@ Here I use a term "Attributes" to categorise the column names such as "Case", "U
 
 You can find a sample code at
 
-* link:../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy[]
+* https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy[TimekeeperDemoHttpInteraction.groovy]
 
 === Table sorted by Attributes
 
@@ -171,7 +171,7 @@ include::./TimekeeperDemoHttpInteraction/sortByAttributes_descending.md[lines=1.
 
 === Table sorted by selected items among Attributes
 
-You can choose columns out of the Attributes.
+You can choose columns as sort key out of the Attributes.
 
 ```
 include::../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy[lines=117..129]
@@ -212,7 +212,7 @@ include::./TimekeeperDemoHttpInteraction/sortByDuration_descending.md[lines=1..1
 
 === Table sorted by Attributes, then by duration
 
-You can sort rows by Attributes first, the by duration. Perhaps this sorting condition is most useful.
+You can sort rows by Attributes first, then secondly by duration. Perhaps this sorting condition is most useful.
 
 ```
 include::../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy[lines=145..157]
@@ -226,7 +226,7 @@ include::./TimekeeperDemoHttpInteraction/sortByAttributesThenDuration.md[lines=1
 
 === Table sorted by Size
 
-You can sort rows by duration.
+You can sort rows by size, of course.
 
 ```
 include::../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy[lines=174..186]
@@ -242,7 +242,7 @@ include::./TimekeeperDemoHttpInteraction/sortBySize_ascending.md[lines=1..12]
 
 Please have a look at the source code of
 
-* link:../src/main/java/com/kazurayam/timekeeper/Measurement.java[Measurement.Builder]
+* https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Measurement.java[Measurement.Builder]
 
 to find out full list of `sortBy*()` methods supported.
 
