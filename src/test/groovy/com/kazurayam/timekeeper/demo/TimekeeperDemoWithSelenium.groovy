@@ -67,8 +67,14 @@ class TimekeeperDemoWithSelenium {
     @Test
     void demo_with_selenium() {
         Timekeeper tk = new Timekeeper()
-        Measurement navigation = tk.newMeasurement("How long it took to navigate to URLs", ["URL"])
-        Measurement screenshot = tk.newMeasurement("How long it took to take shootshots", ["URL"])
+        Measurement navigation = new Measurement.Builder(
+                "How long it took to navigate to URLs", ["URL"])
+                .build()
+        tk.add(navigation)
+        Measurement screenshot = new Measurement.Builder(
+                "How long it took to take shootshots", ["URL"])
+                .build()
+        tk.add(screenshot)
         // process all URLs in the CSV file
         Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
         for (Tuple t in parseCSVfile(csv)) {

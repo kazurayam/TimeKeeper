@@ -93,13 +93,6 @@ public class MeasurementTest {
     }
 
     @Test
-    public void test_fixture_rich() throws IOException {
-        Measurement m = TestHelper.makeRichMeasurement();
-        //System.out.println(m.toJson());
-        assertNotNull(m);
-    }
-
-    @Test
     public void test_fixture_3lines() throws IOException {
         Measurement m = TestHelper.makeMeasurementOf3lines();
         //System.out.println(m.toJson());

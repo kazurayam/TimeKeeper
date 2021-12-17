@@ -13,6 +13,14 @@ import java.time.LocalDateTime
 class TimekeeperDemoHttpInteraction {
 
     private static Path outDir_
+    private static List<String> urlList = [
+            "case 1|https://www.google.com/search?q=timekeeper",
+            "case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
+            "case 1|https://search.yahoo.co.jp/search?p=timekeeper",
+            "case 2|https://www.google.com/search?q=timekeeper",
+            "case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
+            "case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
+    ]
 
     @BeforeAll
     static void setupClass() {
@@ -26,35 +34,37 @@ class TimekeeperDemoHttpInteraction {
     }
 
     @Test
-    void httpGetAndSaveRespose() {
-        List<String> urlList = [
-                "https://www.google.com/search?q=timekeeper",
-                "https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
-                "https://search.yahoo.co.jp/search?p=timekeeper"
-        ]
+    void test_HTTPGetAndSaveResponse() {
         Timekeeper tk = new Timekeeper()
-        Measurement interactions = tk.newMeasurement(
-                "get URL, save HTML into file", ["URL"])
-        for (entry in urlList) {
-            URL url = new URL(entry)
+        Measurement interactions = new Measurement.Builder(
+                "get URL, save HTML into file", ["Case", "URL"]).build();
+        tk.add(interactions)
+        // interact with URL, save the HTML into files
+        processURLs(urlList, outDir_, interactions)
+        // print the report
+        tk.report(outDir_.resolve("report.md"))
+    }
+
+    void processURLs(List<String> urlList, Path outDir, Measurement m) {
+        for (line in urlList) {
+            String[] items = line.split("\\|")
+            URL url = new URL(items[1])
             // mark the startAt timestamp
             LocalDateTime beforeGet = LocalDateTime.now()
             // do the heavy task
             String content = getHttpResponceContent(url)
             // mark the endAt timestamp
             LocalDateTime afterGet = LocalDateTime.now()
-            File outFile = outDir_.resolve(url.getHost() + ".html").toFile()
+            File outFile = outDir.resolve(url.getHost() + ".html").toFile()
             outFile.text = content
             // record the stats
-            interactions.recordSizeAndDuration(
-                    ["URL": entry],
+            m.recordSizeAndDuration(
+                    ["Case": items[0], "URL": items[1]],
                     outFile.length(),   // size of the HTTP response body
                     beforeGet,          // startAt
                     afterGet            // endAt
             )
         }
-        // print the report
-        tk.report(outDir_.resolve("report.md"))
     }
 
     String getHttpResponceContent(URL url) {
@@ -77,6 +87,101 @@ class TimekeeperDemoHttpInteraction {
         }
         streamReader.close()
         con.disconnect()
+
+        // sleep a while in between 1.0 - 5.0 seconds at random
+        Thread.sleep((long)(4000 * Math.random() + 1000));
+
         return sb.toString()
+    }
+
+
+
+
+
+    //-----------------------------------------------------------------
+
+    @Test
+    void test_HTTPGetAndSaveResponse_sortByAttributes() {
+        Timekeeper tk = new Timekeeper()
+        Measurement interactions = new Measurement.Builder(
+                "get URL, save HTML into file", ["Case", "URL"])
+                .sortByAttributes().
+                build();
+        tk.add(interactions)
+        // interact with URL, save the HTML into files
+        processURLs(urlList, outDir_, interactions)
+        // print the report
+        tk.report(outDir_.resolve("sortByAttributes.md"))
+    }
+
+    @Test
+    void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
+        Timekeeper tk = new Timekeeper()
+        Measurement interactions = new Measurement.Builder(
+                "get URL, save HTML into file", ["Case", "URL"])
+                .sortByAttributes(["URL"]).
+                build();
+        tk.add(interactions)
+        // interact with URL, save the HTML into files
+        processURLs(urlList, outDir_, interactions)
+        // print the report
+        tk.report(outDir_.resolve("sortByAttributes_URL.md"))
+    }
+
+    @Test
+    void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
+        Timekeeper tk = new Timekeeper()
+        Measurement interactions = new Measurement.Builder(
+                "get URL, save HTML into file", ["Case", "URL"])
+                .sortByAttributes(Measurement.ROW_ORDER.DESCENDING).
+                build();
+        tk.add(interactions)
+        // interact with URL, save the HTML into files
+        processURLs(urlList, outDir_, interactions)
+        // print the report
+        tk.report(outDir_.resolve("sortByAttributes_descending.md"))
+    }
+
+    @Test
+    void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
+        Timekeeper tk = new Timekeeper()
+        Measurement interactions = new Measurement.Builder(
+                "get URL, save HTML into file", ["Case", "URL"])
+                .sortByAttributesThenDuration(["URL"]).
+                build();
+        tk.add(interactions)
+        // interact with URL, save the HTML into files
+        processURLs(urlList, outDir_, interactions)
+        // print the report
+        tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
+    }
+
+    @Test
+    void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
+        Timekeeper tk = new Timekeeper()
+        Measurement interactions = new Measurement.Builder(
+                "get URL, save HTML into file", ["Case", "URL"])
+                .sortByDuration(Measurement.ROW_ORDER.DESCENDING).
+                build();
+        tk.add(interactions)
+        // interact with URL, save the HTML into files
+        processURLs(urlList, outDir_, interactions)
+        // print the report
+        tk.report(outDir_.resolve("sortByDuration_descending.md"))
+    }
+
+
+    @Test
+    void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
+        Timekeeper tk = new Timekeeper()
+        Measurement interactions = new Measurement.Builder(
+                "get URL, save HTML into file", ["Case", "URL"])
+                .sortBySize(Measurement.ROW_ORDER.ASCENDING).
+                build();
+        tk.add(interactions)
+        // interact with URL, save the HTML into files
+        processURLs(urlList, outDir_, interactions)
+        // print the report
+        tk.report(outDir_.resolve("sortBySize_ascending.md"))
     }
 }

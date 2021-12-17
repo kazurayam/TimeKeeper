@@ -19,14 +19,6 @@ public class Timekeeper {
         mList = new MeasurementList();
     }
 
-    public Measurement newMeasurement(String id, List<String> columnNames) {
-        Objects.requireNonNull(id);
-        Objects.requireNonNull(columnNames);
-        assert columnNames.size() > 0;
-        Measurement m = new Measurement.Builder(id, columnNames).build();
-        this.mList.add(m);
-        return m;
-    }
     public void add(Measurement m) {
         mList.add(m);
     }

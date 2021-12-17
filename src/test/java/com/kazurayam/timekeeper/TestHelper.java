@@ -75,15 +75,6 @@ public class TestHelper {
         return m;
     }
 
-    public static Measurement makeRichMeasurement() throws IOException {
-        Path fixtureFile = Paths.get(".").resolve("src/test/fixtures/measurement_rich.md");
-        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL")).build();
-        List<Record> records = readMd(fixtureFile);
-        for (Record r : records) {
-            m.add(r);
-        }
-        return m;
-    }
 
     public static Measurement makeMeasurementOf3lines() throws IOException {
         Path fixtureFile = Paths.get(".").resolve("src/test/fixtures/measurement_3lines.md");

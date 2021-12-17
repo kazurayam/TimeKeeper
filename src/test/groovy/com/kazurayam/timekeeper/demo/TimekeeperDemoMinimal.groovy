@@ -28,9 +28,9 @@ class TimekeeperDemoMinimal {
     @Test
     void demo_planned_sleep() {
         Timekeeper tk = new Timekeeper()
-        Measurement m1 = tk.newMeasurement(
-                "How long it waited",
-                ["description m1"]);
+        Measurement m1 = new Measurement.Builder("How long it waited",
+                ["description m1"]).build()
+        tk.add(m1)
         for (int i in [2, 3, 5, 7]) {
             LocalDateTime beforeSleep = LocalDateTime.now()
             // do a processing that could take long time.
