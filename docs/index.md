@@ -89,7 +89,7 @@ This code outputs the following markdown text.
 
     one # represents 10 seconds in the duration graph
 
-## Example2 --- HTTP GET & save HTML
+## Example 2 --- HTTP GET & save HTML
 
 The following code processes a list URLs. It makes HTTP GET request, save the request body into file. It checks the size of the file in bytes, and measures the duration of HTTP GET request.
 
@@ -602,7 +602,7 @@ The output is like this:
     |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:03|`#`|
     |Average|-|6,002|00:03| |
 
-## List of supported `sortBy*()` methods
+## List of supported sortBy\*() methods
 
 Please have a look at the source code of
 

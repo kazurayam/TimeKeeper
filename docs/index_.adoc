@@ -1,3 +1,5 @@
+:toc:
+
 Timekeeper helps Java/Groovy test codes to record performance measurement statistics, and to compile reports in Markdown format.
 
 == Motivation
@@ -51,7 +53,7 @@ The format of duration is "minutes:seconds"
 one # represents 10 seconds in the duration graph
 ----
 
-=== Example2 --- HTTP GET & save HTML
+=== Example 2 --- HTTP GET & save HTML
 
 The following code processes a list URLs. It makes HTTP GET request, save the request body into file. It checks the size of the file in bytes, and measures the duration of HTTP GET request.
 
@@ -238,7 +240,7 @@ The output is like this:
 include::./TimekeeperDemoHttpInteraction/sortBySize_ascending.md[lines=1..12]
 ```
 
-=== List of supported `sortBy*()` methods
+=== List of supported sortBy*() methods
 
 Please have a look at the source code of
 
