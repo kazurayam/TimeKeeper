@@ -58,9 +58,9 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
         @Test
         void demo_planned_sleep() {
             Timekeeper tk = new Timekeeper()
-            Measurement m1 = tk.newMeasurement(
-                    "How long it waited",
-                    ["description m1"]);
+            Measurement m1 = new Measurement.Builder("How long it waited",
+                    ["description m1"]).build()
+            tk.add(m1)
             for (int i in [2, 3, 5, 7]) {
                 LocalDateTime beforeSleep = LocalDateTime.now()
                 // do a processing that could take long time.
@@ -89,7 +89,7 @@ This code outputs the following markdown text.
 
     one # represents 10 seconds in the duration graph
 
-## Example 2 ---
+## Example2 --- HTTP GET & save HTML
 
 The following code processes a list URLs. It makes HTTP GET request, save the request body into file. It checks the size of the file in bytes, and measures the duration of HTTP GET request.
 
@@ -108,6 +108,14 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
     class TimekeeperDemoHttpInteraction {
 
         private static Path outDir_
+        private static List<String> urlList = [
+                "case 1|https://www.google.com/search?q=timekeeper",
+                "case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
+                "case 1|https://search.yahoo.co.jp/search?p=timekeeper",
+                "case 2|https://www.google.com/search?q=timekeeper",
+                "case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
+                "case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
+        ]
 
         @BeforeAll
         static void setupClass() {
@@ -121,35 +129,37 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
         }
 
         @Test
-        void httpGetAndSaveRespose() {
-            List<String> urlList = [
-                    "https://www.google.com/search?q=timekeeper",
-                    "https://duckduckgo.com/?q=timekeeper&t=h_&ia=web",
-                    "https://search.yahoo.co.jp/search?p=timekeeper"
-            ]
+        void test_HTTPGetAndSaveResponse() {
             Timekeeper tk = new Timekeeper()
-            Measurement interactions = tk.newMeasurement(
-                    "get URL, save HTML into file", ["URL"])
-            for (entry in urlList) {
-                URL url = new URL(entry)
+            Measurement interactions = new Measurement.Builder(
+                    "get URL, save HTML into file", ["Case", "URL"]).build();
+            tk.add(interactions)
+            // interact with URL, save the HTML into files
+            processURLs(urlList, outDir_, interactions)
+            // print the report
+            tk.report(outDir_.resolve("report.md"))
+        }
+
+        void processURLs(List<String> urlList, Path outDir, Measurement m) {
+            for (line in urlList) {
+                String[] items = line.split("\\|")
+                URL url = new URL(items[1])
                 // mark the startAt timestamp
                 LocalDateTime beforeGet = LocalDateTime.now()
                 // do the heavy task
                 String content = getHttpResponceContent(url)
                 // mark the endAt timestamp
                 LocalDateTime afterGet = LocalDateTime.now()
-                File outFile = outDir_.resolve(url.getHost() + ".html").toFile()
+                File outFile = outDir.resolve(url.getHost() + ".html").toFile()
                 outFile.text = content
                 // record the stats
-                interactions.recordSizeAndDuration(
-                        ["URL": entry],
+                m.recordSizeAndDuration(
+                        ["Case": items[0], "URL": items[1]],
                         outFile.length(),   // size of the HTTP response body
                         beforeGet,          // startAt
                         afterGet            // endAt
                 )
             }
-            // print the report
-            tk.report(outDir_.resolve("report.md"))
         }
 
         String getHttpResponceContent(URL url) {
@@ -172,20 +182,26 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
             }
             streamReader.close()
             con.disconnect()
+
+            // sleep a while in between 1.0 - 5.0 seconds at random
+            Thread.sleep((long)(4000 * Math.random() + 1000));
+
             return sb.toString()
         }
-    }
 
 This code will output the following markdown text.
 
     ## get URL, save HTML into file
 
-    |URL|size|duration|graph|
-    |:----|----:|----:|:----|
-    |https://www.google.com/search?q=timekeeper|7,153|00:01|`#`|
-    |https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:00|`#`|
-    |https://search.yahoo.co.jp/search?p=timekeeper|20,927|00:01|`#`|
-    |Average|9,412|00:01|
+    |Case|URL|size|duration|graph|
+    |:----|:----|----:|----:|:----|
+    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:05|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:03|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |Average|-|6,002|00:04| |
 
 ## Example 3 --- Selenium test
 
@@ -294,8 +310,14 @@ The code is here:
         @Test
         void demo_with_selenium() {
             Timekeeper tk = new Timekeeper()
-            Measurement navigation = tk.newMeasurement("How long it took to navigate to URLs", ["URL"])
-            Measurement screenshot = tk.newMeasurement("How long it took to take shootshots", ["URL"])
+            Measurement navigation = new Measurement.Builder(
+                    "How long it took to navigate to URLs", ["URL"])
+                    .build()
+            tk.add(navigation)
+            Measurement screenshot = new Measurement.Builder(
+                    "How long it took to take shootshots", ["URL"])
+                    .build()
+            tk.add(screenshot)
             // process all URLs in the CSV file
             Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
             for (Tuple t in parseCSVfile(csv)) {
@@ -353,6 +375,240 @@ The code is here:
         }
 
     }
+
+# Sorting rows in table
+
+As soon as you get a table generated by Timekeeper, you would feel like to sort it for better readability. Timekeeper is capable of it. Timekeeper supports sorting rows by multiple selected keys. It is possible to sort rows in either of ascending and descending order.
+
+A few examples down here.
+
+Here I use a term "Attributes" to categorise the column names such as "Case", "URL". "Attributes" does not include the recorded figures: size and duration.
+
+You can find a sample code at
+
+-   [../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy](../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy)
+
+## Table sorted by Attributes
+
+The sample code has this method:
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes() {
+            Timekeeper tk = new Timekeeper()
+            Measurement interactions = new Measurement.Builder(
+                    "get URL, save HTML into file", ["Case", "URL"])
+                    .sortByAttributes().
+                    build();
+            tk.add(interactions)
+            // interact with URL, save the HTML into files
+            processURLs(urlList, outDir_, interactions)
+            // print the report
+            tk.report(outDir_.resolve("sortByAttributes.md"))
+        }
+
+Please note the following fragment:
+
+                .sortByAttributes()
+
+This fragment specifies Timekeeper to sort the rows by all Attributes of the table. If you have 2 or more attributes in the table, the left column has higher sorting priority than its right. In this example, the sorting key is : "Case" &gt; "URL".
+
+Rows are sorted in ascending order unless the order is explicitly specified.
+
+The output looks like this:
+
+    ## get URL, save HTML into file
+
+    |Case|URL|size|duration|graph|
+    |:----|:----|----:|----:|:----|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:02|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:02|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:05|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:05|`#`|
+    |Average|-|6,002|00:04| |
+
+## Table sorted by Attributes, descending order
+
+You can sort in descending order.
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
+            Timekeeper tk = new Timekeeper()
+            Measurement interactions = new Measurement.Builder(
+                    "get URL, save HTML into file", ["Case", "URL"])
+                    .sortByAttributes(Measurement.ROW_ORDER.DESCENDING).
+                    build();
+            tk.add(interactions)
+            // interact with URL, save the HTML into files
+            processURLs(urlList, outDir_, interactions)
+            // print the report
+            tk.report(outDir_.resolve("sortByAttributes_descending.md"))
+        }
+
+Please note this fragment where you specify the descending order.
+
+        .sortByAttributes(Measurement.ROW_ORDER.DESCENDING).
+
+The output looks like this:
+
+    ## get URL, save HTML into file
+
+    |Case|URL|size|duration|graph|
+    |:----|:----|----:|----:|:----|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:03|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,153|00:04|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:02|`#`|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |Average|-|6,000|00:03| |
+
+## Table sorted by selected items among Attributes
+
+You can choose columns out of the Attributes.
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
+            Timekeeper tk = new Timekeeper()
+            Measurement interactions = new Measurement.Builder(
+                    "get URL, save HTML into file", ["Case", "URL"])
+                    .sortByAttributes(["URL"]).
+                    build();
+            tk.add(interactions)
+            // interact with URL, save the HTML into files
+            processURLs(urlList, outDir_, interactions)
+            // print the report
+            tk.report(outDir_.resolve("sortByAttributes_URL.md"))
+        }
+
+Please note the following fragment:
+
+    Measurement interactions = new Measurement.Builder(
+        "get URL, save HTML into file",
+        ["Case", "URL"])
+                    .sortByAttributes(["URL"]).
+                    build();
+
+The table has 2 attributes "Case" and "URL". And you selected "URL" as the sort key.
+
+The output will look like this:
+
+    ## get URL, save HTML into file
+
+    |Case|URL|size|duration|graph|
+    |:----|:----|----:|----:|:----|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,136|00:05|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:02|`#`|
+    |Average|-|5,989|00:03| |
+
+## Table sorted by Duration
+
+You can sort rows by duration.
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
+            Timekeeper tk = new Timekeeper()
+            Measurement interactions = new Measurement.Builder(
+                    "get URL, save HTML into file", ["Case", "URL"])
+                    .sortByDuration(Measurement.ROW_ORDER.DESCENDING).
+                    build();
+            tk.add(interactions)
+            // interact with URL, save the HTML into files
+            processURLs(urlList, outDir_, interactions)
+            // print the report
+            tk.report(outDir_.resolve("sortByDuration_descending.md"))
+        }
+
+The output is like this:
+
+    ## get URL, save HTML into file
+
+    |Case|URL|size|duration|graph|
+    |:----|:----|----:|----:|:----|
+    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:04|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:04|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |Average|-|6,002|00:04| |
+
+## Table sorted by Attributes, then by duration
+
+You can sort rows by Attributes first, the by duration. Perhaps this sorting condition is most useful.
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
+            Timekeeper tk = new Timekeeper()
+            Measurement interactions = new Measurement.Builder(
+                    "get URL, save HTML into file", ["Case", "URL"])
+                    .sortByAttributesThenDuration(["URL"]).
+                    build();
+            tk.add(interactions)
+            // interact with URL, save the HTML into files
+            processURLs(urlList, outDir_, interactions)
+            // print the report
+            tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
+        }
+
+The output looks like this:
+
+    ## get URL, save HTML into file
+
+    |Case|URL|size|duration|graph|
+    |:----|:----|----:|----:|:----|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,136|00:03|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,153|00:03|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,153|00:03|`#`|
+    |Average|-|5,985|00:02| |
+
+## Table sorted by Size
+
+You can sort rows by duration.
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
+            Timekeeper tk = new Timekeeper()
+            Measurement interactions = new Measurement.Builder(
+                    "get URL, save HTML into file", ["Case", "URL"])
+                    .sortBySize(Measurement.ROW_ORDER.ASCENDING).
+                    build();
+            tk.add(interactions)
+            // interact with URL, save the HTML into files
+            processURLs(urlList, outDir_, interactions)
+            // print the report
+            tk.report(outDir_.resolve("sortBySize_ascending.md"))
+        }
+
+The output is like this:
+
+    ## get URL, save HTML into file
+
+    |Case|URL|size|duration|graph|
+    |:----|:----|----:|----:|:----|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:04|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:06|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:03|`#`|
+    |Average|-|6,002|00:03| |
+
+## List of supported `sortBy*()` methods
+
+Please have a look at the source code of
+
+-   [Measurement.Builder](../src/main/java/com/kazurayam/timekeeper/Measurement.java)
+
+to find out full list of `sortBy*()` methods supported.
 
 # Download
 
