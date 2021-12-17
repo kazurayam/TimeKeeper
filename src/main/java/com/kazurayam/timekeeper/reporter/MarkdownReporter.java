@@ -60,6 +60,15 @@ public class MarkdownReporter implements Reporter {
     }
 
     public void report(Measurement measurement) throws IOException {
+        Objects.requireNonNull(measurement);
+        if (measurement.requireSorting()) {
+            this.reportSorted(measurement.sorted());
+        } else {
+            this.reportSorted(measurement);
+        }
+    }
+
+    private void reportSorted(Measurement measurement) throws IOException {
         pw_.println("## " + measurement.getId());
         pw_.println("");
         StringBuilder sb0 = new StringBuilder();

@@ -23,7 +23,7 @@ public class Timekeeper {
         Objects.requireNonNull(id);
         Objects.requireNonNull(columnNames);
         assert columnNames.size() > 0;
-        Measurement m = new Measurement(id, columnNames);
+        Measurement m = new Measurement.Builder(id, columnNames).build();
         this.mList.add(m);
         return m;
     }

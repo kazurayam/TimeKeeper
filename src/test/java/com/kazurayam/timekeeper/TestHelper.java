@@ -9,6 +9,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -41,8 +42,8 @@ public class TestHelper {
     }
 
     public static Measurement makeMeasurement() {
-        Measurement m = new Measurement("M1",
-                getColumnNames());
+        Measurement m = new Measurement.Builder("M1",
+                getColumnNames()).build();
         //
         Record y1 = m.newRecord();
         y1.putAttribute("case", "Y1");
@@ -75,8 +76,27 @@ public class TestHelper {
     }
 
     public static Measurement makeRichMeasurement() throws IOException {
-        Path fixtureFile = Paths.get(".").resolve("src/test/fixtures/measurement.md");
-        Measurement m = new Measurement("foo", Arrays.asList("URL"));
+        Path fixtureFile = Paths.get(".").resolve("src/test/fixtures/measurement_rich.md");
+        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL")).build();
+        List<Record> records = readMd(fixtureFile);
+        for (Record r : records) {
+            m.add(r);
+        }
+        return m;
+    }
+
+    public static Measurement makeMeasurementOf3lines() throws IOException {
+        Path fixtureFile = Paths.get(".").resolve("src/test/fixtures/measurement_3lines.md");
+        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL")).build();
+        List<Record> records = readMd(fixtureFile);
+        for (Record r : records) {
+            m.add(r);
+        }
+        return m;
+    }
+
+    public static List<Record> readMd(Path fixtureFile) throws IOException {
+        List<Record> list = new ArrayList<>();
         Stream<String> stream = Files.lines(fixtureFile);
         stream.forEach( line -> {
             List<String> items = Arrays.asList(line.split("\\|"));
@@ -94,8 +114,8 @@ public class TestHelper {
             Record r = new Record.Builder().attr("URL", items.get(1)).build();
             r.setSize(MarkdownReporter.parseSize(items.get(2)));
             r.setDuration(MarkdownReporter.parseDuration(items.get(3)));
-            m.add(r);
+            list.add(r);
         });
-        return m;
+        return list;
     }
 }

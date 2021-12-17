@@ -131,7 +131,7 @@ public class Record implements Comparable<Record> {
         return new TreeMap<String, String>(this.attributes);
     }
 
-    public long getSize() { return size; }
+    public Long getSize() { return size; }
 
     public LocalDateTime getStartAt() {
         return startAt;
