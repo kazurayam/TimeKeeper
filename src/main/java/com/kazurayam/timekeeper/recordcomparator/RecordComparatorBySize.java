@@ -1,15 +1,24 @@
 package com.kazurayam.timekeeper.recordcomparator;
 
+import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.Record;
 import com.kazurayam.timekeeper.RecordComparator;
 
 public class RecordComparatorBySize implements RecordComparator {
 
-    public RecordComparatorBySize() {}
+    private final int order;
+
+    public RecordComparatorBySize() {
+        this(Measurement.ROW_ORDER.ASCENDING);
+    }
+
+    public RecordComparatorBySize(Measurement.ROW_ORDER rowOrder) {
+        this.order = (rowOrder == Measurement.ROW_ORDER.ASCENDING) ? 1 : -1;
+    }
 
     @Override
-    public int compare(Record o1, Record o2) {
-        return o1.getSize().compareTo(o2.getSize());
+    public int compare(Record left, Record right) {
+        return this.order * left.getSize().compareTo(right.getSize());
     }
 
 }

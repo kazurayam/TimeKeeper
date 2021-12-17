@@ -9,11 +9,11 @@ import java.util.Objects;
 
 public class Timekeeper {
 
-    public static enum FORMAT {
+    public enum FORMAT {
         MARKDOWN
     }
 
-    private MeasurementList mList;
+    private final MeasurementList mList;
 
     public Timekeeper() {
         mList = new MeasurementList();
@@ -44,14 +44,10 @@ public class Timekeeper {
     }
 
     public void report(Path outputFile, FORMAT format) throws IOException {
-        switch (format) {
-            case MARKDOWN:
-                Reporter reporter = new MarkdownReporter();
-                reporter.setOutput(outputFile);
-                reporter.report(mList);
-                break;
-            default :
-                ;
+        if (format == FORMAT.MARKDOWN) {
+            Reporter reporter = new MarkdownReporter();
+            reporter.setOutput(outputFile);
+            reporter.report(mList);
         }
     }
 }

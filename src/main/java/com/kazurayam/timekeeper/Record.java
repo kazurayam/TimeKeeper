@@ -22,7 +22,7 @@ public class Record implements Comparable<Record> {
 
     public static DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    private SortedMap<String, String> attributes;
+    private final SortedMap<String, String> attributes;
     private long size;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
@@ -61,17 +61,10 @@ public class Record implements Comparable<Record> {
         this.size = size;
     }
 
-    public void startAt() {
-        this.setStartAt(LocalDateTime.now());
-    }
 
     public void setStartAt(LocalDateTime startAt) {
         Objects.requireNonNull(startAt);
         this.startAt = startAt;
-    }
-
-    public void endAt() {
-        this.setEndAt(LocalDateTime.now());
     }
 
     public void setEndAt(LocalDateTime endAt) {
@@ -117,18 +110,8 @@ public class Record implements Comparable<Record> {
         this.startAt = this.endAt.minus(duration);
     }
 
-    public void setDuration(LocalDateTime startAt, Duration duration) {
-        this.startAt = startAt;
-        this.endAt = this.startAt.plus(duration);
-    }
-
-    public void setDuration(Duration duration, LocalDateTime endAt) {
-        this.endAt = endAt;
-        this.startAt = this.endAt.minus(duration);
-    }
-
     public SortedMap<String, String> getAttributes() {
-        return new TreeMap<String, String>(this.attributes);
+        return new TreeMap<>(this.attributes);
     }
 
     public Long getSize() { return size; }
@@ -207,11 +190,11 @@ public class Record implements Comparable<Record> {
 
     public static class Builder {
         private SortedMap<String, String> attributes;
-        private long size;
-        private LocalDateTime startAt;
-        private LocalDateTime endAt;
+        private final long size;
+        private final LocalDateTime startAt;
+        private final LocalDateTime endAt;
         public Builder() {
-            attributes = new TreeMap<String, String>();
+            attributes = new TreeMap<>();
             size = 0L;
             startAt = LocalDateTime.now();
             endAt = startAt;
@@ -223,7 +206,7 @@ public class Record implements Comparable<Record> {
             return this;
         }
         public Builder attributes(Map<String, String> attributes) {
-            this.attributes = new TreeMap<String, String>(attributes);
+            this.attributes = new TreeMap<>(attributes);
             return this;
         }
         public Record build() {

@@ -1,17 +1,15 @@
 package com.kazurayam.timekeeper;
 
-import com.kazurayam.timekeeper.Measurement;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 public class MeasurementList implements Iterable<Measurement> {
 
-    private List<Measurement> list;
+    private final List<Measurement> list;
 
     public MeasurementList() {
-        list = new ArrayList<Measurement>();
+        list = new ArrayList<>();
     }
 
     public void add(Measurement m) {

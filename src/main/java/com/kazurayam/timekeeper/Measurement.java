@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,14 +25,18 @@ import java.util.stream.Collectors;
 
 public class Measurement implements Iterable<Record> {
 
+    public enum ROW_ORDER {
+        ASCENDING,
+        DESCENDING
+    }
+
     private final Logger logger = LoggerFactory.getLogger(Helper.getClassName());
 
-    private String id;   // "M1"
-    private List<String> columnNames;   // ["case", "Suite", "Step Execution Log", "Log Viewer", "Mode"]
-    private List<Record> records;
-    private RecordComparator recordComparator;
-    private Boolean requireSorting;
-    private Boolean reverseOrder;
+    private final String id;   // "M1"
+    private final List<String> columnNames;   // ["case", "Suite", "Step Execution Log", "Log Viewer", "Mode"]
+    private final List<Record> records;
+    private final RecordComparator recordComparator;
+    private final Boolean requireSorting;
 
     private Measurement(Builder builder) {
         this.id = builder.id;
@@ -41,7 +44,6 @@ public class Measurement implements Iterable<Record> {
         this.records = builder.records;
         this.recordComparator = builder.recordComparator;
         this.requireSorting = builder.requireSorting;
-        this.reverseOrder = builder.reverseOrder;
     }
 
     public String getId() {
@@ -49,7 +51,7 @@ public class Measurement implements Iterable<Record> {
     }
 
     public List<String> getColumnNames() {
-        return new ArrayList<String>(columnNames);
+        return new ArrayList<>(columnNames);
     }
 
     public void add(Record record) {
@@ -107,7 +109,7 @@ public class Measurement implements Iterable<Record> {
      *
      * @return if one or more records are there, return the duration between
      * endAt and startAt of the latest record.
-     * if no records are there, returns Duration.ZERO
+     * If no records are there, returns Duration of ZERO
      */
     public Duration getLastRecordDuration() {
         if (records.size() > 0) {
@@ -146,12 +148,12 @@ public class Measurement implements Iterable<Record> {
     }
 
     public Record newRecord() {
-        Map<String, String> pairs = new HashMap<String, String>();
+        Map<String, String> pairs = new HashMap<>();
         return this.newRecord(pairs);
     }
 
     public Record newRecord(Map<String, String> pairs) {
-        Map<String, String> attributes = new HashMap<String, String>();
+        Map<String, String> attributes = new HashMap<>();
         for (String columnName : getColumnNames()) {
             attributes.put(columnName, "");
         }
@@ -200,20 +202,16 @@ public class Measurement implements Iterable<Record> {
     /**
      * clone this while sorting the records contained
      *
-     * @return new Measurement instance with corted rows
+     * @return new Measurement instance with sorted rows
      */
     public Measurement sorted() {
         Measurement clonedMeasurement =
                 new Measurement.Builder(this.id, this.columnNames)
                         .recordComparator(this.recordComparator)
-                        .reverseOrder(this.reverseOrder)
                         .build();
         List<Record> records = this.cloneRecords();
         if (this.requireSorting) {
             records.sort(this.recordComparator);
-        }
-        if (this.reverseOrder) {
-            Collections.reverse(records);
         }
         clonedMeasurement.addAll(records);
         return clonedMeasurement;
@@ -264,12 +262,11 @@ public class Measurement implements Iterable<Record> {
      * Effective Java, "Builder pattern"
      */
     public static class Builder {
-        private String id;   // "M1"
-        private List<String> columnNames;   // ["case", "Suite", "Step Execution Log", "Log Viewer", "Mode"]
-        private List<Record> records;
+        private final String id;   // "M1"
+        private final List<String> columnNames;   // ["case", "Suite", "Step Execution Log", "Log Viewer", "Mode"]
+        private final List<Record> records;
         private RecordComparator recordComparator;
         private Boolean requireSorting;
-        private Boolean reverseOrder;
         public Builder(String id, List<String> columnNames) {
             Objects.requireNonNull(id);
             Objects.requireNonNull(columnNames);
@@ -278,88 +275,113 @@ public class Measurement implements Iterable<Record> {
             }
             this.id = id;
             this.columnNames = columnNames;
-            this.records = new ArrayList<Record>();
+            this.records = new ArrayList<>();
             this.recordComparator = new NullRecordComparator();
             this.requireSorting = false;
-            this.reverseOrder = false;
         }
         //
         public Builder sortByAttributes() {
-            this.recordComparator = new RecordComparatorByAttributes(this.columnNames);
-            this.requireSorting = true;
-            return this;
+            return this.sortByAttributes(this.columnNames);
+        }
+        public Builder sortByAttributes(Measurement.ROW_ORDER rowOrder) {
+            return this.sortByAttributes(this.columnNames, rowOrder);
         }
         public Builder sortByAttributes(List<String> keys) {
+            return this.sortByAttributes(keys, ROW_ORDER.ASCENDING);
+        }
+        public Builder sortByAttributes(List<String> keys, Measurement.ROW_ORDER rowOrder) {
             Objects.requireNonNull(keys);
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
-            this.recordComparator = new RecordComparatorByAttributes(keys);
+            this.recordComparator = new RecordComparatorByAttributes(keys, rowOrder);
             this.requireSorting = true;
             return this;
         }
+
         public Builder sortByAttributesThenDuration() {
-            this.recordComparator = new RecordComparatorByAttributesThenDuration(this.columnNames);
-            this.requireSorting = true;
-            return this;
+            return this.sortByAttributesThenDuration(this.columnNames);
+        }
+        public Builder sortByAttributesThenDuration(Measurement.ROW_ORDER rowOrder) {
+            return this.sortByAttributesThenDuration(this.columnNames, rowOrder);
         }
         public Builder sortByAttributesThenDuration(List<String> keys) {
+            return this.sortByAttributesThenDuration(keys, ROW_ORDER.ASCENDING);
+        }
+        public Builder sortByAttributesThenDuration(List<String> keys, Measurement.ROW_ORDER rowOrder) {
             Objects.requireNonNull(keys);
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
-            this.recordComparator = new RecordComparatorByAttributesThenDuration(keys);
+            this.recordComparator = new RecordComparatorByAttributesThenDuration(keys, rowOrder);
             this.requireSorting = true;
             return this;
         }
         public Builder sortByAttributesThenSize() {
-            this.recordComparator = new RecordComparatorByAttributesThenSize(this.columnNames);
-            this.requireSorting = true;
-            return this;
+            return this.sortByAttributesThenSize(this.columnNames);
+        }
+        public Builder sortByAttributesThenSize(ROW_ORDER rowOrder) {
+            return this.sortByAttributesThenSize(this.columnNames, rowOrder);
         }
         public Builder sortByAttributesThenSize(List<String> keys) {
-            Objects.requireNonNull(keys);
+            return this.sortByAttributesThenSize(keys, ROW_ORDER.ASCENDING);
+        }
+        public Builder sortByAttributesThenSize(List<String> keys, Measurement.ROW_ORDER rowOrder) {
+                Objects.requireNonNull(keys);
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
-            this.recordComparator = new RecordComparatorByAttributesThenSize(keys);
+            this.recordComparator = new RecordComparatorByAttributesThenSize(keys, rowOrder);
             this.requireSorting = true;
             return this;
         }
+
         public Builder sortByDuration() {
-            this.recordComparator = new RecordComparatorByDuration();
+            return this.sortByDuration(ROW_ORDER.ASCENDING);
+        }
+        public Builder sortByDuration(ROW_ORDER rowOrder) {
+            this.recordComparator = new RecordComparatorByDuration(rowOrder);
             this.requireSorting = true;
             return this;
         }
+
         public Builder sortByDurationThenAttributes() {
-            this.recordComparator = new RecordComparatorByDurationThenAttributes(this.columnNames);
-            this.requireSorting = true;
-            return this;
+            return this.sortByDurationThenAttributes(this.columnNames);
+        }
+        public Builder sortByDurationThenAttributes(ROW_ORDER rowOrder) {
+            return this.sortByDurationThenAttributes(this.columnNames, rowOrder);
         }
         public Builder sortByDurationThenAttributes(List<String> keys) {
-            this.recordComparator = new RecordComparatorByDurationThenAttributes(keys);
+            return this.sortByDurationThenAttributes(keys, ROW_ORDER.ASCENDING);
+        }
+        public Builder sortByDurationThenAttributes(List<String> keys, ROW_ORDER rowOrder) {
+            this.recordComparator = new RecordComparatorByDurationThenAttributes(keys, rowOrder);
             this.requireSorting = true;
             return this;
         }
+
         public Builder sortBySize() {
-            this.recordComparator = new RecordComparatorBySize();
+            return this.sortBySize(ROW_ORDER.ASCENDING);
+        }
+        public Builder sortBySize(ROW_ORDER rowOrder) {
+            this.recordComparator = new RecordComparatorBySize(rowOrder);
             this.requireSorting = true;
             return this;
         }
+
         public Builder sortBySizeThenAttributes() {
-            this.recordComparator = new RecordComparatorBySizeThenAttributes(this.columnNames);
-            this.requireSorting = true;
-            return this;
+            return this.sortBySizeThenAttributes(this.columnNames);
+        }
+        public Builder sortBySizeThenAttributes(ROW_ORDER rowOrder) {
+            return this.sortBySizeThenAttributes(this.columnNames, rowOrder);
         }
         public Builder sortBySizeThenAttributes(List<String> keys) {
-            this.recordComparator = new RecordComparatorBySizeThenAttributes(keys);
+            return this.sortBySizeThenAttributes(keys, ROW_ORDER.ASCENDING);
+        }
+        public Builder sortBySizeThenAttributes(List<String> keys, ROW_ORDER rowOrder) {
+            this.recordComparator = new RecordComparatorBySizeThenAttributes(keys, rowOrder);
             this.requireSorting = true;
             return this;
         }
+
+        //
         public Builder recordComparator(RecordComparator recordComparator) {
             this.recordComparator = recordComparator;
             this.requireSorting = true;
-            return this;
-        }
-        /**
-         *
-         */
-        public Builder reverseOrder(Boolean reverseOrder) {
-            this.reverseOrder = reverseOrder;
             return this;
         }
 
@@ -369,6 +391,5 @@ public class Measurement implements Iterable<Record> {
         public Measurement build() {
             return new Measurement(this);
         }
-
     }
 }

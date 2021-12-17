@@ -1,6 +1,5 @@
 package com.kazurayam.timekeeper.reporter;
 
-import com.kazurayam.timekeeper.Helper;
 import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.MeasurementList;
 import com.kazurayam.timekeeper.Record;
@@ -23,12 +22,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class MarkdownReporter implements Reporter {
-
-    private final Logger logger = LoggerFactory.getLogger(Helper.getClassName());
 
     private PrintWriter pw_;
 
@@ -68,7 +62,7 @@ public class MarkdownReporter implements Reporter {
         }
     }
 
-    private void reportSorted(Measurement measurement) throws IOException {
+    private void reportSorted(Measurement measurement) {
         pw_.println("## " + measurement.getId());
         pw_.println("");
         StringBuilder sb0 = new StringBuilder();
@@ -85,7 +79,7 @@ public class MarkdownReporter implements Reporter {
             sb0.append("duration|");
             sb0.append("graph|");
         }
-        pw_.println(sb0.toString());
+        pw_.println(sb0);
         //
         StringBuilder sb1 = new StringBuilder();
         sb1.append("|");
@@ -100,7 +94,7 @@ public class MarkdownReporter implements Reporter {
             sb1.append("----:|");  // duration
             sb1.append(":----|");  // duration graph
         }
-        pw_.println(sb1.toString());
+        pw_.println(sb1);
         //
         //logger.debug("measurement.size()=" + measurement.size());
         for (Record record : measurement) {
@@ -121,11 +115,13 @@ public class MarkdownReporter implements Reporter {
                 sb2.append(formatDuration(record.getDuration()));
                 sb2.append("|");
                 // print duration graph
-                sb2.append("`" + getDurationGraph(record.getDuration()) + "`");
+                sb2.append("`");
+                sb2.append(getDurationGraph(record.getDuration()));
+                sb2.append("`");
                 sb2.append("|");
             }
             //
-            pw_.println(sb2.toString());
+            pw_.println(sb2);
         }
         // print a row of Average
         StringBuilder sb3 = new StringBuilder();
@@ -146,7 +142,7 @@ public class MarkdownReporter implements Reporter {
             sb3.append(formatDuration(measurement.getAverageDuration()));
             sb3.append("| |");
         }
-        pw_.println(sb3.toString());
+        pw_.println(sb3);
         //
         pw_.println("");
         if (measurement.hasRecordWithSize()) {
@@ -166,10 +162,10 @@ public class MarkdownReporter implements Reporter {
     /**
      * stringify a Duration to "minutes:seconds", or "hours:minutes:seconds"
      *
-     * @param duration value in milliseconds to be formated into "mm:ss"
+     * @param duration value in milliseconds to be formatted into "mm:ss"
      * @return 45 seconds will be "00:45"
      */
-    public static final String formatDuration(Duration duration) {
+    public static String formatDuration(Duration duration) {
         int s = (int) duration.toMillis() / 1000;
         if (s >= 60 * 60) {
             return String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
@@ -178,23 +174,23 @@ public class MarkdownReporter implements Reporter {
         }
     }
 
-    public static final Pattern DURATION_PATTERN =
+    public static Pattern DURATION_PATTERN =
             Pattern.compile("((\\d+)\\s*:\\s*)?(\\d+)\\s*:\\s*(\\d+)");
 
-    public static final Duration parseDuration(String duration) {
+    public static Duration parseDuration(String duration) {
         Matcher m = DURATION_PATTERN.matcher(duration);
         if (m.matches()) {
             boolean hasHour = (m.group(2) != null);
             if (hasHour) {
-                int hours = Integer.valueOf(m.group(2));
-                int minutes = Integer.valueOf(m.group(3));
-                int seconds = Integer.valueOf(m.group(4));
-                long dur = 60 * 60 * hours + 60 * minutes + seconds;
+                int hours = Integer.parseInt(m.group(2));
+                int minutes = Integer.parseInt(m.group(3));
+                int seconds = Integer.parseInt(m.group(4));
+                long dur = 60L * 60 * hours + 60L * minutes + seconds;
                 return Duration.ofSeconds(dur);
             } else {
-                int minutes = Integer.valueOf(m.group(3));
-                int seconds = Integer.valueOf(m.group(4));
-                long dur = 60 * minutes + seconds;
+                int minutes = Integer.parseInt(m.group(3));
+                int seconds = Integer.parseInt(m.group(4));
+                long dur = 60L * minutes + seconds;
                 return Duration.ofSeconds(dur);
             }
         } else {
@@ -206,17 +202,16 @@ public class MarkdownReporter implements Reporter {
     /**
      * stringify 123456L to "123,456"
      *
-     * @param size
-     * @return
+     * @param size e.g. 123456L
+     * @return e.g "123,456"
      */
-    public static final String formatSize(long size) {
+    public static String formatSize(long size) {
         return NumberFormat.getIntegerInstance().format(size);
     }
 
-    public static final long parseSize(String size) {
+    public static long parseSize(String size) {
         try {
-            long result = (long)NumberFormat.getIntegerInstance().parse(size);
-            return result;
+            return (long)NumberFormat.getIntegerInstance().parse(size);
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }

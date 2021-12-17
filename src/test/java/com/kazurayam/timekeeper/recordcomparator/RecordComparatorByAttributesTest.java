@@ -70,8 +70,6 @@ public class RecordComparatorByAttributesTest {
         for (Record r : m) {
             System.out.println(r.toString());
         }
-
     }
-
 
 }

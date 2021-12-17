@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -46,9 +45,7 @@ public class MeasurementTest {
 
     @Test
     public void test_iterator() {
-        m.forEach(record -> {
-            logger.debug(record.toString());
-        });
+        m.forEach(record -> logger.debug(record.toString()));
     }
 
     @Test
@@ -68,8 +65,8 @@ public class MeasurementTest {
 
     @Test
     public void test_getLatestRecordDurationMillis() throws InterruptedException {
-        Measurement m = new Measurement.Builder("some", Arrays.asList("URL")).build();
-        Record r = new Record.Builder().attr("URL", "http://example.com").build();
+        Measurement m = new Measurement.Builder("some", Collections.singletonList("URL")).build();
+        Record r = new Record.Builder().attr("URL", "https://example.com").build();
         r.setStartAt(LocalDateTime.now());
         Thread.sleep(300);
         r.setEndAt(LocalDateTime.now());
@@ -118,7 +115,7 @@ public class MeasurementTest {
     @Test
     public void test_Builder_sortByAttributes_withArg() {
         assertNotNull(new Measurement.Builder("foo", TestHelper.getColumnNames())
-                .sortByAttributes(Arrays.asList("URL")).build());
+                .sortByAttributes(Collections.singletonList("URL")).build());
     }
 
     @Test
@@ -130,7 +127,7 @@ public class MeasurementTest {
     @Test
     public void test_Builder_sortByAttributesThenDuration_withArg() {
         assertNotNull(new Measurement.Builder("foo", TestHelper.getColumnNames())
-                .sortByAttributesThenDuration(Arrays.asList("URL")).build());
+                .sortByAttributesThenDuration(Collections.singletonList("URL")).build());
     }
 
     @Test
@@ -142,7 +139,7 @@ public class MeasurementTest {
     @Test
     public void test_Builder_sortByAttributesThenSize_withArg() {
         assertNotNull(new Measurement.Builder("foo", TestHelper.getColumnNames())
-                .sortByAttributesThenSize(Arrays.asList("URL")).build());
+                .sortByAttributesThenSize(Collections.singletonList("URL")).build());
     }
 
     @Test
@@ -160,7 +157,7 @@ public class MeasurementTest {
     @Test
     public void test_Builder_sortByDurationThenAttributes_withArg() {
         assertNotNull(new Measurement.Builder("foo", TestHelper.getColumnNames())
-                .sortByDurationThenAttributes(Arrays.asList("URL")).build());
+                .sortByDurationThenAttributes(Collections.singletonList("URL")).build());
     }
 
     @Test
@@ -178,12 +175,12 @@ public class MeasurementTest {
     @Test
     public void test_Builder_sortBySizeThenAttributes_withArg() {
         assertNotNull(new Measurement.Builder("foo", TestHelper.getColumnNames())
-                .sortBySizeThenAttributes(Arrays.asList("URL")).build());
+                .sortBySizeThenAttributes(Collections.singletonList("URL")).build());
     }
 
     @Test
     public void test_sorted_byAttributes() {
-        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL"))
+        Measurement m = new Measurement.Builder("foo", Collections.singletonList("URL"))
                 .sortByAttributes().build();
         Measurement stuffed = stuffRecordsToSort(m);
         Measurement sorted = stuffed.sorted();
@@ -202,9 +199,9 @@ public class MeasurementTest {
 
     @Test
     public void test_sorted_byAttributes_reverseOrder() {
-        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL"))
-                .sortByAttributes()
-                .reverseOrder(true).build();
+        Measurement m = new Measurement.Builder("foo", Collections.singletonList("URL"))
+                .sortByAttributes(Measurement.ROW_ORDER.DESCENDING)
+                .build();
         Measurement stuffed = stuffRecordsToSort(m);
         Measurement sorted = stuffed.sorted();
         System.out.println(sorted.toJson());
@@ -222,7 +219,7 @@ public class MeasurementTest {
 
     @Test
     public void test_sorted_byDuration() {
-        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL"))
+        Measurement m = new Measurement.Builder("foo", Collections.singletonList("URL"))
                 .sortByDuration().build();
         Measurement stuffed = stuffRecordsToSort(m);
         Measurement sorted = stuffed.sorted();
@@ -241,9 +238,9 @@ public class MeasurementTest {
 
     @Test
     public void test_sorted_byDuration_reverseOrder() {
-        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL"))
-                .sortByDuration()
-                .reverseOrder(true).build();
+        Measurement m = new Measurement.Builder("foo", Collections.singletonList("URL"))
+                .sortByDuration(Measurement.ROW_ORDER.DESCENDING)
+                .build();
         Measurement stuffed = stuffRecordsToSort(m);
         Measurement sorted = stuffed.sorted();
         //System.out.println(sorted.toJson());
@@ -261,7 +258,7 @@ public class MeasurementTest {
 
     @Test
     public void test_sorted_bySize() {
-        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL"))
+        Measurement m = new Measurement.Builder("foo", Collections.singletonList("URL"))
                 .sortBySize().build();
         Measurement stuffed = stuffRecordsToSort(m);
         Measurement sorted = stuffed.sorted();
@@ -280,7 +277,7 @@ public class MeasurementTest {
 
     @Test
     public void test_sorted_byAttributesThenDuration() {
-        Measurement m = new Measurement.Builder("foo", Arrays.asList("URL"))
+        Measurement m = new Measurement.Builder("foo", Collections.singletonList("URL"))
                 .sortByAttributesThenDuration().build();
         Measurement stuffed = stuffRecordsToSort(m);
         Measurement sorted = stuffed.sorted();
