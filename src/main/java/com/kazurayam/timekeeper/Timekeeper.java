@@ -4,8 +4,6 @@ import com.kazurayam.timekeeper.reporter.MarkdownReporter;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Objects;
 
 public class Timekeeper {
 
@@ -40,6 +38,9 @@ public class Timekeeper {
             Reporter reporter = new MarkdownReporter();
             reporter.setOutput(outputFile);
             reporter.report(tableList);
+        } else {
+            throw new IllegalArgumentException(
+                    String.format("%s is not supported", format.toString()));
         }
     }
 }

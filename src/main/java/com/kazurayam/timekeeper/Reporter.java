@@ -5,10 +5,10 @@ import java.nio.file.Path;
 
 public interface Reporter {
 
-    public void setOutput(Path output) throws IOException;
+    void setOutput(Path output) throws IOException;
 
-    public void report(TableList tableList);
+    void report(TableList tableList);
 
-    public void report(Table table) throws IOException;
+    void report(Table table) throws IOException;
 
 }

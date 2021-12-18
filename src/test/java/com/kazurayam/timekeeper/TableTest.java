@@ -127,7 +127,7 @@ public class TableTest {
         Measurement m = stuffRecordsToSort(
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
-                .sortByAttributes(Measurement.ROW_ORDER.DESCENDING).build();
+                .sortByAttributes(RowOrder.DESCENDING).build();
         Measurement sorted = t.sortedMeasurement();
         //System.out.println(sorted.toJson());
         assertNotNull(sorted);
@@ -167,7 +167,7 @@ public class TableTest {
         Measurement m = stuffRecordsToSort(
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
-                .sortByDuration(Measurement.ROW_ORDER.DESCENDING)
+                .sortByDuration(RowOrder.DESCENDING)
                 .build();
         Measurement sorted = t.sortedMeasurement();
         //System.out.println(sorted.toJson());

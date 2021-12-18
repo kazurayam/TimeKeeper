@@ -1,8 +1,8 @@
 package com.kazurayam.timekeeper.recordcomparator;
 
-import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.Record;
 import com.kazurayam.timekeeper.RecordComparator;
+import com.kazurayam.timekeeper.RowOrder;
 
 import java.util.List;
 import java.util.Objects;
@@ -15,13 +15,13 @@ public class RecordComparatorByAttributes implements RecordComparator {
     private final int order;
 
     public RecordComparatorByAttributes(List<String> keys) {
-        this(keys, Measurement.ROW_ORDER.ASCENDING);
+        this(keys, RowOrder.ASCENDING);
     }
 
-    public RecordComparatorByAttributes(List<String> keys, Measurement.ROW_ORDER rowOrder) {
+    public RecordComparatorByAttributes(List<String> keys, RowOrder rowOrder) {
         Objects.requireNonNull(keys);
         this.keys = keys;
-        this.order = (rowOrder == Measurement.ROW_ORDER.ASCENDING) ? 1 : -1;
+        this.order = (rowOrder == RowOrder.ASCENDING) ? 1 : -1;
     }
 
     @Override
