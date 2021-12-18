@@ -17,11 +17,13 @@ public class Table {
     private final Measurement measurement;
     private final RecordComparator recordComparator;
     private final Boolean requireSorting;
+    private final String description;
 
     private Table(Builder builder) {
         this.measurement = builder.measurement;
         this.recordComparator = builder.recordComparator;
         this.requireSorting = builder.requireSorting;
+        this.description = builder.description;
     }
 
     public Measurement getMeasurement() {
@@ -35,6 +37,8 @@ public class Table {
     public Boolean requireSorting() {
         return this.requireSorting;
     }
+
+    public String getDescription() { return this.description; }
 
     /**
      * clone the Measurement object with the records are sorted by the RecordComparator
@@ -57,11 +61,13 @@ public class Table {
         private final Measurement measurement;
         private RecordComparator recordComparator;
         private Boolean requireSorting;
+        private String description;
         public Builder(Measurement measurement) {
             Objects.requireNonNull(measurement);
             this.measurement = measurement;
             this.recordComparator = new NullRecordComparator();
             this.requireSorting = false;
+            this.description = "as events flowed";
         }
         //
         public Builder sortByAttributes() {
@@ -78,6 +84,8 @@ public class Table {
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
             this.recordComparator = new RecordComparatorByAttributes(keys, rowOrder);
             this.requireSorting = true;
+            this.description = String.format("sorted by attributes (%s)",
+                    rowOrder.description());
             return this;
         }
         //
@@ -95,6 +103,8 @@ public class Table {
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
             this.recordComparator = new RecordComparatorByAttributesThenDuration(keys, rowOrder);
             this.requireSorting = true;
+            this.description = String.format("sorted by attributes then duration (%s)",
+                    rowOrder.description());
             return this;
         }
         //
@@ -112,6 +122,8 @@ public class Table {
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
             this.recordComparator = new RecordComparatorByAttributesThenSize(keys, rowOrder);
             this.requireSorting = true;
+            this.description = String.format("sorted by attributes then size (%s)",
+                    rowOrder.description());
             return this;
         }
         //
@@ -121,6 +133,8 @@ public class Table {
         public Builder sortByDuration(RowOrder rowOrder) {
             this.recordComparator = new RecordComparatorByDuration(rowOrder);
             this.requireSorting = true;
+            this.description = String.format("sorted by duration (%s)",
+                    rowOrder.description());
             return this;
         }
         //
@@ -136,6 +150,8 @@ public class Table {
         public Builder sortByDurationThenAttributes(List<String> keys, RowOrder rowOrder) {
             this.recordComparator = new RecordComparatorByDurationThenAttributes(keys, rowOrder);
             this.requireSorting = true;
+            this.description = String.format("sorted by duration then attributes (%s)",
+                    rowOrder.description());
             return this;
         }
         //
@@ -145,6 +161,7 @@ public class Table {
         public Builder sortBySize(RowOrder rowOrder) {
             this.recordComparator = new RecordComparatorBySize(rowOrder);
             this.requireSorting = true;
+            this.description = "sorted by size";
             return this;
         }
         //
@@ -160,6 +177,8 @@ public class Table {
         public Builder sortBySizeThenAttributes(List<String> keys, RowOrder rowOrder) {
             this.recordComparator = new RecordComparatorBySizeThenAttributes(keys, rowOrder);
             this.requireSorting = true;
+            this.description = String.format("sorted by size then attributes (%s)",
+                    rowOrder.description());
             return this;
         }
         //
@@ -167,6 +186,7 @@ public class Table {
             Objects.requireNonNull(recordComparator);
             this.recordComparator = recordComparator;
             this.requireSorting = true;
+            this.description = "sorted by " + recordComparator.getClass().getSimpleName();
             return this;
         }
         //
