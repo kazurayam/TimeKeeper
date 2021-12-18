@@ -2,12 +2,10 @@ package com.kazurayam.timekeeper;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
@@ -23,7 +21,7 @@ import com.google.gson.JsonObject;
 
 public class RecordTest {
 
-    private final Logger logger = LoggerFactory.getLogger(TestHelper.getClassName());
+    private final transient Logger logger = LoggerFactory.getLogger(TestHelper.getClassName());
 
     @Test
     public void testLogger() {
@@ -67,12 +65,28 @@ public class RecordTest {
     }
 
     @Test
+    public void test_toJson() throws Exception {
+        Record record = TestHelper.makeRecord1();
+        String json = record.toJson();
+        //System.out.println(json);
+        assertNotNull(json);
+    }
+
+    @Test
+    public void test_toPrettyJson() throws Exception {
+        Record record = TestHelper.makeRecord1();
+        String json = record.toPrettyJson();
+        //System.out.println(json);
+        assertNotNull(json);
+    }
+
+    @Test
     public void test_toString() throws Exception {
-        Record m = TestHelper.makeRecord1();
-        m.setStartAt(LocalDateTime.now());
+        Record record = TestHelper.makeRecord1();
+        record.setStartAt(LocalDateTime.now());
         Thread.sleep(1000);
-        m.setEndAt(LocalDateTime.now());
-        String s = m.toString();
+        record.setEndAt(LocalDateTime.now());
+        String s = record.toString();
         String methodName = new Object() {
         }.getClass().getEnclosingMethod().getName();
         logger.debug(methodName + " " + s);

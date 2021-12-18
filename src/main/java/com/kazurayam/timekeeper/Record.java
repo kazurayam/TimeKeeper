@@ -1,6 +1,9 @@
 package com.kazurayam.timekeeper;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.Expose;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,13 +21,16 @@ public class Record implements Comparable<Record> {
 
     public static Record NULL = new Record.Builder().build();
 
-    private final Logger logger = LoggerFactory.getLogger(Helper.getClassName());
+    private final transient Logger logger = LoggerFactory.getLogger(Helper.getClassName());
 
     public static DateTimeFormatter FORMAT = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
     private final SortedMap<String, String> attributes;
+
     private long size;
+
     private LocalDateTime startAt;
+
     private LocalDateTime endAt;
 
     public static Record clone(Record source) {
@@ -155,6 +161,10 @@ public class Record implements Comparable<Record> {
 
     @Override
     public String toString() {
+        return this.toJson();
+    }
+
+    public String toJson() {
         Gson gson = new Gson();
         String thisAttrs = gson.toJson(this.attributes);
         StringBuilder sb = new StringBuilder();
@@ -177,6 +187,17 @@ public class Record implements Comparable<Record> {
         sb.append(this.getDuration().toMillis());
         sb.append("}");
         return sb.toString();
+    }
+
+    public String toPrettyJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Object obj = gson.fromJson(this.toJson(), Object.class);
+        return gson.toJson(obj);
+    }
+
+    public JsonObject toJsonObject() {
+        String json = this.toJson();
+        return new Gson().fromJson(json, JsonObject.class);
     }
 
     @Override

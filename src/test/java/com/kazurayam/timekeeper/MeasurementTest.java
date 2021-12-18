@@ -74,17 +74,19 @@ public class MeasurementTest {
 
     @Test
     public void test_toString() {
-        Gson gson = new Gson();
         String json = m.toString();
-        //System.out.println(json);
+        System.out.println(json);
+        // make sure the Sting is a well-formed JSON by parsing it with Gson parser
+        Gson gson = new Gson();
         Object obj = gson.fromJson(json, Object.class);
         assertNotNull(obj);
     }
 
+
     @Test
-    public void test_toJson() {
-        String json = m.toJson();
-        System.out.println(json);
+    public void test_toPrettyJson() {
+        String json = m.toPrettyJson();
+        //System.out.println(json);
         assertNotNull(json);
     }
 
