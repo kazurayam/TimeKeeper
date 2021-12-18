@@ -66,7 +66,7 @@ public class MarkdownReporter implements Reporter {
     private void reportSorted(Measurement measurement, String description) {
         pw_.println("## " + measurement.getId());
         pw_.println("");
-        pw_.println("- " + description);
+        pw_.println(description);
         pw_.println("");
         StringBuilder sb0 = new StringBuilder();
         sb0.append("|");
