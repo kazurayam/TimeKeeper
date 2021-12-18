@@ -89,7 +89,7 @@ public class RecordTest {
         String s = record.toString();
         String methodName = new Object() {
         }.getClass().getEnclosingMethod().getName();
-        logger.debug(methodName + " " + s);
+        //logger.debug(methodName + " " + s);
         Gson gson = new Gson();
         try {
             JsonObject jo = gson.fromJson(s, JsonObject.class);
