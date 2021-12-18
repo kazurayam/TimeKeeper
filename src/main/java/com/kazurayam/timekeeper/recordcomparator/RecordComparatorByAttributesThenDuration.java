@@ -3,6 +3,7 @@ package com.kazurayam.timekeeper.recordcomparator;
 import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.Record;
 import com.kazurayam.timekeeper.RecordComparator;
+import com.kazurayam.timekeeper.RowOrder;
 
 import java.util.List;
 
@@ -12,12 +13,12 @@ public class RecordComparatorByAttributesThenDuration implements RecordComparato
     private final int order;
 
     public RecordComparatorByAttributesThenDuration(List<String> keys) {
-        this(keys, Measurement.ROW_ORDER.ASCENDING);
+        this(keys, RowOrder.ASCENDING);
     }
 
-    public RecordComparatorByAttributesThenDuration(List<String> keys, Measurement.ROW_ORDER rowOrder) {
+    public RecordComparatorByAttributesThenDuration(List<String> keys, RowOrder rowOrder) {
         this.keys = keys;
-        this.order = (rowOrder == Measurement.ROW_ORDER.ASCENDING) ? 1 : -1;
+        this.order = (rowOrder == RowOrder.ASCENDING) ? 1 : -1;
     }
 
     @Override

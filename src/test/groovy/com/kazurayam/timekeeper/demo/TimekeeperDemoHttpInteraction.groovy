@@ -1,6 +1,7 @@
 package com.kazurayam.timekeeper.demo
 
 import com.kazurayam.timekeeper.Measurement
+import com.kazurayam.timekeeper.RowOrder
 import com.kazurayam.timekeeper.Table
 import com.kazurayam.timekeeper.Timekeeper
 import org.junit.jupiter.api.BeforeAll
@@ -29,7 +30,7 @@ class TimekeeperDemoHttpInteraction {
                 .resolve("build/tmp/testOutput")
                 .resolve(TimekeeperDemoHttpInteraction.class.getSimpleName())
         if (Files.exists(outDir_)) {
-            outDir_.toFile().deleteDir();
+            outDir_.toFile().deleteDir()
         }
         Files.createDirectory(outDir_)
     }
@@ -38,16 +39,16 @@ class TimekeeperDemoHttpInteraction {
     void test_HTTPGetAndSaveResponse() {
         Timekeeper tk = new Timekeeper()
         Measurement interactions = new Measurement.Builder(
-                "get URL, save HTML into file", ["Case", "URL"]).build();
+                "get URL, save HTML into file", ["Case", "URL"]).build()
         // interact with URL, save the HTML into files
         processURLs(urlList, outDir_, interactions)
         // print the report
-        Table table = new Table.Builder(interactions).build();
+        Table table = new Table.Builder(interactions).build()
         tk.add(table)
         tk.report(outDir_.resolve("report.md"))
     }
 
-    void processURLs(List<String> urlList, Path outDir, Measurement m) {
+    static void processURLs(List<String> urlList, Path outDir, Measurement m) {
         for (line in urlList) {
             String[] items = line.split("\\|")
             URL url = new URL(items[1])
@@ -69,7 +70,7 @@ class TimekeeperDemoHttpInteraction {
         }
     }
 
-    String getHttpResponceContent(URL url) {
+    static String getHttpResponceContent(URL url) {
         HttpURLConnection con = (HttpURLConnection) url.openConnection()
         con.setRequestMethod("GET")
         con.setConnectTimeout(5000)
@@ -85,13 +86,13 @@ class TimekeeperDemoHttpInteraction {
         String inputLine
         StringBuffer sb = new StringBuffer()
         while ((inputLine = br.readLine()) != null) {
-            sb.append(inputLine);
+            sb.append(inputLine)
         }
         streamReader.close()
         con.disconnect()
 
         // sleep a while in between 1.0 - 5.0 seconds at random
-        Thread.sleep((long)(4000 * Math.random() + 1000));
+        Thread.sleep((long)(4000 * Math.random() + 1000))
 
         return sb.toString()
     }
@@ -106,13 +107,12 @@ class TimekeeperDemoHttpInteraction {
     void test_HTTPGetAndSaveResponse_sortByAttributes() {
         Timekeeper tk = new Timekeeper()
         Measurement interactions = new Measurement.Builder(
-                "get URL, save HTML into file", ["Case", "URL"])
-                .sortByAttributes().
-                build();
+                "get URL, save HTML into file", ["Case", "URL"]).build()
         // interact with URL, save the HTML into files
         processURLs(urlList, outDir_, interactions)
         // print the report
-        Table table = new Table.Builder(interactions).build();
+        Table table = new Table.Builder(interactions)
+                .sortByAttributes().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributes.md"))
     }
@@ -121,13 +121,12 @@ class TimekeeperDemoHttpInteraction {
     void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
         Timekeeper tk = new Timekeeper()
         Measurement interactions = new Measurement.Builder(
-                "get URL, save HTML into file", ["Case", "URL"])
-                .sortByAttributes(["URL"]).
-                build();
+                "get URL, save HTML into file", ["Case", "URL"]).build()
         // interact with URL, save the HTML into files
         processURLs(urlList, outDir_, interactions)
         // print the report
-        Table table = new Table.Builder(interactions).build();
+        Table table = new Table.Builder(interactions)
+                .sortByAttributes(["URL"]).build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributes_URL.md"))
     }
@@ -136,13 +135,12 @@ class TimekeeperDemoHttpInteraction {
     void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
         Timekeeper tk = new Timekeeper()
         Measurement interactions = new Measurement.Builder(
-                "get URL, save HTML into file", ["Case", "URL"])
-                .sortByAttributes(Measurement.ROW_ORDER.DESCENDING).
-                build();
+                "get URL, save HTML into file", ["Case", "URL"]).build()
         // interact with URL, save the HTML into files
         processURLs(urlList, outDir_, interactions)
         // print the report
-        Table table = new Table.Builder(interactions).build();
+        Table table = new Table.Builder(interactions)
+                .sortByAttributes( RowOrder.DESCENDING ).build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributes_descending.md"))
     }
@@ -151,13 +149,12 @@ class TimekeeperDemoHttpInteraction {
     void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
         Timekeeper tk = new Timekeeper()
         Measurement interactions = new Measurement.Builder(
-                "get URL, save HTML into file", ["Case", "URL"])
-                .sortByAttributesThenDuration(["URL"]).
-                build();
+                "get URL, save HTML into file", ["Case", "URL"]).build()
         // interact with URL, save the HTML into files
         processURLs(urlList, outDir_, interactions)
         // print the report
-        Table table = new Table.Builder(interactions).build();
+        Table table = new Table.Builder(interactions)
+                .sortByAttributesThenDuration().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
     }
@@ -166,13 +163,12 @@ class TimekeeperDemoHttpInteraction {
     void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
         Timekeeper tk = new Timekeeper()
         Measurement interactions = new Measurement.Builder(
-                "get URL, save HTML into file", ["Case", "URL"])
-                .sortByDuration(Measurement.ROW_ORDER.DESCENDING).
-                build();
+                "get URL, save HTML into file", ["Case", "URL"]).build()
         // interact with URL, save the HTML into files
         processURLs(urlList, outDir_, interactions)
         // print the report
-        Table table = new Table.Builder(interactions).build();
+        Table table = new Table.Builder(interactions)
+                .sortByDuration( RowOrder.DESCENDING ).build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByDuration_descending.md"))
     }
@@ -182,13 +178,12 @@ class TimekeeperDemoHttpInteraction {
     void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
         Timekeeper tk = new Timekeeper()
         Measurement interactions = new Measurement.Builder(
-                "get URL, save HTML into file", ["Case", "URL"])
-                .sortBySize(Measurement.ROW_ORDER.ASCENDING).
-                build();
+                "get URL, save HTML into file", ["Case", "URL"]).build()
         // interact with URL, save the HTML into files
         processURLs(urlList, outDir_, interactions)
         // print the report
-        Table table = new Table.Builder(interactions).build();
+        Table table = new Table.Builder(interactions)
+                .sortBySize().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortBySize_ascending.md"))
     }
