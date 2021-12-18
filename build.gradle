@@ -9,7 +9,7 @@ plugins {
 
 group = 'com.kazurayam'
 archivesBaseName = "timekeeper"
-version = '0.2.0'
+version = '0.3.0-SNAPSHOT'
 
 ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
