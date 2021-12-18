@@ -13,22 +13,22 @@ public class Timekeeper {
         MARKDOWN
     }
 
-    private final MeasurementList mList;
+    private final TableList tableList;
 
     public Timekeeper() {
-        mList = new MeasurementList();
+        tableList = new TableList();
     }
 
-    public void add(Measurement m) {
-        mList.add(m);
+    public void add(Table table) {
+        tableList.add(table);
     }
 
-    public Measurement get(int index) {
-        return mList.get(index);
+    public Table get(int index) {
+        return tableList.get(index);
     }
 
     public int size() {
-        return mList.size();
+        return tableList.size();
     }
 
     public void report(Path outputFile) throws IOException {
@@ -39,7 +39,7 @@ public class Timekeeper {
         if (format == FORMAT.MARKDOWN) {
             Reporter reporter = new MarkdownReporter();
             reporter.setOutput(outputFile);
-            reporter.report(mList);
+            reporter.report(tableList);
         }
     }
 }

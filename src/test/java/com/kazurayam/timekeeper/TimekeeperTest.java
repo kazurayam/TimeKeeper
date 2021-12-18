@@ -39,8 +39,9 @@ public class TimekeeperTest {
     public void test_void_add_get_size() {
         Timekeeper tk = new Timekeeper();
         Measurement m = TestHelper.makeMeasurement();
-        tk.add(m);
-        Measurement result = tk.get(0);
+        Table table = new Table.Builder(m).build();
+        tk.add(table);
+        Table result = tk.get(0);
         assertNotNull(result);
         assertEquals(1, tk.size());
     }
@@ -51,7 +52,8 @@ public class TimekeeperTest {
         Path markdown = caseOutputDir.resolve("report.md");
         Timekeeper tk = new Timekeeper();
         Measurement m = TestHelper.makeMeasurement();
-        tk.add(m);
+        Table table = new Table.Builder(m).build();
+        tk.add(table);
         tk.report(markdown, Timekeeper.FORMAT.MARKDOWN);
         assertTrue(Files.exists(markdown));
     }

@@ -7,8 +7,8 @@ public interface Reporter {
 
     public void setOutput(Path output) throws IOException;
 
-    public void report(MeasurementList measurements);
+    public void report(TableList tableList);
 
-    public void report(Measurement measurement) throws IOException;
+    public void report(Table table) throws IOException;
 
 }

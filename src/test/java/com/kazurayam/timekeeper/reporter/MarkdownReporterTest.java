@@ -1,6 +1,7 @@
 package com.kazurayam.timekeeper.reporter;
 
 import com.kazurayam.timekeeper.Measurement;
+import com.kazurayam.timekeeper.Table;
 import com.kazurayam.timekeeper.TestHelper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -41,8 +42,9 @@ public class MarkdownReporterTest {
         MarkdownReporter reporter = new MarkdownReporter();
         reporter.setOutput(md);
         Measurement measurement = TestHelper.makeMeasurement();
+        Table table = new Table.Builder(measurement).build();
         //logger.debug("measurement.size() is " + measurement.size());
-        reporter.report(measurement);
+        reporter.report(table);
         assertTrue(Files.exists(md), "no output");
         assertTrue(Files.size(md) > 0, "empty output");
     }
