@@ -1,6 +1,7 @@
 package com.kazurayam.timekeeper.demo
 
 import com.kazurayam.timekeeper.Measurement
+import com.kazurayam.timekeeper.Table
 import com.kazurayam.timekeeper.Timekeeper
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -30,7 +31,7 @@ class TimekeeperDemoMinimal {
         Timekeeper tk = new Timekeeper()
         Measurement m1 = new Measurement.Builder("How long it waited",
                 ["description m1"]).build()
-        tk.add(m1)
+        tk.add(new Table.Builder(m1).build())
         for (int i in [2, 3, 5, 7]) {
             LocalDateTime beforeSleep = LocalDateTime.now()
             // do a processing that could take long time.

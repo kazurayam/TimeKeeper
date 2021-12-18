@@ -1,9 +1,10 @@
 package com.kazurayam.timekeeper.reporter;
 
 import com.kazurayam.timekeeper.Measurement;
-import com.kazurayam.timekeeper.MeasurementList;
 import com.kazurayam.timekeeper.Record;
 import com.kazurayam.timekeeper.Reporter;
+import com.kazurayam.timekeeper.Table;
+import com.kazurayam.timekeeper.TableList;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -41,10 +42,10 @@ public class MarkdownReporter implements Reporter {
                                 StandardCharsets.UTF_8)));
     }
 
-    public void report(MeasurementList mList) {
-        mList.forEach(m -> {
+    public void report(TableList tableList) {
+        tableList.forEach(table -> {
             try {
-                this.report(m);
+                this.report(table);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -53,12 +54,12 @@ public class MarkdownReporter implements Reporter {
         pw_.close();
     }
 
-    public void report(Measurement measurement) throws IOException {
-        Objects.requireNonNull(measurement);
-        if (measurement.requireSorting()) {
-            this.reportSorted(measurement.sorted());
+    public void report(Table table) throws IOException {
+        Objects.requireNonNull(table);
+        if (table.requireSorting()) {
+            this.reportSorted(table.sortedMeasurement());
         } else {
-            this.reportSorted(measurement);
+            this.reportSorted(table.getMeasurement());
         }
     }
 

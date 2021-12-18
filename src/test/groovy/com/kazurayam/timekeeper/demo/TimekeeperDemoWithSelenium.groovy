@@ -3,6 +3,7 @@ package com.kazurayam.timekeeper.demo
 import com.kazurayam.ashotwrapper.AShotWrapper
 import com.kazurayam.ashotwrapper.DevicePixelRatioResolver
 import com.kazurayam.timekeeper.Measurement
+import com.kazurayam.timekeeper.Table
 import com.kazurayam.timekeeper.Timekeeper
 import io.github.bonigarcia.wdm.WebDriverManager
 import org.junit.jupiter.api.AfterEach
@@ -70,11 +71,11 @@ class TimekeeperDemoWithSelenium {
         Measurement navigation = new Measurement.Builder(
                 "How long it took to navigate to URLs", ["URL"])
                 .build()
-        tk.add(navigation)
+        tk.add(new Table.Builder(navigation).build())
         Measurement screenshot = new Measurement.Builder(
                 "How long it took to take shootshots", ["URL"])
                 .build()
-        tk.add(screenshot)
+        tk.add(new Table.Builder(screenshot).build())
         // process all URLs in the CSV file
         Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
         for (Tuple t in parseCSVfile(csv)) {
