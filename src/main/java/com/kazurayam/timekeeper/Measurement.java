@@ -2,6 +2,8 @@ package com.kazurayam.timekeeper;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -173,46 +175,37 @@ public class Measurement implements Iterable<Record> {
         return Duration.ofMillis(average);
     }
 
+    @Override
+    public String toString() {
+        return this.toJson();
+    }
 
-    public String toJson() {
+    public String toPrettyJson() {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        Object obj = gson.fromJson(this.toString(), Object.class);
+        Object obj = gson.fromJson(this.toJson(), Object.class);
         return gson.toJson(obj);
     }
 
-    /**
-     * TODO
-     * should construct JSON using Gson, rather than StringBuilder
-     * because current implementation does not support escaping characters
-     * that are sensitive for JSON syntax.
-     *
-     * https://www.baeldung.com/java-json-escaping
-     */
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{");
-        sb.append("\"id\":\"");
-        sb.append(this.id);
-        sb.append("\",\"columnNames\":[");
+    public String toJson()  {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("id", this.getId());
+        JsonArray columnNameArray = new JsonArray();
         for (int i = 0; i < columnNames.size(); i++) {
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("\"");
-            sb.append(columnNames.get(i));
-            sb.append("\"");
+            columnNameArray.add(columnNames.get(i));
         }
-        sb.append("],\"records\":[");
+        jo.add("columnNames", columnNameArray);
+        JsonArray recordArray = new JsonArray();
         for (int i = 0; i < records.size(); i++) {
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append(records.get(i));
+            recordArray.add(records.get(i).toJsonObject());
         }
-        sb.append("]");
-        sb.append("}");
-        return sb.toString();
+        jo.add("records", recordArray);
+        Gson gson = new Gson();
+        return gson.toJson(jo);
+    }
+
+    public JsonObject toJsonObject() {
+        String json = this.toJson();
+        return new Gson().fromJson(json, JsonObject.class);
     }
 
     /**
