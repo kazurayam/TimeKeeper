@@ -19,10 +19,18 @@ The 2nd problem is that it is difficult to find useful information out of the bu
 I want to automate these tasks entirely. I want my tests to perform not only measure performance but also compile a concise report in Markdown format. Here comes the Timekeeper!
 
 
+== Processing outline
+
+Let me tell an outline of a test script which uses the Timekeeper to measure performance and print a report.
+
+1. Your test script should create a `Measurement` object, which is a container of `Record` objects. A `Measurement` requires you to define a set of table column names, like "Case" ad "URL".
+2. While performing test, say visit URLs, your test script will make a record with the "startAt" timestamp before an action to be measured, and the "endAt" timestamp after that action. You may append some "size" information to the record; for example, the size of downloaded file.
+3. The `Record` objects should be stored in the `Measurement` object.
+4. Your test script will repeat creating `Record` s and putting them into the `Measurement` object as many times as it wants to. For you may want to test 100 URLs.
+5. Your test script makes a `Table` object, which requires a `Measurement` object and the information how you want it formatted in a text report. You can specify how the Table to sort the rows.
+6. Your test script want to create a `Timekeeper` object. Your script will put one or more `Table` objects, and then let Timekeeper to transform `Table` s into a text report.
+
 == Examples
-
-A `Timekeeper` object lets you create **one or more** `Measurement` objects. A `Measurement` object stands for a table which contains a header and one or more `Record` set. A `Record` contains columns and a duration in `mm:ss` format (minutes:seconds). My test will put an instance of `LocalDateTime.now()` just before the test calls a long running method call (such as Selenium navite, and taking screenshot). This timestatmp is recorded as `startAt`. Also my test will put another instance of `LocalDateTime.now()` just after the long-running method call. This timestamp is recorded `endAt`. Each record object can calculate the duration = endAt minus startAt. And finally Timekeeper's `report(Path)` method can generate a text report in Markdown syntax.
-
 
 === Example1 Minimalistic
 
@@ -220,7 +228,7 @@ include::./TimekeeperDemoHttpInteraction/sortByDuration_descending.md[]
 
 ==== Sort by attributes and then by duration
 
-You can sort rows by Attributes first, then secondly by duration. Perhaps this sorting condition.
+You can sort rows by Attributes first, then secondly by duration. Perhaps this is the most useful way of sorting a Timekeeper's table.
 
 [source, groovy]
 ----
@@ -250,17 +258,40 @@ The output is like this:
 include::./TimekeeperDemoHttpInteraction/sortBySize_ascending.md[]
 ----
 
-==== Supported sortBy* methods
+==== Sort by a chain of `RecordComparator` s
+
+The `Table.Builder` class implements 3 `sortBy*()`methods:
+
+1. `.sortByAttributes(List<String>, RowOrder)`
+2. `.sortByDuration(RowOrder)`
+3. `.sortBySize(RowOrder)`
+
+These can be followed by `thenBy*()` methods:
+
+4. `.thenByAttributes(List<String>, RowOrder)`
+5. `.thenByDuratio(RowOrder)`
+6. `.thenBySize(RowOrder)`
+
+You can make a chain of multiple `RecordComparators`. It is possible to chain 3 or more RecordComparators while specifying `RowOrder.ASCENDING` and `RowOrder.DESCENDING` to each comparators. For example, in Groovy, you can write:
+
+----
+Measurement m = new Measurement.Builder("ID",
+    ["Case", "URL"]).build()
+...
+Table t = new Table.Builder(m)
+    .sortByAttribute(["URL"], RowOrder.ASCENDING)
+    .thenByAttribute(["Case], RowOrder.ASCENDING)
+    .thenByDuration(RowOrder.DESCENDING)
+    .build()
+----
 
 Please have a look at the source code of
 
-* https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Measurement.java[Measurement.Builder]
-
-to find out full list of `sortBy*()` methods supported.
+* https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Table.java[Table.Builder]
 
 === Options of report formatting
 
-The default format of Timekeeper report contains a few portions that may look verbose. You can opt them off. The options include:
+The default format of Timekeeper report contains a few portions that may look verbose to you. You can opt them off. The options include:
 
 1. the legend of table
 2. the description how rows are sorted
@@ -298,7 +329,7 @@ Please note the line of `.noDescription()`
 include::TimekeeperDemoMinimal/noDescription.md[]
 ----
 
-Please note that there is no description like `sorted by duration (ascending)` printed here.
+Please note that there is no description like "sorted by duration (ascending)" printed.
 
 ==== no duration graph
 
@@ -307,23 +338,23 @@ Please note that there is no description like `sorted by duration (ascending)` p
 include::../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoMinimal.groovy[lines=72..81]
 ----
 
-Please note the line of `.noGraph()`
+Please note the line of `.noGraph()` here.
 
 [source, markdown]
 ----
 include::TimekeeperDemoMinimal/noGraph.md[]
 ----
 
-Please note that there are no description, no legend, no duration graph here.
+Here there is no column of "|graph|" and ##.
 
 ==== The simplest report
+
+You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 
 [source, groovy]
 ----
 include::../src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoMinimal.groovy[lines=83..94]
 ----
-
-Please note that there are lines that invoke `.noDescription()`, `.noLegend()` and `.noGraph()` here.
 
 [source, markdown]
 ----

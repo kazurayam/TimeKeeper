@@ -18,9 +18,23 @@ The 2nd problem is that it is difficult to find useful information out of the bu
 
 I want to automate these tasks entirely. I want my tests to perform not only measure performance but also compile a concise report in Markdown format. Here comes the Timekeeper!
 
-# Examples
+# Processing outline
 
-A `Timekeeper` object lets you create **one or more** `Measurement` objects. A `Measurement` object stands for a table which contains a header and one or more `Record` set. A `Record` contains columns and a duration in `mm:ss` format (minutes:seconds). My test will put an instance of `LocalDateTime.now()` just before the test calls a long running method call (such as Selenium navite, and taking screenshot). This timestatmp is recorded as `startAt`. Also my test will put another instance of `LocalDateTime.now()` just after the long-running method call. This timestamp is recorded `endAt`. Each record object can calculate the duration = endAt minus startAt. And finally Timekeeper’s `report(Path)` method can generate a text report in Markdown syntax.
+Let me tell an outline of a test script which uses the Timekeeper to measure performance and print a report.
+
+1.  Your test script should create a `Measurement` object, which is a container of `Record` objects. A `Measurement` requires you to define a set of table column names, like "Case" ad "URL".
+
+2.  While performing test, say visit URLs, your test script will make a record with the "startAt" timestamp before an action to be measured, and the "endAt" timestamp after that action. You may append some "size" information to the record; for example, the size of downloaded file.
+
+3.  The `Record` objects should be stored in the `Measurement` object.
+
+4.  Your test script will repeat creating `Record` s and putting them into the `Measurement` object as many times as it wants to. For you may want to test 100 URLs.
+
+5.  Your test script makes a `Table` object, which requires a `Measurement` object and the information how you want it formatted in a text report. You can specify how the Table to sort the rows.
+
+6.  Your test script want to create a `Timekeeper` object. Your script will put one or more `Table` objects, and then let Timekeeper to transform `Table` s into a text report.
+
+# Examples
 
 ## Example1 Minimalistic
 
@@ -249,141 +263,7 @@ This Markdown text will be rendered on browser like this:
 
 The code is here:
 
-    package com.kazurayam.timekeeper.demo
-
-    import com.kazurayam.ashotwrapper.AShotWrapper
-    import com.kazurayam.ashotwrapper.DevicePixelRatioResolver
-    import com.kazurayam.timekeeper.Measurement
-    import com.kazurayam.timekeeper.Table
-    import com.kazurayam.timekeeper.Timekeeper
-    import io.github.bonigarcia.wdm.WebDriverManager
-    import org.junit.jupiter.api.AfterEach
-    import org.junit.jupiter.api.BeforeAll
-    import org.junit.jupiter.api.BeforeEach
-    import org.junit.jupiter.api.Test
-    import org.openqa.selenium.Dimension
-    import org.openqa.selenium.WebDriver
-    import org.openqa.selenium.chrome.ChromeDriver
-    import org.openqa.selenium.chrome.ChromeOptions
-
-    import java.util.concurrent.TimeUnit;
-
-    import java.awt.image.BufferedImage;
-    import java.nio.file.Files
-    import java.nio.file.Path
-    import java.nio.file.Paths
-    import javax.imageio.ImageIO
-    import java.time.LocalDateTime
-
-    import static org.junit.jupiter.api.Assertions.*;
-
-    class TimekeeperDemoWithSelenium {
-
-        private static Path outDir_
-        private WebDriver driver_
-        private AShotWrapper.Options aswOptions_ = null
-
-        @BeforeAll
-        static void setupClass() {
-            WebDriverManager.chromedriver().setup();
-            outDir_ = Paths.get(".")
-                    .resolve("build/tmp/testOutput")
-                    .resolve(TimekeeperDemoWithSelenium.class.getSimpleName())
-            if (Files.exists(outDir_)) {
-                outDir_.toFile().deleteDir();
-            }
-            Files.createDirectory(outDir_)
-        }
-
-        @BeforeEach
-        void setupTest() {
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--no-sandbox");
-            options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--headless");   // use Headless Chrome browser
-            driver_ = new ChromeDriver(options);
-            driver_.manage().timeouts().implicitlyWait(500, TimeUnit.MILLISECONDS);
-            driver_.manage().window().setSize(new Dimension(1200, 800));
-            //
-            float dpr = DevicePixelRatioResolver.resolveDPR(driver_);
-            aswOptions_ = new AShotWrapper.Options.Builder().devicePixelRatio(dpr).build();
-        }
-
-        @AfterEach
-        void tearDown() {
-            if (driver_ != null) {
-                driver_.quit();
-            }
-        }
-
-        @Test
-        void demo_with_selenium() {
-            Timekeeper tk = new Timekeeper()
-            Measurement navigation = new Measurement.Builder(
-                    "How long it took to navigate to URLs", ["URL"])
-                    .build()
-            tk.add(new Table.Builder(navigation).build())
-            Measurement screenshot = new Measurement.Builder(
-                    "How long it took to take shootshots", ["URL"])
-                    .build()
-            tk.add(new Table.Builder(screenshot).build())
-            // process all URLs in the CSV file
-            Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
-            for (Tuple t in parseCSVfile(csv)) {
-                String url = t.get(0)
-                String filename = t.get(1)
-                driver_.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS)
-                // navigate to the URL, record the duration
-                LocalDateTime beforeNavigate = LocalDateTime.now()
-                driver_.navigate().to(url)
-                LocalDateTime afterNavigate = LocalDateTime.now()
-                navigation.recordDuration(["URL": url], beforeNavigate, afterNavigate)
-                // take a screenshot of the page, record the duration
-                LocalDateTime beforeScreenshot = LocalDateTime.now()
-                Path imageFile = this.takeFullPageScreenshot(driver_, outDir_, filename)
-                LocalDateTime afterScreenshot = LocalDateTime.now()
-                screenshot.recordSizeAndDuration(["URL": url],
-                        imageFile.toFile().size(),
-                        beforeScreenshot, afterScreenshot)
-            }
-            // now print the report
-            tk.report(outDir_.resolve("report.md"))
-        }
-
-        private Path takeFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {
-            // using my AShotWrapper lib at https://kazurayam.github.io/ashotwrapper/
-            BufferedImage image = AShotWrapper.takeEntirePageImage(driver, aswOptions_);
-            assertNotNull(image);
-            Path screenshotFile = outDir.resolve(fileName);
-            ImageIO.write(image, "PNG", screenshotFile.toFile());
-            assertTrue(Files.exists(screenshotFile));
-            return screenshotFile;
-        }
-
-        /**
-         * read a CSV file of:
-         *
-         * url1,filename1
-         * url2,filename2
-         * url3,filename3
-         * ...
-         *
-         * @param csv
-         * @return
-         */
-        private List<Tuple2> parseCSVfile(Path csv) {
-            List<Tuple2> result = new ArrayList<Tuple2>()
-            List<String> lines = csv.toFile() as List<String>
-            for (String line in lines) {
-                String[] items = line.split(",")
-                if (items.size() >= 2) {
-                    result.add(new Tuple2(items[0].trim(), items[1].trim()))
-                }
-            }
-            return result
-        }
-
-    }
+-   [com.kazurayam.timekeeper.demo.TimekeeperDemoWithSelenium](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoWithSelenium.groovy)
 
 # API
 
@@ -579,7 +459,7 @@ The output is like this:
 
 ### Sort by attributes and then by duration
 
-You can sort rows by Attributes first, then secondly by duration. Perhaps this sorting condition.
+You can sort rows by Attributes first, then secondly by duration. Perhaps this is the most useful way of sorting a Timekeeper’s table.
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
@@ -590,7 +470,7 @@ You can sort rows by Attributes first, then secondly by duration. Perhaps this s
             processURLs(urlList, outDir_, interactions)
             // print the report
             Table table = new Table.Builder(interactions)
-                    .sortByAttributesThenDuration().noLegend().build()
+                    .sortByAttributes().thenByDuration().noLegend().build()
             tk.add(table)
             tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
         }
@@ -645,17 +525,42 @@ The output is like this:
     |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:03|`#`|
     |Average|-|5,978|00:03| |
 
-### Supported sortBy\* methods
+### Sort by a chain of `RecordComparator` s
+
+The `Table.Builder` class implements 3 \`sortBy\*()\`methods:
+
+1.  `.sortByAttributes(List<String>, RowOrder)`
+
+2.  `.sortByDuration(RowOrder)`
+
+3.  `.sortBySize(RowOrder)`
+
+These can be followed by `thenBy*()` methods:
+
+1.  `.thenByAttributes(List<String>, RowOrder)`
+
+2.  `.thenByDuratio(RowOrder)`
+
+3.  `.thenBySize(RowOrder)`
+
+You can make a chain of multiple `RecordComparators`. It is possible to chain 3 or more RecordComparators while specifying `RowOrder.ASCENDING` and `RowOrder.DESCENDING` to each comparators. For example, in Groovy, you can write:
+
+    Measurement m = new Measurement.Builder("ID",
+        ["Case", "URL"]).build()
+    ...
+    Table t = new Table.Builder(m)
+        .sortByAttribute(["URL"], RowOrder.ASCENDING)
+        .thenByAttribute(["Case], RowOrder.ASCENDING)
+        .thenByDuration(RowOrder.DESCENDING)
+        .build()
 
 Please have a look at the source code of
 
--   [Measurement.Builder](https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Measurement.java)
-
-to find out full list of `sortBy*()` methods supported.
+-   [Table.Builder](https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Table.java)
 
 ## Options of report formatting
 
-The default format of Timekeeper report contains a few portions that may look verbose. You can opt them off. The options include:
+The default format of Timekeeper report contains a few portions that may look verbose to you. You can opt them off. The options include:
 
 1.  the legend of table
 
@@ -721,7 +626,7 @@ Please note the line of `.noDescription()`
 
     one # represents 10 seconds in the duration graph
 
-Please note that there is no description like `sorted by duration (ascending)` printed here.
+Please note that there is no description like "sorted by duration (ascending)" printed.
 
 ### no duration graph
 
@@ -736,7 +641,7 @@ Please note that there is no description like `sorted by duration (ascending)` p
             tk.report(outDir_.resolve("noGraph.md"))
         }
 
-Please note the line of `.noGraph()`
+Please note the line of `.noGraph()` here.
 
     ## How long it waited
 
@@ -753,9 +658,11 @@ Please note the line of `.noGraph()`
 
     one # represents 10 seconds in the duration graph
 
-Please note that there are no description, no legend, no duration graph here.
+Here there is no column of "|graph|" and ##.
 
 ### The simplest report
+
+You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 
         @Test
         void demo_the_simplest() {
@@ -769,8 +676,6 @@ Please note that there are no description, no legend, no duration graph here.
             doRecording(m1)
             tk.report(outDir_.resolve("the_simplest.md"))
         }
-
-Please note that there are lines that invoke `.noDescription()`, `.noLegend()` and `.noGraph()` here.
 
     ## How long it waited
 
