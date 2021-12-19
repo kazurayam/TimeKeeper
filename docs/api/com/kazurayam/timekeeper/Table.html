@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -160,9 +160,21 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code>java.lang.Boolean</code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.html#requireSorting--">requireSorting</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.html#requireDescription--">requireDescription</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
+<td class="colFirst"><code>java.lang.Boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.html#requireGraph--">requireGraph</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>java.lang.Boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.html#requireLegend--">requireLegend</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>java.lang.Boolean</code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.html#requireSorting--">requireSorting</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Measurement.html" title="class in com.kazurayam.timekeeper">Measurement</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.html#sortedMeasurement--">sortedMeasurement</a></span>()</code>
 <div class="block">clone the Measurement object with the records are sorted by the RecordComparator</div>
@@ -224,6 +236,33 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>getDescription</h4>
 <pre>public&nbsp;java.lang.String&nbsp;getDescription()</pre>
+</li>
+</ul>
+<a name="requireDescription--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>requireDescription</h4>
+<pre>public&nbsp;java.lang.Boolean&nbsp;requireDescription()</pre>
+</li>
+</ul>
+<a name="requireLegend--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>requireLegend</h4>
+<pre>public&nbsp;java.lang.Boolean&nbsp;requireLegend()</pre>
+</li>
+</ul>
+<a name="requireGraph--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>requireGraph</h4>
+<pre>public&nbsp;java.lang.Boolean&nbsp;requireGraph()</pre>
 </li>
 </ul>
 <a name="sortedMeasurement--">

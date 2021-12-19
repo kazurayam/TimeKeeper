@@ -1,8 +1,8 @@
-Timekeeper helps Java/Groovy test codes to record performance measurement statistics, and to compile reports in Markdown format.
+Timekeeper, a Java/Groovy library that helps tests to compile performance reports in Markdown.
 
 # Motivation
 
-Often I develop Web UI tests in Groovy using Selenium. I wanted to measure the performance of the tests. Often I want to measure:
+Often I develop Web UI tests in Groovy using Selenium. I want to measure the performance of the tests. Often I want to measure:
 
 1.  how long (seconds) tests take to navigate to a URL in browser
 
@@ -10,11 +10,13 @@ Often I develop Web UI tests in Groovy using Selenium. I wanted to measure the p
 
 3.  how large (bytes) is the generated image file
 
-I want to examine many URLs; 100 or more. In practice, most of URLs respond within 3 seconds but a few of them sometimes respond slow (over 20 seconds). Why? What happened? I need to list the slow URLs and look into them.
+And I want to examine many URLs; 100 or more. In practice, most of URL respond within 10 seconds but a few of them sometimes respond slow (over 30 seconds). Why? What happened? I need to list the slow URLs and look into them.
 
-The 1st problem is that it is bothersome recording the duration with a stopwatch. So I introduced the Apache Commonns [StopWatch](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/time/StopWatch.html) library to measure the duration and print the figure in console messages. Still, it is difficult to find useful information out of bulky console messages. So I want to summerise the staticstics. The 2nd problem is that it is too tiresome to write a statistics report in Markdown table format manually. I want to automate this task.
+The 1st problem is that it is bothersome recording the duration using a stopwatch device. I introduced the Apache Commons [StopWatch](https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/time/StopWatch.html) library into my test scripts to measure the duration and print the figure in console messages.
 
-I want my WebUI tests to perform not only performance measurement but also compiling a concise report in Markdown format as well. Here comes the Timekeeper!
+The 2nd problem is that it is difficult to find useful information out of the bulk of console messages. I want to summarise the statistics. But it is too tiresome to write manually a statistics report in Markdown table format.
+
+I want to automate these tasks entirely. I want my tests to perform not only measure performance but also compile a concise report in Markdown format. Here comes the Timekeeper!
 
 # API
 
@@ -24,13 +26,14 @@ Javadoc is [here](./api/index.html)
 
 A `Timekeeper` object lets you create **one or more** `Measurement` objects. A `Measurement` object stands for a table which contains a header and one or more `Record` set. A `Record` contains columns and a duration in `mm:ss` format (minutes:seconds). My test will put an instance of `LocalDateTime.now()` just before the test calls a long running method call (such as Selenium navite, and taking screenshot). This timestatmp is recorded as `startAt`. Also my test will put another instance of `LocalDateTime.now()` just after the long-running method call. This timestamp is recorded `endAt`. Each record object can calculate the duration = endAt minus startAt. And finally Timekeeper’s `report(Path)` method can generate a text report in Markdown syntax.
 
-## Example 1 --- minimalistic
+## Example1 Minimalistic
 
-The following example is a minimalistic example of utilizing the Timekeeper library, in Groovy using JUnit 5.
+The following example is a minimalistic example of utilizing the Timekeeper library, in Groovy using JUnit5.
 
     package com.kazurayam.timekeeper.demo
 
     import com.kazurayam.timekeeper.Measurement
+    import com.kazurayam.timekeeper.Table
     import com.kazurayam.timekeeper.Timekeeper
     import org.junit.jupiter.api.BeforeAll
     import org.junit.jupiter.api.Test
@@ -59,43 +62,53 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
         void demo_planned_sleep() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited",
-                    ["description m1"]).build()
-            tk.add(m1)
-            for (int i in [2, 3, 5, 7]) {
+                    ["Case"]).build()
+            tk.add(new Table.Builder(m1).build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("planned_sleep.md"))
+        }
+
+        private void doRecording(Measurement m1) {
+            for (int i in [13, 3, 7]) {
                 LocalDateTime beforeSleep = LocalDateTime.now()
                 // do a processing that could take long time.
                 Thread.sleep(i * 1000L)
                 LocalDateTime afterSleep = LocalDateTime.now()
-                m1.recordDuration(["description m1": "sleeping for " + i + " secs"],
+                m1.recordDuration(["Case": "sleeping for " + i + " secs"],
                         beforeSleep, afterSleep)
             }
-            tk.report(outDir_.resolve("planned_sleep.md"))
         }
-    }
 
-This code outputs the following markdown text.
+This code outputs the following Markdown text.
 
     ## How long it waited
 
-    |description m1|duration|graph|
+    as events flowed
+
+    |Case|duration|graph|
     |:----|----:|:----|
-    |sleeping for 2 secs|00:02|`#`|
+    |sleeping for 13 secs|00:13|`##`|
     |sleeping for 3 secs|00:03|`#`|
-    |sleeping for 5 secs|00:05|`#`|
     |sleeping for 7 secs|00:07|`#`|
-    |Average|00:04|
+    |Average|00:07| |
 
     The format of duration is "minutes:seconds"
 
     one # represents 10 seconds in the duration graph
 
-## Example 2 --- HTTP GET & save HTML
+This Markdown text will be rendered like this:
+
+![planned sleep](images/planned_sleep.png)
+
+## Example2 HTTP GET & save HTML
 
 The following code processes a list URLs. It makes HTTP GET request, save the request body into file. It checks the size of the file in bytes, and measures the duration of HTTP GET request.
 
     package com.kazurayam.timekeeper.demo
 
     import com.kazurayam.timekeeper.Measurement
+    import com.kazurayam.timekeeper.RowOrder
+    import com.kazurayam.timekeeper.Table
     import com.kazurayam.timekeeper.Timekeeper
     import org.junit.jupiter.api.BeforeAll
     import org.junit.jupiter.api.Test
@@ -123,7 +136,7 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
                     .resolve("build/tmp/testOutput")
                     .resolve(TimekeeperDemoHttpInteraction.class.getSimpleName())
             if (Files.exists(outDir_)) {
-                outDir_.toFile().deleteDir();
+                outDir_.toFile().deleteDir()
             }
             Files.createDirectory(outDir_)
         }
@@ -132,15 +145,16 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
         void test_HTTPGetAndSaveResponse() {
             Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
-                    "get URL, save HTML into file", ["Case", "URL"]).build();
-            tk.add(interactions)
+                    "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
             processURLs(urlList, outDir_, interactions)
             // print the report
+            Table table = new Table.Builder(interactions).build()
+            tk.add(table)
             tk.report(outDir_.resolve("report.md"))
         }
 
-        void processURLs(List<String> urlList, Path outDir, Measurement m) {
+        static void processURLs(List<String> urlList, Path outDir, Measurement m) {
             for (line in urlList) {
                 String[] items = line.split("\\|")
                 URL url = new URL(items[1])
@@ -162,7 +176,7 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
             }
         }
 
-        String getHttpResponceContent(URL url) {
+        static String getHttpResponceContent(URL url) {
             HttpURLConnection con = (HttpURLConnection) url.openConnection()
             con.setRequestMethod("GET")
             con.setConnectTimeout(5000)
@@ -178,32 +192,37 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
             String inputLine
             StringBuffer sb = new StringBuffer()
             while ((inputLine = br.readLine()) != null) {
-                sb.append(inputLine);
+                sb.append(inputLine)
             }
             streamReader.close()
             con.disconnect()
 
             // sleep a while in between 1.0 - 5.0 seconds at random
-            Thread.sleep((long)(4000 * Math.random() + 1000));
+            Thread.sleep((long)(4000 * Math.random() + 1000))
 
-            return sb.toString()
-        }
-
-This code will output the following markdown text.
+This code will output the following Markdown text.
 
     ## get URL, save HTML into file
 
+    as events flowed
+
     |Case|URL|size|duration|graph|
     |:----|:----|----:|----:|:----|
-    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,177|00:06|`#`|
     |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
-    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:05|`#`|
-    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:03|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:04|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,189|00:03|`#`|
     |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
-    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
-    |Average|-|6,002|00:04| |
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |Average|-|5,976|00:03| |
 
-## Example 3 --- Selenium test
+    The unit of size is bytes
+
+    The format of duration is "minutes:seconds"
+
+    one # represents 10 seconds in the duration graph
+
+## Example3 Selenium test
 
 Input CSV file is here:
 
@@ -215,29 +234,22 @@ The test emits the following Markdown text:
 
     ## How long it took to navigate to URLs
 
+    as events flowed
+
     |URL|duration|graph|
     |:----|----:|:----|
-    |https://www.google.com/search?q=timekeeper|00:02|`#`|
+    |https://www.google.com/search?q=timekeeper|00:00|`#`|
     |https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|00:02|`#`|
-    |https://search.yahoo.co.jp/search?p=timekeeper|00:03|`#`|
-    |Average|00:02|
+    |https://search.yahoo.co.jp/search?p=timekeeper|00:04|`#`|
+    |Average|00:02| |
 
     The format of duration is "minutes:seconds"
 
     one # represents 10 seconds in the duration graph
 
-    ## How long it took to take shootshots
-
-    |URL|size|duration|graph|
-    |:----|----:|----:|:----|
-    |https://www.google.com/search?q=timekeeper|510,456|00:05|`#`|
-    |https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|272,954|00:03|`#`|
-    |https://search.yahoo.co.jp/search?p=timekeeper|381,088|00:03|`#`|
-    |Average|388,166|00:04|
-
 This Markdown text will be rendered on browser like this:
 
-![report](images/report.png)
+![selenium](images/selenium.png)
 
 The code is here:
 
@@ -246,6 +258,7 @@ The code is here:
     import com.kazurayam.ashotwrapper.AShotWrapper
     import com.kazurayam.ashotwrapper.DevicePixelRatioResolver
     import com.kazurayam.timekeeper.Measurement
+    import com.kazurayam.timekeeper.Table
     import com.kazurayam.timekeeper.Timekeeper
     import io.github.bonigarcia.wdm.WebDriverManager
     import org.junit.jupiter.api.AfterEach
@@ -313,11 +326,11 @@ The code is here:
             Measurement navigation = new Measurement.Builder(
                     "How long it took to navigate to URLs", ["URL"])
                     .build()
-            tk.add(navigation)
+            tk.add(new Table.Builder(navigation).build())
             Measurement screenshot = new Measurement.Builder(
                     "How long it took to take shootshots", ["URL"])
                     .build()
-            tk.add(screenshot)
+            tk.add(new Table.Builder(screenshot).build())
             // process all URLs in the CSV file
             Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
             for (Tuple t in parseCSVfile(csv)) {
@@ -396,13 +409,13 @@ The sample code has this method:
         void test_HTTPGetAndSaveResponse_sortByAttributes() {
             Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
-                    "get URL, save HTML into file", ["Case", "URL"])
-                    .sortByAttributes().
-                    build();
-            tk.add(interactions)
+                    "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
             processURLs(urlList, outDir_, interactions)
             // print the report
+            Table table = new Table.Builder(interactions)
+                    .sortByAttributes().noLegend().build()
+            tk.add(table)
             tk.report(outDir_.resolve("sortByAttributes.md"))
         }
 
@@ -418,15 +431,17 @@ The output looks like this:
 
     ## get URL, save HTML into file
 
+    sorted by attributes (ascending)
+
     |Case|URL|size|duration|graph|
     |:----|:----|----:|----:|:----|
-    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
-    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:02|`#`|
-    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:02|`#`|
-    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:05|`#`|
-    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
-    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:05|`#`|
-    |Average|-|6,002|00:04| |
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:05|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,189|00:04|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,153|00:06|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |Average|-|5,972|00:04| |
 
 ## Table sorted by Attributes, descending order
 
@@ -436,13 +451,13 @@ You can sort in descending order.
         void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
             Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
-                    "get URL, save HTML into file", ["Case", "URL"])
-                    .sortByAttributes(Measurement.ROW_ORDER.DESCENDING).
-                    build();
-            tk.add(interactions)
+                    "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
             processURLs(urlList, outDir_, interactions)
             // print the report
+            Table table = new Table.Builder(interactions)
+                    .sortByAttributes( RowOrder.DESCENDING ).noLegend().build()
+            tk.add(table)
             tk.report(outDir_.resolve("sortByAttributes_descending.md"))
         }
 
@@ -454,15 +469,17 @@ The output looks like this:
 
     ## get URL, save HTML into file
 
+    sorted by attributes (descending)
+
     |Case|URL|size|duration|graph|
     |:----|:----|----:|----:|:----|
-    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
-    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:03|`#`|
-    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
-    |case 1|https://www.google.com/search?q=timekeeper|7,153|00:04|`#`|
-    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:02|`#`|
-    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
-    |Average|-|6,000|00:03| |
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,177|00:02|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:03|`#`|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |Average|-|5,972|00:03| |
 
 ## Table sorted by selected items among Attributes
 
@@ -472,13 +489,13 @@ You can choose columns as sort key out of the Attributes.
         void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
             Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
-                    "get URL, save HTML into file", ["Case", "URL"])
-                    .sortByAttributes(["URL"]).
-                    build();
-            tk.add(interactions)
+                    "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
             processURLs(urlList, outDir_, interactions)
             // print the report
+            Table table = new Table.Builder(interactions)
+                    .sortByAttributes(["URL"]).noLegend().build()
+            tk.add(table)
             tk.report(outDir_.resolve("sortByAttributes_URL.md"))
         }
 
@@ -490,21 +507,23 @@ Please note the following fragment:
                     .sortByAttributes(["URL"]).
                     build();
 
-The table has 2 attributes "Case" and "URL". And you selected "URL" as the sort key.
+The table has 2 attributes "Case" and "URL". And you selected "URL" as the single sort key.
 
 The output will look like this:
 
     ## get URL, save HTML into file
 
+    sorted by attributes (ascending)
+
     |Case|URL|size|duration|graph|
     |:----|:----|----:|----:|:----|
-    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
-    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
-    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
-    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,136|00:05|`#`|
-    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
-    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:02|`#`|
-    |Average|-|5,989|00:03| |
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:05|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:05|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,189|00:06|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,197|00:06|`#`|
+    |Average|-|5,980|00:04| |
 
 ## Table sorted by Duration
 
@@ -514,13 +533,13 @@ You can sort rows by duration.
         void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
             Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
-                    "get URL, save HTML into file", ["Case", "URL"])
-                    .sortByDuration(Measurement.ROW_ORDER.DESCENDING).
-                    build();
-            tk.add(interactions)
+                    "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
             processURLs(urlList, outDir_, interactions)
             // print the report
+            Table table = new Table.Builder(interactions)
+                    .sortByDuration( RowOrder.DESCENDING ).noLegend().build()
+            tk.add(table)
             tk.report(outDir_.resolve("sortByDuration_descending.md"))
         }
 
@@ -528,31 +547,33 @@ The output is like this:
 
     ## get URL, save HTML into file
 
+    sorted by duration (descending)
+
     |Case|URL|size|duration|graph|
     |:----|:----|----:|----:|:----|
-    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
-    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:04|`#`|
-    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:04|`#`|
-    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
-    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
-    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
-    |Average|-|6,002|00:04| |
+    |case 2|https://www.google.com/search?q=timekeeper|7,177|00:05|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:03|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,177|00:02|`#`|
+    |Average|-|5,974|00:03| |
 
 ## Table sorted by Attributes, then by duration
 
-You can sort rows by Attributes first, then secondly by duration. Perhaps this sorting condition is most useful.
+You can sort rows by Attributes first, then secondly by duration. Perhaps this sorting condition.
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
             Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
-                    "get URL, save HTML into file", ["Case", "URL"])
-                    .sortByAttributesThenDuration(["URL"]).
-                    build();
-            tk.add(interactions)
+                    "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
             processURLs(urlList, outDir_, interactions)
             // print the report
+            Table table = new Table.Builder(interactions)
+                    .sortByAttributesThenDuration().noLegend().build()
+            tk.add(table)
             tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
         }
 
@@ -560,15 +581,17 @@ The output looks like this:
 
     ## get URL, save HTML into file
 
+    sorted by attributes then duration (ascending)
+
     |Case|URL|size|duration|graph|
     |:----|:----|----:|----:|:----|
-    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
-    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
     |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
-    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,136|00:03|`#`|
-    |case 1|https://www.google.com/search?q=timekeeper|7,153|00:03|`#`|
-    |case 2|https://www.google.com/search?q=timekeeper|7,153|00:03|`#`|
-    |Average|-|5,985|00:02| |
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:02|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,177|00:05|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |Average|-|5,972|00:03| |
 
 ## Table sorted by Size
 
@@ -578,13 +601,13 @@ You can sort rows by size, of course.
         void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
             Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
-                    "get URL, save HTML into file", ["Case", "URL"])
-                    .sortBySize(Measurement.ROW_ORDER.ASCENDING).
-                    build();
-            tk.add(interactions)
+                    "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
             processURLs(urlList, outDir_, interactions)
             // print the report
+            Table table = new Table.Builder(interactions)
+                    .sortBySize().noLegend().build()
+            tk.add(table)
             tk.report(outDir_.resolve("sortBySize_ascending.md"))
         }
 
@@ -592,15 +615,17 @@ The output is like this:
 
     ## get URL, save HTML into file
 
+    sorted by size
+
     |Case|URL|size|duration|graph|
     |:----|:----|----:|----:|:----|
-    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
-    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
-    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
-    |case 1|https://www.google.com/search?q=timekeeper|7,165|00:04|`#`|
-    |case 2|https://www.google.com/search?q=timekeeper|7,165|00:06|`#`|
-    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,217|00:03|`#`|
-    |Average|-|6,002|00:03| |
+    |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:04|`#`|
+    |case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
+    |case 1|https://www.google.com/search?q=timekeeper|7,189|00:03|`#`|
+    |case 2|https://www.google.com/search?q=timekeeper|7,189|00:03|`#`|
+    |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:03|`#`|
+    |Average|-|5,978|00:03| |
 
 ## List of supported sortBy\*() methods
 
@@ -609,6 +634,136 @@ Please have a look at the source code of
 -   [Measurement.Builder](https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Measurement.java)
 
 to find out full list of `sortBy*()` methods supported.
+
+# Report formatting options
+
+As default the report contains a few portions that may look verbose. You can opt them off. The options include:
+
+1.  the legend of table
+
+2.  the description how rows are sorted
+
+3.  the duration graph
+
+## Report with no legend
+
+        @Test
+        void demo_noLegend() {
+            Timekeeper tk = new Timekeeper()
+            Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+            tk.add(new Table.Builder(m1)
+                    .noLegend()   // require no legend for the table
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("noLegend.md"))
+        }
+
+Please note the line of `.noLegend()`
+
+output:
+
+    ## How long it waited
+
+    as events flowed
+
+    |Case|duration|graph|
+    |:----|----:|:----|
+    |sleeping for 13 secs|00:13|`##`|
+    |sleeping for 3 secs|00:03|`#`|
+    |sleeping for 7 secs|00:07|`#`|
+    |Average|00:07| |
+
+Please note that there is no legend printed here.
+
+## Report with no description
+
+        @Test
+        void demo_noDescription() {
+            Timekeeper tk = new Timekeeper()
+            Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+            tk.add(new Table.Builder(m1)
+                    .noDescription()   // require no description
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("noDescription.md"))
+        }
+
+Please note the line of `.noDescription()`
+
+    ## How long it waited
+
+    |Case|duration|graph|
+    |:----|----:|:----|
+    |sleeping for 13 secs|00:13|`##`|
+    |sleeping for 3 secs|00:03|`#`|
+    |sleeping for 7 secs|00:07|`#`|
+    |Average|00:07| |
+
+    The format of duration is "minutes:seconds"
+
+    one # represents 10 seconds in the duration graph
+
+Please note that there is no description like `sorted by duration (ascending)` printed here.
+
+## Report with no duration graph
+
+        @Test
+        void demo_noGraph() {
+            Timekeeper tk = new Timekeeper()
+            Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+            tk.add(new Table.Builder(m1)
+                    .noGraph()   // require no duration graph
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("noGraph.md"))
+        }
+
+Please note the line of `.noGraph()`
+
+    ## How long it waited
+
+    as events flowed
+
+    |Case|duration|
+    |:----|----:|
+    |sleeping for 13 secs|00:13|
+    |sleeping for 3 secs|00:03|
+    |sleeping for 7 secs|00:07|
+    |Average|00:07|
+
+    The format of duration is "minutes:seconds"
+
+    one # represents 10 seconds in the duration graph
+
+Please note that there are no description, no legend, no duration graph here.
+
+## The simplest report
+
+        @Test
+        void demo_the_simplest() {
+            Timekeeper tk = new Timekeeper()
+            Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+            tk.add(new Table.Builder(m1)
+                    .noDescription()  // require no description
+                    .noLegend()       // require no legend
+                    .noGraph()        // require no duration graph
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("the_simplest.md"))
+        }
+
+Please note that there are line of `noDescription`, `noLegend` and `.noGraph()` here.
+
+    ## How long it waited
+
+    |Case|duration|
+    |:----|----:|
+    |sleeping for 13 secs|00:13|
+    |sleeping for 3 secs|00:03|
+    |sleeping for 7 secs|00:07|
+    |Average|00:07|
+
+This is the simplest format that Timekeeper can print.
 
 # Download
 

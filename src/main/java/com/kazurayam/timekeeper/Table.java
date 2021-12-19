@@ -94,6 +94,8 @@ public class Table {
 
         /**
          * clone the source while replacing the measurement contained
+         * @param source a Table object to clone
+         * @param measurement the Measurement object to replace the one in the source
          */
         public Builder(Table source, Measurement measurement) {
             Objects.requireNonNull(source);

@@ -1,19 +1,14 @@
 ## get URL, save HTML into file
 
+sorted by attributes (ascending)
+
 |Case|URL|size|duration|graph|
 |:----|:----|----:|----:|:----|
-|case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
-|case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
-|case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
-|case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,136|00:05|`#`|
-|case 1|https://www.google.com/search?q=timekeeper|7,165|00:05|`#`|
-|case 2|https://www.google.com/search?q=timekeeper|7,165|00:02|`#`|
-|Average|-|5,989|00:03| |
+|case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+|case 2|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:05|`#`|
+|case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:02|`#`|
+|case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:05|`#`|
+|case 1|https://www.google.com/search?q=timekeeper|7,189|00:06|`#`|
+|case 2|https://www.google.com/search?q=timekeeper|7,197|00:06|`#`|
+|Average|-|5,980|00:04| |
 
-The unit of size is bytes
-
-The format of duration is "minutes:seconds"
-
-one # represents 10 seconds in the duration graph
-
-----

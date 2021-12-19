@@ -30,16 +30,66 @@ class TimekeeperDemoMinimal {
     void demo_planned_sleep() {
         Timekeeper tk = new Timekeeper()
         Measurement m1 = new Measurement.Builder("How long it waited",
-                ["description m1"]).build()
+                ["Case"]).build()
         tk.add(new Table.Builder(m1).build())
-        for (int i in [2, 3, 5, 7]) {
+        doRecording(m1)
+        tk.report(outDir_.resolve("planned_sleep.md"))
+    }
+
+    private void doRecording(Measurement m1) {
+        for (int i in [13, 3, 7]) {
             LocalDateTime beforeSleep = LocalDateTime.now()
             // do a processing that could take long time.
             Thread.sleep(i * 1000L)
             LocalDateTime afterSleep = LocalDateTime.now()
-            m1.recordDuration(["description m1": "sleeping for " + i + " secs"],
+            m1.recordDuration(["Case": "sleeping for " + i + " secs"],
                     beforeSleep, afterSleep)
         }
-        tk.report(outDir_.resolve("planned_sleep.md"))
+    }
+
+    @Test
+    void demo_noDescription() {
+        Timekeeper tk = new Timekeeper()
+        Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+        tk.add(new Table.Builder(m1)
+                .noDescription()   // require no description
+                .build())
+        doRecording(m1)
+        tk.report(outDir_.resolve("noDescription.md"))
+    }
+
+    @Test
+    void demo_noLegend() {
+        Timekeeper tk = new Timekeeper()
+        Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+        tk.add(new Table.Builder(m1)
+                .noLegend()   // require no legend for the table
+                .build())
+        doRecording(m1)
+        tk.report(outDir_.resolve("noLegend.md"))
+    }
+
+    @Test
+    void demo_noGraph() {
+        Timekeeper tk = new Timekeeper()
+        Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+        tk.add(new Table.Builder(m1)
+                .noGraph()   // require no duration graph
+                .build())
+        doRecording(m1)
+        tk.report(outDir_.resolve("noGraph.md"))
+    }
+
+    @Test
+    void demo_the_simplest() {
+        Timekeeper tk = new Timekeeper()
+        Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
+        tk.add(new Table.Builder(m1)
+                .noDescription()  // require no description
+                .noLegend()       // require no legend
+                .noGraph()        // require no duration graph
+                .build())
+        doRecording(m1)
+        tk.report(outDir_.resolve("the_simplest.md"))
     }
 }

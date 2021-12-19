@@ -17,7 +17,7 @@
     catch(err) {
     }
 //-->
-var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10};
+var methods = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10,"i26":10,"i27":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -133,6 +133,12 @@ extends java.lang.Object</pre>
 <tr class="altColor">
 <td class="colOne"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#Builder-com.kazurayam.timekeeper.Measurement-">Builder</a></span>(<a href="../../../com/kazurayam/timekeeper/Measurement.html" title="class in com.kazurayam.timekeeper">Measurement</a>&nbsp;measurement)</code>&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<td class="colOne"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#Builder-com.kazurayam.timekeeper.Table-com.kazurayam.timekeeper.Measurement-">Builder</a></span>(<a href="../../../com/kazurayam/timekeeper/Table.html" title="class in com.kazurayam.timekeeper">Table</a>&nbsp;source,
+       <a href="../../../com/kazurayam/timekeeper/Measurement.html" title="class in com.kazurayam.timekeeper">Measurement</a>&nbsp;measurement)</code>
+<div class="block">clone the source while replacing the measurement contained</div>
+</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -154,102 +160,114 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributes--">sortByAttributes</a></span>()</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#noDescription--">noDescription</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
-<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributes-java.util.List-">sortByAttributes</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys)</code>&nbsp;</td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#noGraph--">noGraph</a></span>()</code>&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#noLegend--">noLegend</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
+<td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributes--">sortByAttributes</a></span>()</code>&nbsp;</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
+<td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributes-java.util.List-">sortByAttributes</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys)</code>&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributes-java.util.List-com.kazurayam.timekeeper.RowOrder-">sortByAttributes</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys,
                 <a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributes-com.kazurayam.timekeeper.RowOrder-">sortByAttributes</a></span>(<a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenDuration--">sortByAttributesThenDuration</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenDuration-java.util.List-">sortByAttributesThenDuration</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys)</code>&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenDuration-java.util.List-com.kazurayam.timekeeper.RowOrder-">sortByAttributesThenDuration</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys,
                             <a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenDuration-com.kazurayam.timekeeper.RowOrder-">sortByAttributesThenDuration</a></span>(<a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenSize--">sortByAttributesThenSize</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenSize-java.util.List-">sortByAttributesThenSize</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys)</code>&nbsp;</td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenSize-java.util.List-com.kazurayam.timekeeper.RowOrder-">sortByAttributesThenSize</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys,
                         <a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByAttributesThenSize-com.kazurayam.timekeeper.RowOrder-">sortByAttributesThenSize</a></span>(<a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByDuration--">sortByDuration</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByDuration-com.kazurayam.timekeeper.RowOrder-">sortByDuration</a></span>(<a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i18" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByDurationThenAttributes--">sortByDurationThenAttributes</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByDurationThenAttributes-java.util.List-">sortByDurationThenAttributes</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys)</code>&nbsp;</td>
 </tr>
-<tr id="i17" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByDurationThenAttributes-java.util.List-com.kazurayam.timekeeper.RowOrder-">sortByDurationThenAttributes</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys,
                             <a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortByDurationThenAttributes-com.kazurayam.timekeeper.RowOrder-">sortByDurationThenAttributes</a></span>(<a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortBySize--">sortBySize</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortBySize-com.kazurayam.timekeeper.RowOrder-">sortBySize</a></span>(<a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortBySizeThenAttributes--">sortBySizeThenAttributes</a></span>()</code>&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortBySizeThenAttributes-java.util.List-">sortBySizeThenAttributes</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys)</code>&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i26" class="altColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortBySizeThenAttributes-java.util.List-com.kazurayam.timekeeper.RowOrder-">sortBySizeThenAttributes</a></span>(java.util.List&lt;java.lang.String&gt;&nbsp;keys,
                         <a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i27" class="rowColor">
 <td class="colFirst"><code><a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a></code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../../../com/kazurayam/timekeeper/Table.Builder.html#sortBySizeThenAttributes-com.kazurayam.timekeeper.RowOrder-">sortBySizeThenAttributes</a></span>(<a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</code>&nbsp;</td>
 </tr>
@@ -278,10 +296,26 @@ extends java.lang.Object</pre>
 <a name="Builder-com.kazurayam.timekeeper.Measurement-">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>Builder</h4>
 <pre>public&nbsp;Builder(<a href="../../../com/kazurayam/timekeeper/Measurement.html" title="class in com.kazurayam.timekeeper">Measurement</a>&nbsp;measurement)</pre>
+</li>
+</ul>
+<a name="Builder-com.kazurayam.timekeeper.Table-com.kazurayam.timekeeper.Measurement-">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Builder</h4>
+<pre>public&nbsp;Builder(<a href="../../../com/kazurayam/timekeeper/Table.html" title="class in com.kazurayam.timekeeper">Table</a>&nbsp;source,
+               <a href="../../../com/kazurayam/timekeeper/Measurement.html" title="class in com.kazurayam.timekeeper">Measurement</a>&nbsp;measurement)</pre>
+<div class="block">clone the source while replacing the measurement contained</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>source</code> - a Table object to clone</dd>
+<dd><code>measurement</code> - the Measurement object to replace the one in the source</dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -511,6 +545,33 @@ extends java.lang.Object</pre>
 <h4>sortBySizeThenAttributes</h4>
 <pre>public&nbsp;<a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a>&nbsp;sortBySizeThenAttributes(java.util.List&lt;java.lang.String&gt;&nbsp;keys,
                                               <a href="../../../com/kazurayam/timekeeper/RowOrder.html" title="enum in com.kazurayam.timekeeper">RowOrder</a>&nbsp;rowOrder)</pre>
+</li>
+</ul>
+<a name="noDescription--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>noDescription</h4>
+<pre>public&nbsp;<a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a>&nbsp;noDescription()</pre>
+</li>
+</ul>
+<a name="noLegend--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>noLegend</h4>
+<pre>public&nbsp;<a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a>&nbsp;noLegend()</pre>
+</li>
+</ul>
+<a name="noGraph--">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>noGraph</h4>
+<pre>public&nbsp;<a href="../../../com/kazurayam/timekeeper/Table.Builder.html" title="class in com.kazurayam.timekeeper">Table.Builder</a>&nbsp;noGraph()</pre>
 </li>
 </ul>
 <a name="build--">

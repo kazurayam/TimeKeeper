@@ -187,7 +187,6 @@ public class MarkdownReporter implements Reporter {
                 pw_.println("");
             }
         }
-        pw_.println("----");
         pw_.flush();
     }
 

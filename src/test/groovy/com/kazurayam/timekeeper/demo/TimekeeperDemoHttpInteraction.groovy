@@ -112,7 +112,7 @@ class TimekeeperDemoHttpInteraction {
         processURLs(urlList, outDir_, interactions)
         // print the report
         Table table = new Table.Builder(interactions)
-                .sortByAttributes().build()
+                .sortByAttributes().noLegend().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributes.md"))
     }
@@ -126,7 +126,7 @@ class TimekeeperDemoHttpInteraction {
         processURLs(urlList, outDir_, interactions)
         // print the report
         Table table = new Table.Builder(interactions)
-                .sortByAttributes(["URL"]).build()
+                .sortByAttributes(["URL"]).noLegend().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributes_URL.md"))
     }
@@ -140,7 +140,7 @@ class TimekeeperDemoHttpInteraction {
         processURLs(urlList, outDir_, interactions)
         // print the report
         Table table = new Table.Builder(interactions)
-                .sortByAttributes( RowOrder.DESCENDING ).build()
+                .sortByAttributes( RowOrder.DESCENDING ).noLegend().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributes_descending.md"))
     }
@@ -154,7 +154,7 @@ class TimekeeperDemoHttpInteraction {
         processURLs(urlList, outDir_, interactions)
         // print the report
         Table table = new Table.Builder(interactions)
-                .sortByAttributesThenDuration().build()
+                .sortByAttributesThenDuration().noLegend().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
     }
@@ -168,7 +168,7 @@ class TimekeeperDemoHttpInteraction {
         processURLs(urlList, outDir_, interactions)
         // print the report
         Table table = new Table.Builder(interactions)
-                .sortByDuration( RowOrder.DESCENDING ).build()
+                .sortByDuration( RowOrder.DESCENDING ).noLegend().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByDuration_descending.md"))
     }
@@ -183,7 +183,7 @@ class TimekeeperDemoHttpInteraction {
         processURLs(urlList, outDir_, interactions)
         // print the report
         Table table = new Table.Builder(interactions)
-                .sortBySize().build()
+                .sortBySize().noLegend().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortBySize_ascending.md"))
     }
