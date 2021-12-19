@@ -19,6 +19,7 @@ public class Table {
     private final Boolean requireSorting;
     private final String description;
     private final Boolean requireDescription;
+    private final Boolean requireLegend;
 
     private Table(Builder builder) {
         this.measurement = builder.measurement;
@@ -26,6 +27,7 @@ public class Table {
         this.requireSorting = builder.requireSorting;
         this.description = builder.description;
         this.requireDescription = builder.requireDescription;
+        this.requireLegend = builder.requireLegend;
     }
 
     public Measurement getMeasurement() {
@@ -43,6 +45,8 @@ public class Table {
     public String getDescription() { return this.description; }
 
     public Boolean requireDescription() { return this.requireDescription; }
+
+    public Boolean requireLegend() { return this.requireLegend; }
 
     /**
      * clone the Measurement object with the records are sorted by the RecordComparator
@@ -70,6 +74,8 @@ public class Table {
         private Boolean requireSorting;
         private String description;
         private Boolean requireDescription;
+        private Boolean requireLegend;
+        //
         public Builder(Measurement measurement) {
             Objects.requireNonNull(measurement);
             this.measurement = measurement;
@@ -77,6 +83,7 @@ public class Table {
             this.requireSorting = false;
             this.description = "as events flowed";
             this.requireDescription = true;
+            this.requireLegend = true;
         }
 
         /**
@@ -89,6 +96,7 @@ public class Table {
             this.requireSorting = source.requireSorting;
             this.description = source.description;
             this.requireDescription = source.requireDescription;
+            this.requireLegend = source.requireLegend;
         }
         //
         public Builder sortByAttributes() {
@@ -213,6 +221,11 @@ public class Table {
         //
         public Builder noDescription() {
             this.requireDescription = false;
+            return this;
+        }
+        //
+        public Builder noLegend() {
+            this.requireLegend = false;
             return this;
         }
         //

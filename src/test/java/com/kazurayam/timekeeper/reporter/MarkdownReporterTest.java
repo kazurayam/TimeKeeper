@@ -133,4 +133,17 @@ public class MarkdownReporterTest {
         assertFalse(content.contains("as events flowed"));
     }
 
+    @Test
+    public void test_noLegend() throws IOException {
+        StringWriter sw = new StringWriter();
+        MarkdownReporter reporter = new MarkdownReporter();
+        reporter.setOutput(sw);
+        Measurement measurement = TestHelper.makeMeasurement();
+        Table table = new Table.Builder(measurement).noLegend().build();
+        reporter.report(table);
+        String content = sw.toString();
+        //logger.debug(content);
+        assertFalse(content.contains("minutes:seconds"));
+    }
+
 }

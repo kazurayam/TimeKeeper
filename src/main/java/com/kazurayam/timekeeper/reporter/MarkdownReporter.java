@@ -163,15 +163,18 @@ public class MarkdownReporter implements Reporter {
         pw_.println(sb3);
         //
         pw_.println("");
-        if (measurement.hasRecordWithSize()) {
-            pw_.println("The unit of size is bytes");
-            pw_.println("");
-        }
-        if (measurement.hasRecordWithDuration()) {
-            pw_.println("The format of duration is \"minutes:seconds\"");
-            pw_.println("");
-            pw_.println("one # represents 10 seconds in the duration graph");
-            pw_.println("");
+
+        if (table.requireLegend()) {
+            if (measurement.hasRecordWithSize()) {
+                pw_.println("The unit of size is bytes");
+                pw_.println("");
+            }
+            if (measurement.hasRecordWithDuration()) {
+                pw_.println("The format of duration is \"minutes:seconds\"");
+                pw_.println("");
+                pw_.println("one # represents 10 seconds in the duration graph");
+                pw_.println("");
+            }
         }
         pw_.println("----");
         pw_.flush();
