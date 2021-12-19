@@ -83,10 +83,7 @@ image::images/selenium.png[]
 
 The code is here:
 
-[source, groovy]
-----
-include::../src/test/groovy/com/kazurayam/timekeeper/demo/TimeKeeperDemoWithSelenium.groovy[]
-----
+* https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoWithSelenium.groovy[com.kazurayam.timekeeper.demo.TimekeeperDemoWithSelenium]
 
 == API
 

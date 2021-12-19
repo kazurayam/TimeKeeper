@@ -1,5 +1,6 @@
 package com.kazurayam.timekeeper;
 
+import com.kazurayam.timekeeper.recordcomparator.ChainedRecordComparator;
 import com.kazurayam.timekeeper.recordcomparator.NullRecordComparator;
 import com.kazurayam.timekeeper.recordcomparator.RecordComparatorByAttributes;
 import com.kazurayam.timekeeper.recordcomparator.RecordComparatorByAttributesThenDuration;
@@ -9,6 +10,7 @@ import com.kazurayam.timekeeper.recordcomparator.RecordComparatorByDurationThenA
 import com.kazurayam.timekeeper.recordcomparator.RecordComparatorBySize;
 import com.kazurayam.timekeeper.recordcomparator.RecordComparatorBySizeThenAttributes;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -16,6 +18,7 @@ public class Table {
 
     private final Measurement measurement;
     private final RecordComparator recordComparator;
+    private final List<RecordComparator> recordComparatorList;
     private final Boolean requireSorting;
     private final String description;
     private final Boolean requireDescription;
@@ -25,6 +28,7 @@ public class Table {
     private Table(Builder builder) {
         this.measurement = builder.measurement;
         this.recordComparator = builder.recordComparator;
+        this.recordComparatorList = builder.recordComparatorList;
         this.requireSorting = builder.requireSorting;
         this.description = builder.description;
         this.requireDescription = builder.requireDescription;
@@ -39,6 +43,8 @@ public class Table {
     public RecordComparator getRecordComparator() {
         return this.recordComparator;
     }
+
+    public List<RecordComparator> getRecordComparatorList() { return this.recordComparatorList;}
 
     public Boolean requireSorting() {
         return this.requireSorting;
@@ -69,12 +75,26 @@ public class Table {
         return clonedMeasurement;
     }
 
+    public Measurement sorted() {
+        Measurement clonedMeasurement =
+                new Measurement.Builder(measurement.getId(), measurement.getColumnNames())
+                        .build();
+        List<Record> records = measurement.cloneRecords();
+        if (this.recordComparatorList.size() > 0) {
+            RecordComparator chain = new ChainedRecordComparator(this.recordComparatorList);
+            records.sort(chain);
+        }
+        clonedMeasurement.addAll(records);
+        return clonedMeasurement;
+    }
+
     /**
      *
      */
     public static class Builder {
         private final Measurement measurement;
         private RecordComparator recordComparator;
+        private List<RecordComparator> recordComparatorList;
         private Boolean requireSorting;
         private String description;
         private Boolean requireDescription;
@@ -85,6 +105,7 @@ public class Table {
             Objects.requireNonNull(measurement);
             this.measurement = measurement;
             this.recordComparator = new NullRecordComparator();
+            this.recordComparatorList = new ArrayList<>();
             this.requireSorting = false;
             this.description = "as events flowed";
             this.requireDescription = true;
@@ -101,6 +122,7 @@ public class Table {
             Objects.requireNonNull(source);
             this.measurement = measurement;   // replace the Measurement contained
             this.recordComparator = source.recordComparator;
+            this.recordComparatorList = source.recordComparatorList;
             this.requireSorting = source.requireSorting;
             this.description = source.description;
             this.requireDescription = source.requireDescription;
@@ -120,7 +142,9 @@ public class Table {
         public Builder sortByAttributes(List<String> keys, RowOrder rowOrder) {
             Objects.requireNonNull(keys);
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
-            this.recordComparator = new RecordComparatorByAttributes(keys, rowOrder);
+            RecordComparator rc = new RecordComparatorByAttributes(keys, rowOrder);
+            this.recordComparator = rc;
+            this.recordComparatorList.add(rc);
             this.requireSorting = true;
             this.description = String.format("sorted by attributes (%s)",
                     rowOrder.description());
@@ -139,7 +163,9 @@ public class Table {
         public Builder sortByAttributesThenDuration(List<String> keys, RowOrder rowOrder) {
             Objects.requireNonNull(keys);
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
-            this.recordComparator = new RecordComparatorByAttributesThenDuration(keys, rowOrder);
+            RecordComparator rc = new RecordComparatorByAttributesThenDuration(keys, rowOrder);
+            this.recordComparator = rc;
+            this.recordComparatorList.add(rc);
             this.requireSorting = true;
             this.description = String.format("sorted by attributes then duration (%s)",
                     rowOrder.description());
@@ -158,7 +184,9 @@ public class Table {
         public Builder sortByAttributesThenSize(List<String> keys, RowOrder rowOrder) {
             Objects.requireNonNull(keys);
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
-            this.recordComparator = new RecordComparatorByAttributesThenSize(keys, rowOrder);
+            RecordComparator rc = new RecordComparatorByAttributesThenSize(keys, rowOrder);
+            this.recordComparator = rc;
+            this.recordComparatorList.add(rc);
             this.requireSorting = true;
             this.description = String.format("sorted by attributes then size (%s)",
                     rowOrder.description());
@@ -169,7 +197,9 @@ public class Table {
             return this.sortByDuration(RowOrder.ASCENDING);
         }
         public Builder sortByDuration(RowOrder rowOrder) {
-            this.recordComparator = new RecordComparatorByDuration(rowOrder);
+            RecordComparator rc = new RecordComparatorByDuration(rowOrder);
+            this.recordComparator = rc;
+            this.recordComparatorList.add(rc);
             this.requireSorting = true;
             this.description = String.format("sorted by duration (%s)",
                     rowOrder.description());
@@ -186,7 +216,9 @@ public class Table {
             return this.sortByDurationThenAttributes(keys, RowOrder.ASCENDING);
         }
         public Builder sortByDurationThenAttributes(List<String> keys, RowOrder rowOrder) {
-            this.recordComparator = new RecordComparatorByDurationThenAttributes(keys, rowOrder);
+            RecordComparator rc = new RecordComparatorByDurationThenAttributes(keys, rowOrder);
+            this.recordComparator = rc;
+            this.recordComparatorList.add(rc);
             this.requireSorting = true;
             this.description = String.format("sorted by duration then attributes (%s)",
                     rowOrder.description());
@@ -197,7 +229,9 @@ public class Table {
             return this.sortBySize(RowOrder.ASCENDING);
         }
         public Builder sortBySize(RowOrder rowOrder) {
-            this.recordComparator = new RecordComparatorBySize(rowOrder);
+            RecordComparator rc = new RecordComparatorBySize(rowOrder);
+            this.recordComparator = rc;
+            this.recordComparatorList.add(rc);
             this.requireSorting = true;
             this.description = "sorted by size";
             return this;
@@ -213,7 +247,9 @@ public class Table {
             return this.sortBySizeThenAttributes(keys, RowOrder.ASCENDING);
         }
         public Builder sortBySizeThenAttributes(List<String> keys, RowOrder rowOrder) {
-            this.recordComparator = new RecordComparatorBySizeThenAttributes(keys, rowOrder);
+            RecordComparator rc = new RecordComparatorBySizeThenAttributes(keys, rowOrder);
+            this.recordComparator = rc;
+            this.recordComparatorList.add(rc);
             this.requireSorting = true;
             this.description = String.format("sorted by size then attributes (%s)",
                     rowOrder.description());
@@ -223,6 +259,7 @@ public class Table {
         Builder recordComparator(RecordComparator recordComparator) {
             Objects.requireNonNull(recordComparator);
             this.recordComparator = recordComparator;
+            this.recordComparatorList.add(recordComparator);
             this.requireSorting = true;
             this.description = "sorted by " + recordComparator.getClass().getSimpleName();
             return this;

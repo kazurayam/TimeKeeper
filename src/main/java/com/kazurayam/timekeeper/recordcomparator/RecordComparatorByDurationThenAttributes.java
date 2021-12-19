@@ -1,6 +1,5 @@
 package com.kazurayam.timekeeper.recordcomparator;
 
-import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.Record;
 import com.kazurayam.timekeeper.RecordComparator;
 import com.kazurayam.timekeeper.RowOrder;
