@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MarkdownReporterTest {
@@ -117,6 +118,19 @@ public class MarkdownReporterTest {
         //logger.debug(content);
         assertTrue(content.length() > 0);
         assertTrue(content.contains("## M1"));
+    }
+
+    @Test
+    public void test_noDescription() throws IOException {
+        StringWriter sw = new StringWriter();
+        MarkdownReporter reporter = new MarkdownReporter();
+        reporter.setOutput(sw);
+        Measurement measurement = TestHelper.makeMeasurement();
+        Table table = new Table.Builder(measurement).noDescription().build();
+        reporter.report(table);
+        String content = sw.toString();
+        //logger.debug(content);
+        assertFalse(content.contains("as events flowed"));
     }
 
 }

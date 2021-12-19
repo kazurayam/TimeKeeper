@@ -190,7 +190,7 @@ public class TableTest {
         Table t = new Table.Builder(m)
                 .sortBySize().build();
         Measurement sorted = t.sortedMeasurement();
-        System.out.println(sorted.toJson());
+        //System.out.println(sorted.toJson());
         assertNotNull(sorted);
         Long size0 = sorted.get(0).getSize();
         Long size1 = sorted.get(1).getSize();
@@ -239,5 +239,15 @@ public class TableTest {
         } catch (IOException e) {
             throw new IllegalStateException("unable to proceed");
         }
+    }
+
+
+    @Test
+    public void test_noDescription() {
+        Measurement m = stuffRecordsToSort(
+                new Measurement.Builder("foo", Collections.singletonList("URL")).build());
+        Table t = new Table.Builder(m)
+                .noDescription().build();
+        assertNotNull(t);
     }
 }

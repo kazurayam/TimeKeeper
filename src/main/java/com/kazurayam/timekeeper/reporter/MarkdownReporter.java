@@ -69,16 +69,20 @@ public class MarkdownReporter implements Reporter {
         Objects.requireNonNull(table);
         Measurement m = (table.requireSorting()) ?
                 table.sortedMeasurement() : table.getMeasurement();
-        this.compileReport(m, table.getDescription());
+        Table sortedTable = new Table.Builder(table, m).build();
+        this.compileReport(sortedTable);
         pw_.close();
     }
 
-    private void compileReport(Measurement measurement,
-                               String description) throws IOException {
+    private void compileReport(Table table) {
+        Objects.requireNonNull(table);
+        Measurement measurement = table.getMeasurement();
         pw_.println("## " + measurement.getId());
         pw_.println("");
-        pw_.println(description);
-        pw_.println("");
+        if (table.requireDescription()) {
+            pw_.println(table.getDescription());
+            pw_.println("");
+        }
         StringBuilder sb0 = new StringBuilder();
         sb0.append("|");
         List<String> columnNames = measurement.getColumnNames();

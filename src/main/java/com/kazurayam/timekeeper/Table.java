@@ -18,12 +18,14 @@ public class Table {
     private final RecordComparator recordComparator;
     private final Boolean requireSorting;
     private final String description;
+    private final Boolean requireDescription;
 
     private Table(Builder builder) {
         this.measurement = builder.measurement;
         this.recordComparator = builder.recordComparator;
         this.requireSorting = builder.requireSorting;
         this.description = builder.description;
+        this.requireDescription = builder.requireDescription;
     }
 
     public Measurement getMeasurement() {
@@ -39,6 +41,8 @@ public class Table {
     }
 
     public String getDescription() { return this.description; }
+
+    public Boolean requireDescription() { return this.requireDescription; }
 
     /**
      * clone the Measurement object with the records are sorted by the RecordComparator
@@ -57,17 +61,34 @@ public class Table {
         return clonedMeasurement;
     }
 
+    /**
+     *
+     */
     public static class Builder {
         private final Measurement measurement;
         private RecordComparator recordComparator;
         private Boolean requireSorting;
         private String description;
+        private Boolean requireDescription;
         public Builder(Measurement measurement) {
             Objects.requireNonNull(measurement);
             this.measurement = measurement;
             this.recordComparator = new NullRecordComparator();
             this.requireSorting = false;
             this.description = "as events flowed";
+            this.requireDescription = true;
+        }
+
+        /**
+         * clone the source while replacing the measurement contained
+         */
+        public Builder(Table source, Measurement measurement) {
+            Objects.requireNonNull(source);
+            this.measurement = measurement;   // replace the Measurement contained
+            this.recordComparator = source.recordComparator;
+            this.requireSorting = source.requireSorting;
+            this.description = source.description;
+            this.requireDescription = source.requireDescription;
         }
         //
         public Builder sortByAttributes() {
@@ -187,6 +208,11 @@ public class Table {
             this.recordComparator = recordComparator;
             this.requireSorting = true;
             this.description = "sorted by " + recordComparator.getClass().getSimpleName();
+            return this;
+        }
+        //
+        public Builder noDescription() {
+            this.requireDescription = false;
             return this;
         }
         //
