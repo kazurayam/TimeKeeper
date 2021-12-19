@@ -146,4 +146,17 @@ public class MarkdownReporterTest {
         assertFalse(content.contains("minutes:seconds"));
     }
 
+    @Test
+    public void test_noGraph() throws IOException {
+        StringWriter sw = new StringWriter();
+        MarkdownReporter reporter = new MarkdownReporter();
+        reporter.setOutput(sw);
+        Measurement measurement = TestHelper.makeMeasurement();
+        Table table = new Table.Builder(measurement).noGraph().build();
+        reporter.report(table);
+        String content = sw.toString();
+        //logger.debug(content);
+        assertFalse(content.contains("|graph|"));
+        assertFalse(content.contains("`###"));
+    }
 }

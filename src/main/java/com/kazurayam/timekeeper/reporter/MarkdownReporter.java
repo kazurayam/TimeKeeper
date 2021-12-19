@@ -74,6 +74,9 @@ public class MarkdownReporter implements Reporter {
         pw_.close();
     }
 
+    /**
+     * compile the content of report
+     */
     private void compileReport(Table table) {
         Objects.requireNonNull(table);
         Measurement measurement = table.getMeasurement();
@@ -95,7 +98,9 @@ public class MarkdownReporter implements Reporter {
         }
         if (measurement.hasRecordWithDuration()) {
             sb0.append("duration|");
-            sb0.append("graph|");
+            if (table.requireGraph()) {
+                sb0.append("graph|");
+            }
         }
         pw_.println(sb0);
         //
@@ -110,7 +115,9 @@ public class MarkdownReporter implements Reporter {
         }
         if (measurement.hasRecordWithDuration()) {
             sb1.append("----:|");  // duration
-            sb1.append(":----|");  // duration graph
+            if (table.requireGraph()) {
+                sb1.append(":----|");  // duration graph
+            }
         }
         pw_.println(sb1);
         //
@@ -132,11 +139,13 @@ public class MarkdownReporter implements Reporter {
                 // print duration
                 sb2.append(formatDuration(record.getDuration()));
                 sb2.append("|");
-                // print duration graph
-                sb2.append("`");
-                sb2.append(getDurationGraph(record.getDuration()));
-                sb2.append("`");
-                sb2.append("|");
+                if (table.requireGraph()) {
+                    // print duration graph
+                    sb2.append("`");
+                    sb2.append(getDurationGraph(record.getDuration()));
+                    sb2.append("`");
+                    sb2.append("|");
+                }
             }
             //
             pw_.println(sb2);
@@ -158,12 +167,14 @@ public class MarkdownReporter implements Reporter {
         }
         if (measurement.hasRecordWithDuration()) {
             sb3.append(formatDuration(measurement.getAverageDuration()));
-            sb3.append("| |");
+            sb3.append("|");
+            if (table.requireGraph()) {
+                sb3.append(" |");
+            }
         }
         pw_.println(sb3);
-        //
         pw_.println("");
-
+        //
         if (table.requireLegend()) {
             if (measurement.hasRecordWithSize()) {
                 pw_.println("The unit of size is bytes");

@@ -20,6 +20,7 @@ public class Table {
     private final String description;
     private final Boolean requireDescription;
     private final Boolean requireLegend;
+    private final Boolean requireGraph;
 
     private Table(Builder builder) {
         this.measurement = builder.measurement;
@@ -28,6 +29,7 @@ public class Table {
         this.description = builder.description;
         this.requireDescription = builder.requireDescription;
         this.requireLegend = builder.requireLegend;
+        this.requireGraph = builder.requireGraph;
     }
 
     public Measurement getMeasurement() {
@@ -47,6 +49,8 @@ public class Table {
     public Boolean requireDescription() { return this.requireDescription; }
 
     public Boolean requireLegend() { return this.requireLegend; }
+
+    public Boolean requireGraph() { return this.requireGraph; }
 
     /**
      * clone the Measurement object with the records are sorted by the RecordComparator
@@ -75,6 +79,7 @@ public class Table {
         private String description;
         private Boolean requireDescription;
         private Boolean requireLegend;
+        private Boolean requireGraph;
         //
         public Builder(Measurement measurement) {
             Objects.requireNonNull(measurement);
@@ -84,6 +89,7 @@ public class Table {
             this.description = "as events flowed";
             this.requireDescription = true;
             this.requireLegend = true;
+            this.requireGraph = true;
         }
 
         /**
@@ -97,6 +103,7 @@ public class Table {
             this.description = source.description;
             this.requireDescription = source.requireDescription;
             this.requireLegend = source.requireLegend;
+            this.requireGraph = source.requireGraph;
         }
         //
         public Builder sortByAttributes() {
@@ -226,6 +233,11 @@ public class Table {
         //
         public Builder noLegend() {
             this.requireLegend = false;
+            return this;
+        }
+        //
+        public Builder noGraph() {
+            this.requireGraph = false;
             return this;
         }
         //
