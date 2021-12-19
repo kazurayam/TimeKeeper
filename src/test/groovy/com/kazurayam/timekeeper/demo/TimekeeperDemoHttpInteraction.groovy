@@ -154,7 +154,7 @@ class TimekeeperDemoHttpInteraction {
         processURLs(urlList, outDir_, interactions)
         // print the report
         Table table = new Table.Builder(interactions)
-                .sortByAttributesThenDuration().noLegend().build()
+                .sortByAttributes().thenByDuration().noLegend().build()
         tk.add(table)
         tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
     }

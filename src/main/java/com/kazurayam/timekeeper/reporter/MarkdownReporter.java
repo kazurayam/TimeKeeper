@@ -68,7 +68,7 @@ public class MarkdownReporter implements Reporter {
     public void report(Table table) throws IOException {
         Objects.requireNonNull(table);
         Measurement m = (table.requireSorting()) ?
-                table.sortedMeasurement() : table.getMeasurement();
+                table.sorted() : table.getMeasurement();
         Table sortedTable = new Table.Builder(table, m).build();
         this.compileReport(sortedTable);
         pw_.close();

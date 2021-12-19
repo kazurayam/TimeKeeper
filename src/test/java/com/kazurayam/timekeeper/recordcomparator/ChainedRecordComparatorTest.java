@@ -44,7 +44,7 @@ public class ChainedRecordComparatorTest {
      * - RecordComparatorByDuration
      */
     @Test
-    public void test_ByAttributesThenDuration() {
+    public void test_ByAttributesThenByDuration() {
         List<RecordComparator> chain = new ArrayList<>();
         chain.add(new RecordComparatorByAttributes(Arrays.asList("URL")));
         chain.add(new RecordComparatorByDuration());

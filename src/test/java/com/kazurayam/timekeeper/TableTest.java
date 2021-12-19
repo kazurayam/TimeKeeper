@@ -43,27 +43,31 @@ public class TableTest {
     }
 
     @Test
-    public void test_Builder_sortByAttributesThenDuration_noArg() {
+    public void test_Builder_sortByAttributesThenByDuration_noArg() {
         assertNotNull(new Table.Builder(m)
-                .sortByAttributesThenDuration().build());
+                .sortByAttributes()
+                .thenByDuration().build());
     }
 
     @Test
-    public void test_Builder_sortByAttributesThenDuration_withArg() {
+    public void test_Builder_sortByAttributesThenByDuration_withArg() {
         assertNotNull(new Table.Builder(m)
-                .sortByAttributesThenDuration(Collections.singletonList("URL")).build());
+                .sortByAttributes(Collections.singletonList("URL"))
+                .thenByDuration().build());
     }
 
     @Test
-    public void test_Builder_sortByAttributesThenSize_noArg() {
+    public void test_Builder_sortByAttributesThenBySize_noArg() {
         assertNotNull(new Table.Builder(m)
-                .sortByAttributesThenSize().build());
+                .sortByAttributes()
+                .thenBySize().build());
     }
 
     @Test
-    public void test_Builder_sortByAttributesThenSize_withArg() {
+    public void test_Builder_sortByAttributesThenBySize_withArg() {
         assertNotNull(new Table.Builder(m)
-                .sortByAttributesThenSize(Collections.singletonList("URL")).build());
+                .sortByAttributes(Collections.singletonList("URL"))
+                .thenBySize().build());
     }
 
     @Test
@@ -73,15 +77,17 @@ public class TableTest {
     }
 
     @Test
-    public void test_Builder_sortByDurationThenAttributes_noArg() {
+    public void test_Builder_sortByDurationThenByAttributes_noArg() {
         assertNotNull(new Table.Builder(m)
-                .sortByDurationThenAttributes().build());
+                .sortByDuration()
+                .thenByAttributes().build());
     }
 
     @Test
-    public void test_Builder_sortByDurationThenAttributes_withArg() {
+    public void test_Builder_sortByDurationThenBtAttributes_withArg() {
         assertNotNull(new Table.Builder(m)
-                .sortByDurationThenAttributes(Collections.singletonList("URL")).build());
+                .sortByDuration()
+                .thenByAttributes(Collections.singletonList("URL")).build());
     }
 
     @Test
@@ -91,15 +97,17 @@ public class TableTest {
     }
 
     @Test
-    public void test_Builder_sortBySizeThenAttributes_noArg() {
+    public void test_Builder_sortBySizeThenByAttributes_noArg() {
         assertNotNull(new Table.Builder(m)
-                .sortBySizeThenAttributes().build());
+                .sortBySize()
+                .thenByAttributes().build());
     }
 
     @Test
-    public void test_Builder_sortBySizeThenAttributes_withArg() {
+    public void test_Builder_sortBySizeThenByAttributes_withArg() {
         assertNotNull(new Table.Builder(m)
-                .sortBySizeThenAttributes(Collections.singletonList("URL")).build());
+                .sortBySize()
+                .thenByAttributes(Collections.singletonList("URL")).build());
     }
 
     @Test
@@ -108,7 +116,7 @@ public class TableTest {
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
                 .sortByAttributes().build();
-        Measurement sorted = t.sortedMeasurement();
+        Measurement sorted = t.sorted();
         //System.out.println(sorted.toJson());
         assertNotNull(sorted);
         String url0 = sorted.get(0).getAttributes().get("URL");
@@ -123,12 +131,12 @@ public class TableTest {
     }
 
     @Test
-    public void test_sorted_byAttributes_reverseOrder() {
+    public void test_sorted_byAttributes_descending() {
         Measurement m = stuffRecordsToSort(
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
                 .sortByAttributes(RowOrder.DESCENDING).build();
-        Measurement sorted = t.sortedMeasurement();
+        Measurement sorted = t.sorted();
         //System.out.println(sorted.toJson());
         assertNotNull(sorted);
         String url0 = sorted.get(0).getAttributes().get("URL");
@@ -148,7 +156,7 @@ public class TableTest {
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
                 .sortByDuration().build();
-        Measurement sorted = t.sortedMeasurement();
+        Measurement sorted = t.sorted();
         //System.out.println(sorted.toJson());
         assertNotNull(sorted);
         Duration dur0 = sorted.get(0).getDuration();
@@ -163,13 +171,13 @@ public class TableTest {
     }
 
     @Test
-    public void test_sorted_byDuration_reverseOrder() {
+    public void test_sorted_byDuration_descending() {
         Measurement m = stuffRecordsToSort(
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
                 .sortByDuration(RowOrder.DESCENDING)
                 .build();
-        Measurement sorted = t.sortedMeasurement();
+        Measurement sorted = t.sorted();
         //System.out.println(sorted.toJson());
         assertNotNull(sorted);
         Duration dur0 = sorted.get(0).getDuration();
@@ -189,7 +197,7 @@ public class TableTest {
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
                 .sortBySize().build();
-        Measurement sorted = t.sortedMeasurement();
+        Measurement sorted = t.sorted();
         //System.out.println(sorted.toJson());
         assertNotNull(sorted);
         Long size0 = sorted.get(0).getSize();
@@ -204,12 +212,13 @@ public class TableTest {
     }
 
     @Test
-    public void test_sorted_byAttributesThenDuration() {
+    public void test_sorted_byAttributesThenByDuration() {
         Measurement m = stuffRecordsToSort(
                 new Measurement.Builder("foo", Collections.singletonList("URL")).build());
         Table t = new Table.Builder(m)
-                .sortByAttributesThenDuration().build();
-        Measurement sorted = t.sortedMeasurement();
+                .sortByAttributes()
+                .thenByDuration().build();
+        Measurement sorted = t.sorted();
         //System.out.println(sorted.toJson());
         assertNotNull(sorted);
         String url0 = sorted.get(0).getAttributes().get("URL");
@@ -229,8 +238,8 @@ public class TableTest {
 
     private Measurement stuffRecordsToSort(Measurement m) {
         try {
-            Path fixtureFile = Paths.get(".").resolve("src/test/fixtures/measurement_5lines.md");
-
+            Path fixtureFile = Paths.get(".").resolve(
+                    "src/test/fixtures/measurement_5lines.md");
             List<Record> records = TestHelper.readMd(fixtureFile);
             for (Record r : records) {
                 m.add(r);
