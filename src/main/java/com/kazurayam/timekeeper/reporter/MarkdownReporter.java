@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,39 +32,49 @@ public class MarkdownReporter implements Reporter {
         this.pw_ = new PrintWriter(System.out);
     }
 
+    @Override
     public void setOutput(Path output) throws IOException {
         Objects.requireNonNull(output);
         Files.createDirectories(output.getParent());
         File outputFile = output.toFile();
-        this.pw_ = new PrintWriter(
-                new BufferedWriter(
-                        new OutputStreamWriter(
-                                new FileOutputStream(outputFile),
-                                StandardCharsets.UTF_8)));
+        this.setOutput(outputFile);
+
     }
 
-    public void report(TableList tableList) {
-        tableList.forEach(table -> {
-            try {
-                this.report(table);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        //
+    @Override
+    public void setOutput(File outputFile) throws IOException {
+        Objects.requireNonNull(outputFile);
+        Writer writer = new OutputStreamWriter(
+                new FileOutputStream(outputFile), StandardCharsets.UTF_8);
+        this.setOutput(writer);
+    }
+
+    @Override
+    public void setOutput(Writer writer) throws IOException {
+        Objects.requireNonNull(writer);
+        this.pw_ = new PrintWriter(new BufferedWriter(writer));
+    }
+
+
+    @Override
+    public void report(TableList tableList) throws IOException {
+        for (Table table : tableList) {
+            this.report(table);
+        }
         pw_.close();
     }
 
+    @Override
     public void report(Table table) throws IOException {
         Objects.requireNonNull(table);
-        if (table.requireSorting()) {
-            this.reportSorted(table.sortedMeasurement(), table.getDescription());
-        } else {
-            this.reportSorted(table.getMeasurement(), table.getDescription());
-        }
+        Measurement m = (table.requireSorting()) ?
+                table.sortedMeasurement() : table.getMeasurement();
+        this.compileReport(m, table.getDescription());
+        pw_.close();
     }
 
-    private void reportSorted(Measurement measurement, String description) {
+    private void compileReport(Measurement measurement,
+                               String description) throws IOException {
         pw_.println("## " + measurement.getId());
         pw_.println("");
         pw_.println(description);

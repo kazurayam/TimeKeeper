@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,7 +20,6 @@ import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class MarkdownReporterTest {
 
@@ -36,8 +36,8 @@ public class MarkdownReporterTest {
     }
 
     @Test
-    public void test_report_single_Measurement() throws IOException {
-        Path caseOutputDir = classOutput.resolve("test_report_single_Measurement");
+    public void test_report_a_Table_to_Path() throws IOException {
+        Path caseOutputDir = classOutput.resolve("test_report_a_Table_to_Path");
         Path md = caseOutputDir.resolve("report.md");
         MarkdownReporter reporter = new MarkdownReporter();
         reporter.setOutput(md);
@@ -48,6 +48,7 @@ public class MarkdownReporterTest {
         assertTrue(Files.exists(md), "no output");
         assertTrue(Files.size(md) > 0, "empty output");
     }
+
 
     @Test
     public void test_formatDuration_mmss() {
@@ -103,4 +104,19 @@ public class MarkdownReporterTest {
     public void test_parseSize() throws ParseException {
         assertEquals(123456L, MarkdownReporter.parseSize("123,456"));
     }
+
+    @Test
+    public void test_report_a_Table_to_Writer() throws IOException {
+        StringWriter sw = new StringWriter();
+        MarkdownReporter reporter = new MarkdownReporter();
+        reporter.setOutput(sw);
+        Measurement measurement = TestHelper.makeMeasurement();
+        Table table = new Table.Builder(measurement).build();
+        reporter.report(table);
+        String content = sw.toString();
+        //logger.debug(content);
+        assertTrue(content.length() > 0);
+        assertTrue(content.contains("## M1"));
+    }
+
 }
