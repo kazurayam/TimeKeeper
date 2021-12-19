@@ -59,19 +59,23 @@ public class MarkdownReporter implements Reporter {
     @Override
     public void report(TableList tableList) throws IOException {
         for (Table table : tableList) {
-            this.report(table);
+            this.processTable(table);
         }
         pw_.close();
     }
 
     @Override
     public void report(Table table) throws IOException {
+        this.processTable(table);
+        pw_.close();
+    }
+
+    protected void processTable(Table table) throws IOException {
         Objects.requireNonNull(table);
         Measurement m = (table.requireSorting()) ?
                 table.sorted() : table.getMeasurement();
         Table sortedTable = new Table.Builder(table, m).build();
         this.compileReport(sortedTable);
-        pw_.close();
     }
 
     /**
