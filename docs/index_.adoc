@@ -16,7 +16,7 @@ The 1st problem is that it is bothersome recording the duration using a stopwatc
 
 The 2nd problem is that it is difficult to find useful information out of the bulk of console messages. I want to summarise the statistics. But it is too tiresome to write manually a statistics report in Markdown table format.
 
-I want to automate these tasks entirely. I want my tests to perform not only measure performance but also compile a concise report in Markdown format. Here comes the Timekeeper!
+I want to automate these tasks entirely. I want my tests to perform not only measuring performance but also compiling a concise report in Markdown format. Here comes the Timekeeper!
 
 
 == Processing outline
@@ -24,11 +24,11 @@ I want to automate these tasks entirely. I want my tests to perform not only mea
 Let me tell an outline of a test script which uses the Timekeeper to measure performance and print a report.
 
 1. Your test script should create a `Measurement` object, which is a container of `Record` objects. A `Measurement` requires you to define a set of table column names, like "Case" ad "URL".
-2. While performing test, say visit URLs, your test script will make a record with the "startAt" timestamp before an action to be measured, and the "endAt" timestamp after that action. You may append some "size" information to the record; for example, the size of downloaded file.
+2. While performing a test (e.g, visiting URLs), your test script will make a record, and write the "startAt" timestamp before an action, and the "endAt" timestamp after the action. You may also put some "size" information into the record (e.g, the size of downloaded file).
 3. The `Record` objects should be stored in the `Measurement` object.
-4. Your test script will repeat creating `Record` s and putting them into the `Measurement` object as many times as it wants to. For you may want to test 100 URLs.
-5. Your test script makes a `Table` object, which requires a `Measurement` object and the information how you want it formatted in a text report. You can specify how the Table to sort the rows.
-6. Your test script want to create a `Timekeeper` object. Your script will put one or more `Table` objects, and then let Timekeeper to transform `Table` s into a text report.
+4. Your test script will repeat creating `Record` s and putting them into the `Measurement` object as many times as you wants to. For example, you may visit 100 URLs and create 100 Records in a Measurement.
+5. Your test script wants to make a `Table` object, which wraps a `Measurement` object and the information how you want it formatted in a text report. For example, you can specify how the rows of the Table to be sorted.
+6. Your test script want to create a `Timekeeper` object. Your script will put one or more `Table` objects. Finally your test will call Timekeeper's report() method which will write a text file. The report will contain one or more tables in Markdown format.
 
 == Examples
 
