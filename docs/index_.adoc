@@ -21,7 +21,7 @@ I want to automate these tasks entirely. I want my tests to perform not only mea
 
 == Processing outline
 
-Let me tell an outline of a test script which uses the Timekeeper to measure performance and print a report.
+Here is an outline of a test script which uses the Timekeeper to measure performance and print a report.
 
 1. Your test script should create a `Measurement` object, which is a container of `Record` objects. A `Measurement` requires you to define a set of table column names, like "Case" ad "URL".
 2. While performing a test (e.g, visiting URLs), your test script will make a record, and write the "startAt" timestamp before an action, and the "endAt" timestamp after the action. You may also put some "size" information into the record (e.g, the size of downloaded file).
@@ -91,7 +91,7 @@ image::images/selenium.png[]
 
 The code is here:
 
-* https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoWithSelenium.groovy[com.kazurayam.timekeeper_demo.TimekeeperDemoWithSelenium]
+* https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoWithSelenium.groovy[com.kazurayam.timekeeper_demo.TimekeeperDemoWithSelenium]
 
 == API
 

@@ -22,7 +22,7 @@ I want to automate these tasks entirely. I want my tests to perform not only mea
 
 ## Processing outline
 
-Let me tell an outline of a test script which uses the Timekeeper to measure performance and print a report.
+Here is an outline of a test script which uses the Timekeeper to measure performance and print a report.
 
 1.  Your test script should create a `Measurement` object, which is a container of `Record` objects. A `Measurement` requires you to define a set of table column names, like "Case" ad "URL".
 
@@ -265,7 +265,7 @@ This Markdown text will be rendered on browser like this:
 
 The code is here:
 
--   [com.kazurayam.timekeeper\_demo.TimekeeperDemoWithSelenium](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoWithSelenium.groovy)
+-   [com.kazurayam.timekeeper\_demo.TimekeeperDemoWithSelenium](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoWithSelenium.groovy)
 
 ## API
 
