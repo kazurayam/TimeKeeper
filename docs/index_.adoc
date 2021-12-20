@@ -258,7 +258,7 @@ The output is like this:
 include::./TimekeeperDemoHttpInteraction/sortBySize_ascending.md[]
 ----
 
-==== Sort by a chain of `RecordComparator` s
+==== Sort by a chain of `RecordComparator`
 
 The `Table.Builder` class implements 3 `sortBy*()`methods:
 
@@ -345,7 +345,7 @@ Please note the line of `.noGraph()` here.
 include::TimekeeperDemoMinimal/noGraph.md[]
 ----
 
-Here there is no column of "|graph|" and ##.
+Here there is no column of "graph".
 
 ==== The simplest report
 
@@ -356,9 +356,10 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=83..94]
 ----
 
+
+Then you will get output as follows, which has the simplest format that Timekeeper can print.
+
 [source, markdown]
 ----
 include::TimekeeperDemoMinimal/the_simplest.md[]
 ----
-
-This is the simplest format that Timekeeper can print.

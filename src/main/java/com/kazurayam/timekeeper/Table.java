@@ -76,7 +76,7 @@ public class Table {
      */
     public static class Builder {
         private final Measurement measurement;
-        private final List<RecordComparator> recordComparatorList;
+        private List<RecordComparator> recordComparatorList;
         private Boolean requireSorting;
         private Boolean requireDescription;
         private Boolean requireLegend;
@@ -117,6 +117,7 @@ public class Table {
             return this.sortByAttributes(keys, RowOrder.ASCENDING);
         }
         public Builder sortByAttributes(List<String> keys, RowOrder rowOrder) {
+            this.recordComparatorList = new ArrayList<>();
             return thenByAttributes(keys, rowOrder);
         }
         //
@@ -141,10 +142,11 @@ public class Table {
             return this.sortByDuration(RowOrder.ASCENDING);
         }
         public Builder sortByDuration(RowOrder rowOrder) {
+            this.recordComparatorList = new ArrayList<>();
             return this.thenByDuration(rowOrder);
         }
         public Builder thenByDuration() {
-            return this.sortByDuration(RowOrder.ASCENDING);
+            return this.thenByDuration(RowOrder.ASCENDING);
         }
         public Builder thenByDuration(RowOrder rowOrder) {
             RecordComparator rc = new RecordComparatorByDuration(rowOrder);
@@ -157,10 +159,11 @@ public class Table {
             return this.sortBySize(RowOrder.ASCENDING);
         }
         public Builder sortBySize(RowOrder rowOrder) {
+            this.recordComparatorList = new ArrayList<>();
             return this.thenBySize(rowOrder);
         }
         public Builder thenBySize() {
-            return this.sortBySize(RowOrder.ASCENDING);
+            return this.thenBySize(RowOrder.ASCENDING);
         }
         public Builder thenBySize(RowOrder rowOrder) {
             RecordComparator rc = new RecordComparatorBySize(rowOrder);
@@ -168,19 +171,6 @@ public class Table {
             this.requireSorting = true;
             return this;
         }
-        //
-        /*
-        Builder recordComparator(RecordComparator recordComparator) {
-            Objects.requireNonNull(recordComparator);
-            this.recordComparatorList.add(recordComparator);
-            this.requireSorting = true;
-            if (this.description.length() > 0) {
-                this.description += " > ";
-            }
-            this.description += "sorted by " + recordComparator.getClass().getSimpleName();
-            return this;
-        }
-         */
         //
         public Builder noDescription() {
             this.requireDescription = false;

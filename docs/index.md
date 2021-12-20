@@ -527,7 +527,7 @@ The output is like this:
     |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:03|`#`|
     |Average|-|5,978|00:03| |
 
-#### Sort by a chain of `RecordComparator` s
+#### Sort by a chain of `RecordComparator`
 
 The `Table.Builder` class implements 3 \`sortBy\*()\`methods:
 
@@ -660,7 +660,7 @@ Please note the line of `.noGraph()` here.
 
     one # represents 10 seconds in the duration graph
 
-Here there is no column of "|graph|" and ##.
+Here there is no column of "graph".
 
 #### The simplest report
 
@@ -679,6 +679,8 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
             tk.report(outDir_.resolve("the_simplest.md"))
         }
 
+Then you will get output as follows, which has the simplest format that Timekeeper can print.
+
     ## How long it waited
 
     |Case|duration|
@@ -687,5 +689,3 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
     |sleeping for 3 secs|00:03|
     |sleeping for 7 secs|00:07|
     |Average|00:07|
-
-This is the simplest format that Timekeeper can print.
