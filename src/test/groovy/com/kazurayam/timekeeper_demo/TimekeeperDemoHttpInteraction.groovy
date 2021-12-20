@@ -1,4 +1,4 @@
-package com.kazurayam.timekeeperdemo
+package com.kazurayam.timekeeper_demo
 
 import com.kazurayam.timekeeper.Measurement
 import com.kazurayam.timekeeper.RowOrder

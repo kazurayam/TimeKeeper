@@ -1,4 +1,4 @@
-package com.kazurayam.timekeeperdemo
+package com.kazurayam.timekeeper_demo
 
 import com.kazurayam.ashotwrapper.AShotWrapper
 import com.kazurayam.ashotwrapper.DevicePixelRatioResolver
