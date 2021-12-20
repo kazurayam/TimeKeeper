@@ -1,5 +1,6 @@
 package com.kazurayam.timekeeper.recordcomparator;
 
+import com.google.gson.Gson;
 import com.kazurayam.timekeeper.Record;
 import com.kazurayam.timekeeper.RecordComparator;
 import com.kazurayam.timekeeper.RowOrder;
@@ -47,6 +48,13 @@ public class RecordComparatorByAttributes implements RecordComparator {
 
     @Override
     public String getDescription() {
-        return String.format("sorted by attributes (%s)", rowOrder.description());
+        Gson gson = new Gson();
+        String keysStr = "";
+        if (keys.size() > 0) {
+            keysStr = " " + gson.toJson(this.keys);
+        }
+        return String.format("sorted by attributes%s (%s)",
+                keysStr,
+                rowOrder.description());
     }
 }

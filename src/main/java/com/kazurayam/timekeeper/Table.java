@@ -76,9 +76,8 @@ public class Table {
      */
     public static class Builder {
         private final Measurement measurement;
-        private List<RecordComparator> recordComparatorList;
+        private final List<RecordComparator> recordComparatorList;
         private Boolean requireSorting;
-        private String description;
         private Boolean requireDescription;
         private Boolean requireLegend;
         private Boolean requireGraph;

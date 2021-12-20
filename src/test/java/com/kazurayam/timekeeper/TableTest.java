@@ -41,7 +41,7 @@ public class TableTest {
                 .sortByAttributes()
                 .thenByDuration().build();
         assertNotNull(t);
-        assertEquals("sorted by attributes (ascending) > sorted by duration (ascending)",
+        assertEquals("sorted by attributes [\"case\",\"Suite\",\"Step Execution Log\",\"Log Viewer\",\"Mode\"] (ascending) > sorted by duration (ascending)",
                 t.getDescription());
     }
 
@@ -51,7 +51,7 @@ public class TableTest {
                 .sortByAttributes(Collections.singletonList("URL"))
                 .thenByDuration(RowOrder.DESCENDING).build();
         assertNotNull(t);
-        assertEquals("sorted by attributes (ascending) > sorted by duration (descending)",
+        assertEquals("sorted by attributes [\"URL\"] (ascending) > sorted by duration (descending)",
                 t.getDescription());
     }
 
@@ -82,7 +82,7 @@ public class TableTest {
                 .thenByAttributes().build();
         assertNotNull(t);
         assertEquals(
-                "sorted by duration (ascending) > sorted by attributes (ascending)",
+                "sorted by duration (ascending) > sorted by attributes [\"case\",\"Suite\",\"Step Execution Log\",\"Log Viewer\",\"Mode\"] (ascending)",
                 t.getDescription());
     }
 
@@ -105,7 +105,7 @@ public class TableTest {
                 .sortBySize()
                 .thenByAttributes().build();
         assertNotNull(t);
-        assertEquals("sorted by size (ascending) > sorted by attributes (ascending)",
+        assertEquals("sorted by size (ascending) > sorted by attributes [\"case\",\"Suite\",\"Step Execution Log\",\"Log Viewer\",\"Mode\"] (ascending)",
                 t.getDescription());
     }
 
