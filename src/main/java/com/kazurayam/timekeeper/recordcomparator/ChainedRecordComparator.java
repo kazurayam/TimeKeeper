@@ -29,4 +29,16 @@ public class ChainedRecordComparator implements RecordComparator {
         }
         return result;
     }
+
+    @Override
+    public String getDescription() {
+        StringBuilder sb = new StringBuilder();
+        for (RecordComparator rc : recordComparatorList) {
+            if (sb.length() > 0) {
+                sb.append(" > ");
+            }
+            sb.append(rc.getDescription());
+        }
+        return sb.toString();
+    }
 }

@@ -4,4 +4,6 @@ import java.util.Comparator;
 
 public interface RecordComparator extends Comparator<Record> {
 
+    String getDescription();
+
 }

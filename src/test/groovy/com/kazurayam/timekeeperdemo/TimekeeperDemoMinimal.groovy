@@ -1,4 +1,4 @@
-package com.kazurayam.timekeeper.demo
+package com.kazurayam.timekeeperdemo
 
 import com.kazurayam.timekeeper.Measurement
 import com.kazurayam.timekeeper.Table

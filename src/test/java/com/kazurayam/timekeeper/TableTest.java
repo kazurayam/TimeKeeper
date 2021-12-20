@@ -1,8 +1,8 @@
 package com.kazurayam.timekeeper;
 
-import com.kazurayam.timekeeper.recordcomparator.NullRecordComparator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,13 +24,6 @@ public class TableTest {
     }
 
     @Test
-    public void test_smoke() {
-        RecordComparator rc = new NullRecordComparator();
-        Table t = new Table.Builder(m).recordComparator(rc).build();
-        assertNotNull(t);
-    }
-
-    @Test
     public void test_Builder_sortByAttributes_noArg() {
         assertNotNull(new Table.Builder(m)
                 .sortByAttributes().build());
@@ -44,16 +37,22 @@ public class TableTest {
 
     @Test
     public void test_Builder_sortByAttributesThenByDuration_noArg() {
-        assertNotNull(new Table.Builder(m)
+        Table t = new Table.Builder(m)
                 .sortByAttributes()
-                .thenByDuration().build());
+                .thenByDuration().build();
+        assertNotNull(t);
+        assertEquals("sorted by attributes (ascending) > sorted by duration (ascending)",
+                t.getDescription());
     }
 
     @Test
     public void test_Builder_sortByAttributesThenByDuration_withArg() {
-        assertNotNull(new Table.Builder(m)
+        Table t = new Table.Builder(m)
                 .sortByAttributes(Collections.singletonList("URL"))
-                .thenByDuration().build());
+                .thenByDuration(RowOrder.DESCENDING).build();
+        assertNotNull(t);
+        assertEquals("sorted by attributes (ascending) > sorted by duration (descending)",
+                t.getDescription());
     }
 
     @Test
@@ -78,9 +77,13 @@ public class TableTest {
 
     @Test
     public void test_Builder_sortByDurationThenByAttributes_noArg() {
-        assertNotNull(new Table.Builder(m)
+        Table t = new Table.Builder(m)
                 .sortByDuration()
-                .thenByAttributes().build());
+                .thenByAttributes().build();
+        assertNotNull(t);
+        assertEquals(
+                "sorted by duration (ascending) > sorted by attributes (ascending)",
+                t.getDescription());
     }
 
     @Test
@@ -98,9 +101,12 @@ public class TableTest {
 
     @Test
     public void test_Builder_sortBySizeThenByAttributes_noArg() {
-        assertNotNull(new Table.Builder(m)
+        Table t = new Table.Builder(m)
                 .sortBySize()
-                .thenByAttributes().build());
+                .thenByAttributes().build();
+        assertNotNull(t);
+        assertEquals("sorted by size (ascending) > sorted by attributes (ascending)",
+                t.getDescription());
     }
 
     @Test

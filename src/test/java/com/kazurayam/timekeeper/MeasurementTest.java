@@ -1,7 +1,6 @@
 package com.kazurayam.timekeeper;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

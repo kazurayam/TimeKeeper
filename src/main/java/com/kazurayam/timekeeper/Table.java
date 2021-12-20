@@ -14,7 +14,6 @@ public class Table {
     private final Measurement measurement;
     private final List<RecordComparator> recordComparatorList;
     private final Boolean requireSorting;
-    private final String description;
     private final Boolean requireDescription;
     private final Boolean requireLegend;
     private final Boolean requireGraph;
@@ -23,7 +22,6 @@ public class Table {
         this.measurement = builder.measurement;
         this.recordComparatorList = builder.recordComparatorList;
         this.requireSorting = builder.requireSorting;
-        this.description = builder.description;
         this.requireDescription = builder.requireDescription;
         this.requireLegend = builder.requireLegend;
         this.requireGraph = builder.requireGraph;
@@ -40,7 +38,14 @@ public class Table {
         return this.requireSorting;
     }
 
-    public String getDescription() { return this.description; }
+    public String getDescription() {
+        if (this.recordComparatorList.size() > 0) {
+            RecordComparator chain = new ChainedRecordComparator(this.recordComparatorList);
+            return chain.getDescription();
+        } else {
+            return "as events flow";
+        }
+    }
 
     public Boolean requireDescription() { return this.requireDescription; }
 
@@ -83,7 +88,6 @@ public class Table {
             this.measurement = measurement;
             this.recordComparatorList = new ArrayList<>();
             this.requireSorting = false;
-            this.description = "as events flowed";
             this.requireDescription = true;
             this.requireLegend = true;
             this.requireGraph = true;
@@ -99,7 +103,6 @@ public class Table {
             this.measurement = measurement;   // replace the Measurement contained
             this.recordComparatorList = source.recordComparatorList;
             this.requireSorting = source.requireSorting;
-            this.description = source.description;
             this.requireDescription = source.requireDescription;
             this.requireLegend = source.requireLegend;
             this.requireGraph = source.requireGraph;
@@ -132,9 +135,6 @@ public class Table {
             if (keys.size() == 0) throw new IllegalArgumentException("keys must not be empty");
             RecordComparator rc = new RecordComparatorByAttributes(keys, rowOrder);
             this.recordComparatorList.add(rc);
-            this.requireSorting = true;
-            this.description = String.format("sorted by attributes then duration (%s)",
-                    rowOrder.description());
             return this;
         }
         //
@@ -151,8 +151,6 @@ public class Table {
             RecordComparator rc = new RecordComparatorByDuration(rowOrder);
             this.recordComparatorList.add(rc);
             this.requireSorting = true;
-            this.description = String.format("sorted by duration (%s)",
-                    rowOrder.description());
             return this;
         }
         //
@@ -169,17 +167,21 @@ public class Table {
             RecordComparator rc = new RecordComparatorBySize(rowOrder);
             this.recordComparatorList.add(rc);
             this.requireSorting = true;
-            this.description = "sorted by size";
             return this;
         }
         //
+        /*
         Builder recordComparator(RecordComparator recordComparator) {
             Objects.requireNonNull(recordComparator);
             this.recordComparatorList.add(recordComparator);
             this.requireSorting = true;
-            this.description = "sorted by " + recordComparator.getClass().getSimpleName();
+            if (this.description.length() > 0) {
+                this.description += " > ";
+            }
+            this.description += "sorted by " + recordComparator.getClass().getSimpleName();
             return this;
         }
+         */
         //
         public Builder noDescription() {
             this.requireDescription = false;

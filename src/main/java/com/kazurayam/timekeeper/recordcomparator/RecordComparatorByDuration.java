@@ -6,18 +6,23 @@ import com.kazurayam.timekeeper.RowOrder;
 
 public class RecordComparatorByDuration implements RecordComparator {
 
-    private final int order;
+    private final RowOrder rowOrder;
 
     public RecordComparatorByDuration() {
         this(RowOrder.ASCENDING);
     }
 
     public RecordComparatorByDuration(RowOrder rowOrder) {
-        this.order = (rowOrder == RowOrder.ASCENDING) ? 1 : -1;
+        this.rowOrder = rowOrder;
     }
 
     @Override
     public int compare(Record left, Record right) {
-        return this.order * left.getDuration().compareTo(right.getDuration());
+        return rowOrder.order() * left.getDuration().compareTo(right.getDuration());
+    }
+
+    @Override
+    public String getDescription() {
+        return String.format("sorted by duration (%s)", rowOrder.description());
     }
 }

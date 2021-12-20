@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class RecordComparatorByAttributes implements RecordComparator {
 
     private final List<String> keys;
-    private final int order;
+    private RowOrder rowOrder;
 
     public RecordComparatorByAttributes(List<String> keys) {
         this(keys, RowOrder.ASCENDING);
@@ -21,7 +21,7 @@ public class RecordComparatorByAttributes implements RecordComparator {
     public RecordComparatorByAttributes(List<String> keys, RowOrder rowOrder) {
         Objects.requireNonNull(keys);
         this.keys = keys;
-        this.order = (rowOrder == RowOrder.ASCENDING) ? 1 : -1;
+        this.rowOrder = rowOrder;
     }
 
     @Override
@@ -42,6 +42,11 @@ public class RecordComparatorByAttributes implements RecordComparator {
                 break;
             }
         }
-        return this.order * compareResult;
+        return rowOrder.order() * compareResult;
+    }
+
+    @Override
+    public String getDescription() {
+        return String.format("sorted by attributes (%s)", rowOrder.description());
     }
 }

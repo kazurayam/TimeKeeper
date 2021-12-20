@@ -263,7 +263,7 @@ This Markdown text will be rendered on browser like this:
 
 The code is here:
 
--   [com.kazurayam.timekeeper.demo.TimekeeperDemoWithSelenium](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoWithSelenium.groovy)
+-   [com.kazurayam.timekeeperdemo.TimekeeperDemoWithSelenium](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoWithSelenium.groovy)
 
 # API
 

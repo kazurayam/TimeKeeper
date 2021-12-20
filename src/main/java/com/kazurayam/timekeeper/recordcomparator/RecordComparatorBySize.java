@@ -6,19 +6,24 @@ import com.kazurayam.timekeeper.RowOrder;
 
 public class RecordComparatorBySize implements RecordComparator {
 
-    private final int order;
+    private final RowOrder rowOrder;
 
     public RecordComparatorBySize() {
         this(RowOrder.ASCENDING);
     }
 
     public RecordComparatorBySize(RowOrder rowOrder) {
-        this.order = (rowOrder == RowOrder.ASCENDING) ? 1 : -1;
+        this.rowOrder = rowOrder;
     }
 
     @Override
     public int compare(Record left, Record right) {
-        return this.order * left.getSize().compareTo(right.getSize());
+        return rowOrder.order() * left.getSize().compareTo(right.getSize());
+    }
+
+    @Override
+    public String getDescription() {
+        return String.format("sorted by size (%s)", rowOrder.description());
     }
 
 }
