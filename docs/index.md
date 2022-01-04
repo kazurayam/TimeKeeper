@@ -88,6 +88,7 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
                 LocalDateTime afterSleep = LocalDateTime.now()
                 m1.recordDuration(["Case": "sleeping for " + i + " secs"],
                         beforeSleep, afterSleep)
+                m1.getLast().getDurationMillis() < 20 * 1000
             }
         }
 
@@ -581,7 +582,6 @@ The default format of Timekeeper report contains a few portions that may look ve
                     .build())
             doRecording(m1)
             tk.report(outDir_.resolve("noLegend.md"))
-        }
 
 Please note the line of `.noLegend()`
 
@@ -611,7 +611,6 @@ Please note that there is no legend printed here.
                     .build())
             doRecording(m1)
             tk.report(outDir_.resolve("noDescription.md"))
-        }
 
 Please note the line of `.noDescription()`
 
@@ -641,7 +640,6 @@ Please note that there is no description like "sorted by duration (ascending)" p
                     .build())
             doRecording(m1)
             tk.report(outDir_.resolve("noGraph.md"))
-        }
 
 Please note the line of `.noGraph()` here.
 
@@ -677,7 +675,6 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
                     .build())
             doRecording(m1)
             tk.report(outDir_.resolve("the_simplest.md"))
-        }
 
 Then you will get output as follows, which has the simplest format that Timekeeper can print.
 
