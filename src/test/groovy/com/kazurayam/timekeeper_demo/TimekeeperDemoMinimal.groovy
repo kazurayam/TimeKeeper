@@ -44,6 +44,7 @@ class TimekeeperDemoMinimal {
             LocalDateTime afterSleep = LocalDateTime.now()
             m1.recordDuration(["Case": "sleeping for " + i + " secs"],
                     beforeSleep, afterSleep)
+            m1.getLast().getDurationMillis() < 20 * 1000
         }
     }
 
