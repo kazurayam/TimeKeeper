@@ -1,6 +1,10 @@
 package com.kazurayam.timekeeper;
 
+<<<<<<< HEAD
 import com.kazurayam.timekeeper.reporter.MarkdownReporter;
+=======
+import com.kazurayam.timekeeper.reporter.DataParser;
+>>>>>>> develop
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -99,8 +103,8 @@ public class TestHelper {
                 4 `####`
                  */
             Record r = new Record.Builder().attr("URL", items.get(1)).build();
-            r.setSize(MarkdownReporter.parseSize(items.get(2)));
-            r.setDuration(MarkdownReporter.parseDuration(items.get(3)));
+            r.setSize(DataParser.parseSize(items.get(2)));
+            r.setDuration(DataParser.parseDuration(items.get(3)));
             list.add(r);
         });
         return list;

@@ -1,5 +1,6 @@
 package com.kazurayam.timekeeper;
 
+import com.kazurayam.timekeeper.reporter.CSVReporter;
 import com.kazurayam.timekeeper.reporter.MarkdownReporter;
 
 import java.io.IOException;
@@ -8,7 +9,8 @@ import java.nio.file.Path;
 public class Timekeeper {
 
     public enum FORMAT {
-        MARKDOWN
+        MARKDOWN,
+        CSV
     }
 
     private final TableList tableList;
@@ -35,9 +37,11 @@ public class Timekeeper {
 
     public void report(Path outputFile, FORMAT format) throws IOException {
         if (format == FORMAT.MARKDOWN) {
-            Reporter reporter = new MarkdownReporter();
-            reporter.setOutput(outputFile);
-            reporter.report(tableList);
+            MarkdownReporter reporter = new MarkdownReporter();
+            reporter.report(tableList, outputFile);
+        } else if (format == FORMAT.CSV) {
+            CSVReporter reporter = new CSVReporter();
+            reporter.report(tableList, outputFile);
         } else {
             throw new IllegalArgumentException(
                     String.format("%s is not supported", format.toString()));

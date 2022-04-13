@@ -9,6 +9,7 @@ import io.github.bonigarcia.wdm.WebDriverManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.openqa.selenium.Dimension
 import org.openqa.selenium.WebDriver
@@ -66,16 +67,35 @@ class TimekeeperDemoWithSelenium {
     }
 
     @Test
-    void demo_with_selenium() {
+    void demo_with_selenium_report_Markdown() {
+        Timekeeper tk = runSeleniumTest();
+        tk.report(outDir_.resolve("report.md"))
+        // same as
+        //tk.report(outDir_.resolve("report.md"), Timekeeper.FORMAT.MARKDOWN)
+    }
+
+    // each test method takes 20 seconds to finish
+    @Disabled
+    @Test
+    void demo_with_selenium_report_CSV() {
+        Timekeeper tk = runSeleniumTest();
+        tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
+    }
+
+    Timekeeper runSeleniumTest() {
         Timekeeper tk = new Timekeeper()
         Measurement navigation = new Measurement.Builder(
                 "How long it took to navigate to URLs", ["URL"])
                 .build()
-        tk.add(new Table.Builder(navigation).build())
+        tk.add(new Table.Builder(navigation)
+                .noLegend()
+                .build())
         Measurement screenshot = new Measurement.Builder(
                 "How long it took to take shootshots", ["URL"])
                 .build()
-        tk.add(new Table.Builder(screenshot).build())
+        tk.add(new Table.Builder(screenshot)
+                .noLegend()
+                .build())
         // process all URLs in the CSV file
         Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
         for (Tuple t in parseCSVfile(csv)) {
@@ -95,9 +115,9 @@ class TimekeeperDemoWithSelenium {
                     imageFile.toFile().size(),
                     beforeScreenshot, afterScreenshot)
         }
-        // now print the report
-        tk.report(outDir_.resolve("report.md"))
+        return tk
     }
+
 
     private Path takeFullPageScreenshot(WebDriver driver, Path outDir, String fileName) {
         // using my AShotWrapper lib at https://kazurayam.github.io/ashotwrapper/

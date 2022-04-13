@@ -4,6 +4,7 @@ import com.kazurayam.timekeeper.Measurement
 import com.kazurayam.timekeeper.Table
 import com.kazurayam.timekeeper.Timekeeper
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 import java.nio.file.Files
@@ -11,6 +12,8 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.time.LocalDateTime
 
+// This test takes 2 minutes to finish
+@Disabled
 class TimekeeperDemoMinimal {
 
     private static Path outDir_
