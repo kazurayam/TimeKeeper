@@ -9,6 +9,7 @@ import io.github.bonigarcia.wdm.WebDriverManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.openqa.selenium.Dimension
 import org.openqa.selenium.WebDriver
@@ -73,6 +74,8 @@ class TimekeeperDemoWithSelenium {
         //tk.report(outDir_.resolve("report.md"), Timekeeper.FORMAT.MARKDOWN)
     }
 
+    // each test method takes 20 seconds to finish
+    @Disabled
     @Test
     void demo_with_selenium_report_CSV() {
         Timekeeper tk = runSeleniumTest();
