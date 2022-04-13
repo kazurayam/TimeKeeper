@@ -9,12 +9,12 @@ plugins {
 
 group = 'com.kazurayam'
 archivesBaseName = "timekeeper"
-version = '0.4.0-SNAPSHOT'
+version = '0.4.0'
 
 ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
-sourceCompatibility = '1.8'
-targetCompatibility = '1.8'
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
 
 def defaultEncoding = 'UTF-8'
 tasks.withType(AbstractCompile).each { it.options.encoding = defaultEncoding }
@@ -26,8 +26,6 @@ repositories {
 dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation group: 'org.apache.poi', name: 'poi', version: '3.17'
-    implementation group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
 
     testImplementation 'ch.qos.logback:logback-core:1.2.3'
     testImplementation 'ch.qos.logback:logback-classic:1.2.3'
