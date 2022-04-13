@@ -41,11 +41,10 @@ public class MarkdownReporterTest {
         Path caseOutputDir = classOutput.resolve("test_report_a_Table_to_Path");
         Path md = caseOutputDir.resolve("report.md");
         MarkdownReporter reporter = new MarkdownReporter();
-        reporter.setOutput(md);
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).build();
         //logger.debug("measurement.size() is " + measurement.size());
-        reporter.report(table);
+        reporter.report(table, md);
         assertTrue(Files.exists(md), "no output");
         assertTrue(Files.size(md) > 0, "empty output");
     }
@@ -58,7 +57,7 @@ public class MarkdownReporterTest {
         LocalDateTime endExclusive   = LocalDateTime.of(
                 2021, 12, 16, 21, 11, 23);
         Duration dur = Duration.between(startInclusive, endExclusive);
-        assertEquals("01:23", MarkdownReporter.formatDuration(dur));
+        assertEquals("01:23", DataFormatter.formatDuration(dur));
     }
 
     @Test
@@ -68,19 +67,19 @@ public class MarkdownReporterTest {
         LocalDateTime endExclusive   = LocalDateTime.of(
                 2021, 12, 16, 22, 33, 45);
         Duration dur = Duration.between(startInclusive, endExclusive);
-        assertEquals("1:23:45", MarkdownReporter.formatDuration(dur));
+        assertEquals("1:23:45", DataFormatter.formatDuration(dur));
     }
 
     @Test
     public void test_formatNumber() {
-        assertEquals("123,456", MarkdownReporter.formatSize(123456L));
+        assertEquals("123,456", DataFormatter.formatSize(123456L));
     }
 
     @Test
     public void test_DURATION_PATTERN() {
-        Matcher m1 = MarkdownReporter.DURATION_PATTERN.matcher("01:23");
+        Matcher m1 = DataParser.DURATION_PATTERN.matcher("01:23");
         assertTrue(m1.matches());
-        Matcher m2 = MarkdownReporter.DURATION_PATTERN.matcher("1:23:45");
+        Matcher m2 = DataParser.DURATION_PATTERN.matcher("1:23:45");
         assertTrue(m2.matches());
         for (int i = 0; i <= m2.groupCount(); i++) {
             System.out.println(i + " " + m2.group(i));
@@ -90,30 +89,29 @@ public class MarkdownReporterTest {
     @Test
     public void test_parseDuration_mmss() {
         String mmss = "01:23";
-        Duration dur = MarkdownReporter.parseDuration(mmss);
+        Duration dur = DataParser.parseDuration(mmss);
         assertEquals(83, dur.getSeconds());
     }
 
     @Test
     public void test_parseDuration_hhmmss() {
         String hhmmss = "1:23:45";
-        Duration dur = MarkdownReporter.parseDuration(hhmmss);
+        Duration dur = DataParser.parseDuration(hhmmss);
         assertEquals(60 * 60 * 1 + 60 * 23 + 45, dur.getSeconds());
     }
 
     @Test
     public void test_parseSize() throws ParseException {
-        assertEquals(123456L, MarkdownReporter.parseSize("123,456"));
+        assertEquals(123456L, DataParser.parseSize("123,456"));
     }
 
     @Test
     public void test_report_a_Table_to_Writer() throws IOException {
         StringWriter sw = new StringWriter();
         MarkdownReporter reporter = new MarkdownReporter();
-        reporter.setOutput(sw);
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).build();
-        reporter.report(table);
+        reporter.report(table, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertTrue(content.length() > 0);
@@ -124,10 +122,9 @@ public class MarkdownReporterTest {
     public void test_noDescription() throws IOException {
         StringWriter sw = new StringWriter();
         MarkdownReporter reporter = new MarkdownReporter();
-        reporter.setOutput(sw);
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).noDescription().build();
-        reporter.report(table);
+        reporter.report(table, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertFalse(content.contains("as events flowed"));
@@ -137,10 +134,9 @@ public class MarkdownReporterTest {
     public void test_noLegend() throws IOException {
         StringWriter sw = new StringWriter();
         MarkdownReporter reporter = new MarkdownReporter();
-        reporter.setOutput(sw);
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).noLegend().build();
-        reporter.report(table);
+        reporter.report(table, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertFalse(content.contains("minutes:seconds"));
@@ -150,10 +146,9 @@ public class MarkdownReporterTest {
     public void test_noGraph() throws IOException {
         StringWriter sw = new StringWriter();
         MarkdownReporter reporter = new MarkdownReporter();
-        reporter.setOutput(sw);
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).noGraph().build();
-        reporter.report(table);
+        reporter.report(table, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertFalse(content.contains("|graph|"));

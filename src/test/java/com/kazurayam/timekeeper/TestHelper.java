@@ -1,18 +1,14 @@
 package com.kazurayam.timekeeper;
 
-import com.kazurayam.timekeeper.reporter.MarkdownReporter;
-import org.junit.jupiter.api.BeforeEach;
+import com.kazurayam.timekeeper.reporter.DataParser;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Stream;
 
 public class TestHelper {
@@ -103,8 +99,8 @@ public class TestHelper {
                 4 `####`
                  */
             Record r = new Record.Builder().attr("URL", items.get(1)).build();
-            r.setSize(MarkdownReporter.parseSize(items.get(2)));
-            r.setDuration(MarkdownReporter.parseDuration(items.get(3)));
+            r.setSize(DataParser.parseSize(items.get(2)));
+            r.setDuration(DataParser.parseDuration(items.get(3)));
             list.add(r);
         });
         return list;

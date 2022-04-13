@@ -35,9 +35,8 @@ public class Timekeeper {
 
     public void report(Path outputFile, FORMAT format) throws IOException {
         if (format == FORMAT.MARKDOWN) {
-            Reporter reporter = new MarkdownReporter();
-            reporter.setOutput(outputFile);
-            reporter.report(tableList);
+            MarkdownReporter reporter = new MarkdownReporter();
+            reporter.report(tableList, outputFile);
         } else {
             throw new IllegalArgumentException(
                     String.format("%s is not supported", format.toString()));
