@@ -1,6 +1,24 @@
-Timekeeper, a Java/Groovy library that helps tests to compile performance reports in Markdown.
+-   [Timekeeper](#timekeeper)
+    -   [Motivation](#motivation)
+    -   [Processing outline](#processing-outline)
+    -   [Examples](#examples)
+        -   [Example1 Minimalistic](#example1-minimalistic)
+        -   [Example2 HTTP GET & save HTML](#example2-http-get-save-html)
+        -   [Example3 Selenium test](#example3-selenium-test)
+    -   [API](#api)
+    -   [Download](#download)
+    -   [Dependencies](#dependencies)
+    -   [Repository](#repository)
+    -   [Details](#details)
+        -   [Sorting rows in table](#sorting-rows-in-table)
+        -   [Options of report formatting](#options-of-report-formatting)
+        -   [Report in CSV format](#report-in-csv-format)
 
-# Motivation
+# Timekeeper
+
+a Java/Groovy library that helps tests to compile performance reports in Markdown.
+
+## Motivation
 
 Often I develop Web UI tests in Groovy using Selenium. I want to measure the performance of the tests. Often I want to measure:
 
@@ -18,7 +36,7 @@ The 2nd problem is that it is difficult to find useful information out of the bu
 
 I want to automate these tasks entirely. I want my tests to perform not only measure performance but also compile a concise report in Markdown format. Here comes the Timekeeper!
 
-# Processing outline
+## Processing outline
 
 Let me tell an outline of a test script which uses the Timekeeper to measure performance and print a report.
 
@@ -34,9 +52,9 @@ Let me tell an outline of a test script which uses the Timekeeper to measure per
 
 6.  Your test script want to create a `Timekeeper` object. Your script will put one or more `Table` objects, and then let Timekeeper to transform `Table` s into a text report.
 
-# Examples
+## Examples
 
-## Example1 Minimalistic
+### Example1 Minimalistic
 
 The following example is a minimalistic example of utilizing the Timekeeper library, in Groovy using JUnit5.
 
@@ -46,6 +64,7 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
     import com.kazurayam.timekeeper.Table
     import com.kazurayam.timekeeper.Timekeeper
     import org.junit.jupiter.api.BeforeAll
+    import org.junit.jupiter.api.Disabled
     import org.junit.jupiter.api.Test
 
     import java.nio.file.Files
@@ -53,6 +72,8 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
     import java.nio.file.Paths
     import java.time.LocalDateTime
 
+    // This test takes 2 minutes to finish
+    @Disabled
     class TimekeeperDemoMinimal {
 
         private static Path outDir_
@@ -85,9 +106,6 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
                 Thread.sleep(i * 1000L)
                 LocalDateTime afterSleep = LocalDateTime.now()
                 m1.recordDuration(["Case": "sleeping for " + i + " secs"],
-                        beforeSleep, afterSleep)
-            }
-        }
 
 This code outputs the following Markdown text.
 
@@ -110,7 +128,7 @@ This Markdown text will be rendered like this:
 
 ![planned sleep](images/planned_sleep.png)
 
-## Example2 HTTP GET & save HTML
+### Example2 HTTP GET & save HTML
 
 The following code processes a list URLs. It makes HTTP GET request, save the request body into file. It checks the size of the file in bytes, and measures the duration of HTTP GET request.
 
@@ -121,6 +139,7 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
     import com.kazurayam.timekeeper.Table
     import com.kazurayam.timekeeper.Timekeeper
     import org.junit.jupiter.api.BeforeAll
+    import org.junit.jupiter.api.Disabled
     import org.junit.jupiter.api.Test
 
     import java.nio.file.Files
@@ -128,6 +147,8 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
     import java.nio.file.Paths
     import java.time.LocalDateTime
 
+    // this test takes 3 minutes to finish
+    @Disabled
     class TimekeeperDemoHttpInteraction {
 
         private static Path outDir_
@@ -207,9 +228,6 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
             streamReader.close()
             con.disconnect()
 
-            // sleep a while in between 1.0 - 5.0 seconds at random
-            Thread.sleep((long)(4000 * Math.random() + 1000))
-
 This code will output the following Markdown text.
 
     ## get URL, save HTML into file
@@ -232,7 +250,7 @@ This code will output the following Markdown text.
 
     one # represents 10 seconds in the duration graph
 
-## Example3 Selenium test
+### Example3 Selenium test
 
 Input CSV file is here:
 
@@ -265,29 +283,29 @@ The code is here:
 
 -   [com.kazurayam.timekeeper.demo.TimekeeperDemoWithSelenium](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoWithSelenium.groovy)
 
-# API
+## API
 
 Javadoc is [here](./api/index.html)
 
-# Download
+## Download
 
 The artifact is available at the Maven Central repository:
 
 -   <https://mvnrepository.com/artifact/com.kazurayam/timekeeper>
 
-# Dependencies
+## Dependencies
 
 Timekeeper was tested on Java8.
 
 See `build.gradle` at <https://github.com/kazurayam/timekeeper/> for external dependencies.
 
-# Repository
+## Repository
 
 -   <https://github.com/kazurayam/timekeeper>
 
-# Details
+## Details
 
-## Sorting rows in table
+### Sorting rows in table
 
 As soon as you get a table generated by Timekeeper, you would feel like to sort it for better readability. Timekeeper is capable of it. Timekeeper supports sorting rows by multiple selected keys. It is possible to sort rows in either of ascending and descending order.
 
@@ -299,9 +317,11 @@ You can find a sample code at
 
 -   [TimekeeperDemoHttpInteraction.groovy](https://github.com/kazurayam/timekeeper/blob/master/src/test/groovy/com/kazurayam/timekeeper/demo/TimekeeperDemoHttpInteraction.groovy)
 
-### Sort by attributes
+#### Sort by attributes
 
 The sample code has this method:
+
+        //-----------------------------------------------------------------
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributes() {
@@ -313,9 +333,6 @@ The sample code has this method:
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes().noLegend().build()
-            tk.add(table)
-            tk.report(outDir_.resolve("sortByAttributes.md"))
-        }
 
 Please note the following fragment:
 
@@ -341,9 +358,12 @@ The output looks like this:
     |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
     |Average|-|5,972|00:04| |
 
-### Sort by attributes in descending order
+#### Sort by attributes in descending order
 
 You can sort in descending order.
+
+            tk.report(outDir_.resolve("sortByAttributes_URL.md"))
+        }
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
@@ -355,9 +375,6 @@ You can sort in descending order.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes( RowOrder.DESCENDING ).noLegend().build()
-            tk.add(table)
-            tk.report(outDir_.resolve("sortByAttributes_descending.md"))
-        }
 
 Please note this fragment where you specify the descending order.
 
@@ -379,9 +396,12 @@ The output looks like this:
     |case 1|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:03|`#`|
     |Average|-|5,972|00:03| |
 
-### Sort by selected items of attributes
+#### Sort by selected items of attributes
 
 You can choose columns as sort key out of the Attributes.
+
+            tk.report(outDir_.resolve("sortByAttributes.md"))
+        }
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
@@ -393,9 +413,6 @@ You can choose columns as sort key out of the Attributes.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes(["URL"]).noLegend().build()
-            tk.add(table)
-            tk.report(outDir_.resolve("sortByAttributes_URL.md"))
-        }
 
 Please note the following fragment:
 
@@ -423,9 +440,12 @@ The output will look like this:
     |case 2|https://www.google.com/search?q=timekeeper|7,197|00:06|`#`|
     |Average|-|5,980|00:04| |
 
-### Sort by duration
+#### Sort by duration
 
 You can sort rows by duration.
+
+            tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
+        }
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
@@ -437,9 +457,6 @@ You can sort rows by duration.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByDuration( RowOrder.DESCENDING ).noLegend().build()
-            tk.add(table)
-            tk.report(outDir_.resolve("sortByDuration_descending.md"))
-        }
 
 The output is like this:
 
@@ -457,9 +474,12 @@ The output is like this:
     |case 1|https://www.google.com/search?q=timekeeper|7,177|00:02|`#`|
     |Average|-|5,974|00:03| |
 
-### Sort by attributes and then by duration
+#### Sort by attributes and then by duration
 
 You can sort rows by Attributes first, then secondly by duration. Perhaps this is the most useful way of sorting a Timekeeper’s table.
+
+            tk.report(outDir_.resolve("sortByAttributes_descending.md"))
+        }
 
         @Test
         void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
@@ -471,9 +491,6 @@ You can sort rows by Attributes first, then secondly by duration. Perhaps this i
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes().thenByDuration().noLegend().build()
-            tk.add(table)
-            tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
-        }
 
 The output looks like this:
 
@@ -491,9 +508,12 @@ The output looks like this:
     |case 3|https://duckduckgo.com/?q=timekeeper&t=h_&ia=web|156|00:01|`#`|
     |Average|-|5,972|00:03| |
 
-### Sort by size
+#### Sort by size
 
 You can sort rows by size, of course.
+
+        }
+
 
         @Test
         void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
@@ -505,9 +525,6 @@ You can sort rows by size, of course.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortBySize().noLegend().build()
-            tk.add(table)
-            tk.report(outDir_.resolve("sortBySize_ascending.md"))
-        }
 
 The output is like this:
 
@@ -525,7 +542,7 @@ The output is like this:
     |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:03|`#`|
     |Average|-|5,978|00:03| |
 
-### Sort by a chain of `RecordComparator` s
+#### Sort by a chain of `RecordComparator` s
 
 The `Table.Builder` class implements 3 \`sortBy\*()\`methods:
 
@@ -558,7 +575,7 @@ Please have a look at the source code of
 
 -   [Table.Builder](https://github.com/kazurayam/timekeeper/blob/master/src/main/java/com/kazurayam/timekeeper/Table.java)
 
-## Options of report formatting
+### Options of report formatting
 
 The default format of Timekeeper report contains a few portions that may look verbose to you. You can opt them off. The options include:
 
@@ -568,7 +585,10 @@ The default format of Timekeeper report contains a few portions that may look ve
 
 3.  the duration graph
 
-### no legend
+#### no legend
+
+            tk.report(outDir_.resolve("noDescription.md"))
+        }
 
         @Test
         void demo_noLegend() {
@@ -577,9 +597,6 @@ The default format of Timekeeper report contains a few portions that may look ve
             tk.add(new Table.Builder(m1)
                     .noLegend()   // require no legend for the table
                     .build())
-            doRecording(m1)
-            tk.report(outDir_.resolve("noLegend.md"))
-        }
 
 Please note the line of `.noLegend()`
 
@@ -598,7 +615,10 @@ output:
 
 Please note that there is no legend printed here.
 
-### no description
+#### no description
+
+            }
+        }
 
         @Test
         void demo_noDescription() {
@@ -607,9 +627,6 @@ Please note that there is no legend printed here.
             tk.add(new Table.Builder(m1)
                     .noDescription()   // require no description
                     .build())
-            doRecording(m1)
-            tk.report(outDir_.resolve("noDescription.md"))
-        }
 
 Please note the line of `.noDescription()`
 
@@ -628,7 +645,10 @@ Please note the line of `.noDescription()`
 
 Please note that there is no description like "sorted by duration (ascending)" printed.
 
-### no duration graph
+#### no duration graph
+
+            tk.report(outDir_.resolve("noLegend.md"))
+        }
 
         @Test
         void demo_noGraph() {
@@ -637,9 +657,6 @@ Please note that there is no description like "sorted by duration (ascending)" p
             tk.add(new Table.Builder(m1)
                     .noGraph()   // require no duration graph
                     .build())
-            doRecording(m1)
-            tk.report(outDir_.resolve("noGraph.md"))
-        }
 
 Please note the line of `.noGraph()` here.
 
@@ -660,9 +677,12 @@ Please note the line of `.noGraph()` here.
 
 Here there is no column of "|graph|" and ##.
 
-### The simplest report
+#### The simplest report
 
 You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
+
+            tk.report(outDir_.resolve("noGraph.md"))
+        }
 
         @Test
         void demo_the_simplest() {
@@ -673,9 +693,6 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
                     .noLegend()       // require no legend
                     .noGraph()        // require no duration graph
                     .build())
-            doRecording(m1)
-            tk.report(outDir_.resolve("the_simplest.md"))
-        }
 
     ## How long it waited
 
@@ -687,3 +704,19 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
     |Average|00:07|
 
 This is the simplest format that Timekeeper can print.
+
+### Report in CSV format
+
+Timekeeper generates a report in Markdown text format as default.
+Optionally you can generate a report in CSV format.
+
+You want to specify the 2nd parameter to `Timekeeper#report(Path, Timekeeper.FORMAT.CSV)`
+
+    import com.kazurayam.timekeeper.Timekeeper
+    ...
+
+        @Test
+        void demo_with_selenium_report_CSV() {
+            Timekeeper tk = runSeleniumTest();
+            tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
+        }

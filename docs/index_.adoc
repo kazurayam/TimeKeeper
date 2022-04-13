@@ -1,6 +1,6 @@
-:toc:
+= Timekeeper
 
-Timekeeper, a Java/Groovy library that helps tests to compile performance reports in Markdown.
+a Java/Groovy library that helps tests to compile performance reports in Markdown.
 
 == Motivation
 
@@ -268,9 +268,9 @@ The `Table.Builder` class implements 3 `sortBy*()`methods:
 
 These can be followed by `thenBy*()` methods:
 
-4. `.thenByAttributes(List<String>, RowOrder)`
-5. `.thenByDuratio(RowOrder)`
-6. `.thenBySize(RowOrder)`
+1. `.thenByAttributes(List<String>, RowOrder)`
+2. `.thenByDuratio(RowOrder)`
+3. `.thenBySize(RowOrder)`
 
 You can make a chain of multiple `RecordComparators`. It is possible to chain 3 or more RecordComparators while specifying `RowOrder.ASCENDING` and `RowOrder.DESCENDING` to each comparators. For example, in Groovy, you can write:
 
@@ -362,3 +362,22 @@ include::TimekeeperDemoMinimal/the_simplest.md[]
 ----
 
 This is the simplest format that Timekeeper can print.
+
+
+
+=== Report in CSV format
+
+Timekeeper generates a report in Markdown text format as default.
+Optionally you can generate a report in CSV format.
+
+You want to specify the 2nd parameter to `Timekeeper#report(Path, Timekeeper.FORMAT.CSV)`
+----
+import com.kazurayam.timekeeper.Timekeeper
+...
+
+    @Test
+    void demo_with_selenium_report_CSV() {
+        Timekeeper tk = runSeleniumTest();
+        tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
+    }
+----
