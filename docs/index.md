@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-# Timekeeper
-
-Timekeeper is a Java/Groovy library that helps tests to compile performance reports in Markdown.
-=======
 -   [Timekeeper](#timekeeper)
     -   [Motivation](#motivation)
     -   [Processing outline](#processing-outline)
@@ -21,8 +16,7 @@ Timekeeper is a Java/Groovy library that helps tests to compile performance repo
 
 # Timekeeper
 
-a Java/Groovy library that helps tests to compile performance reports in Markdown.
->>>>>>> develop
+Timekeeper is a Java/Groovy library that helps tests to compile performance reports in Markdown.
 
 ## Motivation
 
@@ -112,13 +106,7 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
                 Thread.sleep(i * 1000L)
                 LocalDateTime afterSleep = LocalDateTime.now()
                 m1.recordDuration(["Case": "sleeping for " + i + " secs"],
-<<<<<<< HEAD
                         beforeSleep, afterSleep)
-                m1.getLast().getDurationMillis() < 20 * 1000
-            }
-        }
-=======
->>>>>>> develop
 
 This code outputs the following Markdown text.
 
@@ -555,11 +543,7 @@ The output is like this:
     |case 1|https://search.yahoo.co.jp/search?p=timekeeper|21,026|00:03|`#`|
     |Average|-|5,978|00:03| |
 
-<<<<<<< HEAD
 #### Sort by a chain of `RecordComparator`
-=======
-#### Sort by a chain of `RecordComparator` s
->>>>>>> develop
 
 The `Table.Builder` class implements 3 \`sortBy\*()\`methods:
 
@@ -570,6 +554,12 @@ The `Table.Builder` class implements 3 \`sortBy\*()\`methods:
 -   `.sortBySize(RowOrder)`
 
 These can be followed by one or more `thenBy*()` methods:
+
+-   `.thenByAttributes(List<String>, RowOrder)`
+
+-   `.thenByDuratio(RowOrder)`
+
+-   `.thenBySize(RowOrder)`
 
 -   `.thenByAttributes(List<String>, RowOrder)`
 
@@ -603,12 +593,10 @@ The default format of Timekeeper report contains a few portions that may look ve
 3.  the duration graph
 
 #### no legend
-<<<<<<< HEAD
-=======
 
+            doRecording(m1)
             tk.report(outDir_.resolve("noDescription.md"))
         }
->>>>>>> develop
 
         @Test
         void demo_noLegend() {
@@ -616,12 +604,6 @@ The default format of Timekeeper report contains a few portions that may look ve
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
             tk.add(new Table.Builder(m1)
                     .noLegend()   // require no legend for the table
-                    .build())
-<<<<<<< HEAD
-            doRecording(m1)
-            tk.report(outDir_.resolve("noLegend.md"))
-=======
->>>>>>> develop
 
 Please note the line of `.noLegend()`
 
@@ -641,12 +623,10 @@ output:
 Please note that there is no legend printed here.
 
 #### no description
-<<<<<<< HEAD
-=======
 
+                m1.getLast().getDurationMillis() < 20 * 1000
             }
         }
->>>>>>> develop
 
         @Test
         void demo_noDescription() {
@@ -654,12 +634,6 @@ Please note that there is no legend printed here.
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
             tk.add(new Table.Builder(m1)
                     .noDescription()   // require no description
-                    .build())
-<<<<<<< HEAD
-            doRecording(m1)
-            tk.report(outDir_.resolve("noDescription.md"))
-=======
->>>>>>> develop
 
 Please note the line of `.noDescription()`
 
@@ -679,12 +653,10 @@ Please note the line of `.noDescription()`
 Please note that there is no description like "sorted by duration (ascending)" printed.
 
 #### no duration graph
-<<<<<<< HEAD
-=======
 
+            doRecording(m1)
             tk.report(outDir_.resolve("noLegend.md"))
         }
->>>>>>> develop
 
         @Test
         void demo_noGraph() {
@@ -692,12 +664,6 @@ Please note that there is no description like "sorted by duration (ascending)" p
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
             tk.add(new Table.Builder(m1)
                     .noGraph()   // require no duration graph
-                    .build())
-<<<<<<< HEAD
-            doRecording(m1)
-            tk.report(outDir_.resolve("noGraph.md"))
-=======
->>>>>>> develop
 
 Please note the line of `.noGraph()` here.
 
@@ -722,6 +688,7 @@ Here there is no column of "graph".
 
 You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 
+            doRecording(m1)
             tk.report(outDir_.resolve("noGraph.md"))
         }
 
@@ -733,14 +700,8 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
                     .noDescription()  // require no description
                     .noLegend()       // require no legend
                     .noGraph()        // require no duration graph
-                    .build())
-<<<<<<< HEAD
-            doRecording(m1)
-            tk.report(outDir_.resolve("the_simplest.md"))
 
 Then you will get output as follows, which has the simplest format that Timekeeper can print.
-=======
->>>>>>> develop
 
     ## How long it waited
 
@@ -750,8 +711,6 @@ Then you will get output as follows, which has the simplest format that Timekeep
     |sleeping for 3 secs|00:03|
     |sleeping for 7 secs|00:07|
     |Average|00:07|
-<<<<<<< HEAD
-=======
 
 This is the simplest format that Timekeeper can print.
 
@@ -770,4 +729,3 @@ You want to specify the 2nd parameter to `Timekeeper#report(Path, Timekeeper.FOR
             Timekeeper tk = runSeleniumTest();
             tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
         }
->>>>>>> develop

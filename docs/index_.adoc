@@ -1,10 +1,6 @@
 = Timekeeper
 
-<<<<<<< HEAD
 Timekeeper is a Java/Groovy library that helps tests to compile performance reports in Markdown.
-=======
-a Java/Groovy library that helps tests to compile performance reports in Markdown.
->>>>>>> develop
 
 == Motivation
 
@@ -272,15 +268,12 @@ The `Table.Builder` class implements 3 `sortBy*()`methods:
 
 These can be followed by one or more `thenBy*()` methods:
 
-<<<<<<< HEAD
 * `.thenByAttributes(List<String>, RowOrder)`
 * `.thenByDuratio(RowOrder)`
 * `.thenBySize(RowOrder)`
-=======
-1. `.thenByAttributes(List<String>, RowOrder)`
-2. `.thenByDuratio(RowOrder)`
-3. `.thenBySize(RowOrder)`
->>>>>>> develop
+* `.thenByAttributes(List<String>, RowOrder)`
+* `.thenByDuratio(RowOrder)`
+* `.thenBySize(RowOrder)`
 
 You can make a chain of multiple `RecordComparators`. It is possible to chain 3 or more RecordComparators while specifying `RowOrder.ASCENDING` and `RowOrder.DESCENDING` to each comparators. For example, in Groovy, you can write:
 
@@ -373,8 +366,6 @@ Then you will get output as follows, which has the simplest format that Timekeep
 ----
 include::TimekeeperDemoMinimal/the_simplest.md[]
 ----
-<<<<<<< HEAD
-=======
 
 This is the simplest format that Timekeeper can print.
 
@@ -396,4 +387,3 @@ import com.kazurayam.timekeeper.Timekeeper
         tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
     }
 ----
->>>>>>> develop
