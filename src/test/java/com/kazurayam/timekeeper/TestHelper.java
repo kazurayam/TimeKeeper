@@ -1,10 +1,6 @@
 package com.kazurayam.timekeeper;
 
-<<<<<<< HEAD
-import com.kazurayam.timekeeper.reporter.MarkdownReporter;
-=======
 import com.kazurayam.timekeeper.reporter.DataParser;
->>>>>>> develop
 
 import java.io.IOException;
 import java.nio.file.Files;

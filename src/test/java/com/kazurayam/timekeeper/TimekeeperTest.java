@@ -49,6 +49,7 @@ public class TimekeeperTest {
     @Test
     public void test_report() throws IOException {
         Path caseOutputDir = classOutput.resolve("test_report");
+        Files.createDirectories(caseOutputDir);
         Path markdown = caseOutputDir.resolve("report.md");
         Timekeeper tk = new Timekeeper();
         Measurement m = TestHelper.makeMeasurement();

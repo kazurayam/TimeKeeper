@@ -3,8 +3,10 @@ package com.kazurayam.timekeeper.reporter;
 import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.Record;
 import com.kazurayam.timekeeper.Table;
+import com.kazurayam.timekeeper.TableList;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.List;
@@ -12,61 +14,30 @@ import java.util.Objects;
 
 public class MarkdownReporter extends AbstractReporter {
 
-<<<<<<< HEAD
-    private PrintWriter pw_;
-
-    public MarkdownReporter() {
-        this.pw_ = new PrintWriter(System.out);
-    }
+    public MarkdownReporter() {}
 
     @Override
-    public void setOutput(Path output) throws IOException {
-        Objects.requireNonNull(output);
-        Files.createDirectories(output.getParent());
-        File outputFile = output.toFile();
-        this.setOutput(outputFile);
-
-    }
-
-    @Override
-    public void setOutput(File outputFile) throws IOException {
-        Objects.requireNonNull(outputFile);
-        Writer writer = new OutputStreamWriter(
-                new FileOutputStream(outputFile), StandardCharsets.UTF_8);
-        this.setOutput(writer);
-    }
-
-    @Override
-    public void setOutput(Writer writer) throws IOException {
-        Objects.requireNonNull(writer);
-        this.pw_ = new PrintWriter(new BufferedWriter(writer));
-    }
-
-
-    @Override
-    public void report(TableList tableList) throws IOException {
+    public void report(TableList tableList, Writer writer) throws IOException {
         for (Table table : tableList) {
-            this.processTable(table);
+            this.processTable(table, writer);
         }
-        pw_.close();
+        writer.close();
     }
 
     @Override
-    public void report(Table table) throws IOException {
-        this.processTable(table);
-        pw_.close();
+    public void report(Table table, Writer writer) throws IOException {
+        this.processTable(table, writer);
+        writer.close();
     }
 
-    protected void processTable(Table table) throws IOException {
+    protected void processTable(Table table, Writer writer) {
         Objects.requireNonNull(table);
         Measurement m = (table.requireSorting()) ?
                 table.sorted() : table.getMeasurement();
         Table sortedTable = new Table.Builder(table, m).build();
-        this.compileReport(sortedTable);
+        this.compileContent(sortedTable, writer);
     }
-=======
-    public MarkdownReporter() {}
->>>>>>> develop
+
 
     /**
      * compile the content of report
