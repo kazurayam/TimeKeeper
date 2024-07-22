@@ -23,10 +23,11 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import javax.imageio.ImageIO
-import java.time.LocalDateTime
 
 import static org.junit.jupiter.api.Assertions.*;
 
+// this test could take minutes to finish
+@Disabled
 class TimekeeperDemoWithSelenium {
 
     private static Path outDir_
@@ -74,8 +75,6 @@ class TimekeeperDemoWithSelenium {
         //tk.report(outDir_.resolve("report.md"), Timekeeper.FORMAT.MARKDOWN)
     }
 
-    // each test method takes 20 seconds to finish
-    @Disabled
     @Test
     void demo_with_selenium_report_CSV() {
         Timekeeper tk = runSeleniumTest();
@@ -84,16 +83,16 @@ class TimekeeperDemoWithSelenium {
 
     Timekeeper runSeleniumTest() {
         Timekeeper tk = new Timekeeper()
-        Measurement navigation = new Measurement.Builder(
+        Measurement navigating = new Measurement.Builder(
                 "How long it took to navigate to URLs", ["URL"])
                 .build()
-        tk.add(new Table.Builder(navigation)
+        tk.add(new Table.Builder(navigating)
                 .noLegend()
                 .build())
-        Measurement screenshot = new Measurement.Builder(
+        Measurement screenshooting = new Measurement.Builder(
                 "How long it took to take shootshots", ["URL"])
                 .build()
-        tk.add(new Table.Builder(screenshot)
+        tk.add(new Table.Builder(screenshooting)
                 .noLegend()
                 .build())
         // process all URLs in the CSV file
@@ -102,18 +101,16 @@ class TimekeeperDemoWithSelenium {
             String url = t.get(0)
             String filename = t.get(1)
             driver_.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS)
+
             // navigate to the URL, record the duration
-            LocalDateTime beforeNavigate = LocalDateTime.now()
+            navigating.before(["URL": url])
             driver_.navigate().to(url)
-            LocalDateTime afterNavigate = LocalDateTime.now()
-            navigation.recordDuration(["URL": url], beforeNavigate, afterNavigate)
+            navigating.after()
+
             // take a screenshot of the page, record the duration
-            LocalDateTime beforeScreenshot = LocalDateTime.now()
+            screenshooting.before(["URL": url])
             Path imageFile = this.takeFullPageScreenshot(driver_, outDir_, filename)
-            LocalDateTime afterScreenshot = LocalDateTime.now()
-            screenshot.recordSizeAndDuration(["URL": url],
-                    imageFile.toFile().size(),
-                    beforeScreenshot, afterScreenshot)
+            screenshooting.after(imageFile.toFile().size())
         }
         return tk
     }

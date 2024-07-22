@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.time.LocalDateTime
 
 // This test takes 2 minutes to finish
 @Disabled
@@ -39,15 +38,11 @@ class TimekeeperDemoMinimal {
         tk.report(outDir_.resolve("planned_sleep.md"))
     }
 
-    private void doRecording(Measurement m1) {
+    private static void doRecording(Measurement m1) {
         for (int i in [13, 3, 7]) {
-            LocalDateTime beforeSleep = LocalDateTime.now()
-            // do a processing that could take long time.
-            Thread.sleep(i * 1000L)
-            LocalDateTime afterSleep = LocalDateTime.now()
-            m1.recordDuration(["Case": "sleeping for " + i + " secs"],
-                    beforeSleep, afterSleep)
-            m1.getLast().getDurationMillis() < 20 * 1000
+            m1.before(["Case": "sleeping for " + i + " secs"])
+            Thread.sleep(i * 1000L)    // do something that takes long time.
+            m1.after()
         }
     }
 

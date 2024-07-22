@@ -1,6 +1,7 @@
 package com.kazurayam.timekeeper.reporter;
 
 import com.kazurayam.timekeeper.Measurement;
+import com.kazurayam.timekeeper.ReportOptions;
 import com.kazurayam.timekeeper.Table;
 import com.kazurayam.timekeeper.TestHelper;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,7 +46,7 @@ public class CSVReporterTest {
         CSVReporter reporter = new CSVReporter();
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).build();
-        reporter.report(table, sw);
+        reporter.report(table, ReportOptions.DEFAULT, sw);
         String content = sw.toString();
         logger.info(content);
         assertTrue(content.length() > 0);
@@ -58,7 +59,7 @@ public class CSVReporterTest {
         CSVReporter reporter = new CSVReporter();
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).build();
-        reporter.report(table, out);
+        reporter.report(table, ReportOptions.DEFAULT, out);
         assertTrue(Files.exists(out));
         assertTrue(out.toFile().length() > 0);
     }

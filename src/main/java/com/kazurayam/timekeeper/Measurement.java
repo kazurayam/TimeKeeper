@@ -25,10 +25,29 @@ public class Measurement implements Iterable<Record> {
     private final List<String> columnNames;   // ["case", "Suite", "Step Execution Log", "Log Viewer", "Mode"]
     private final List<Record> records;
 
+    private Map<String, String> attrs = null;
+    private LocalDateTime startAt = null;
+
     private Measurement(Builder builder) {
         this.id = builder.id;
         this.columnNames = builder.columnNames;
         this.records = builder.records;
+    }
+
+    public void before(Map<String, String> attrs) {
+        Objects.requireNonNull(attrs);
+        this.attrs = attrs;
+        this.startAt = LocalDateTime.now();
+    }
+
+    public void after() {
+        Objects.requireNonNull(this.attrs);
+        this.recordDuration(this.attrs, this.startAt, LocalDateTime.now());
+    }
+
+    public void after(long size) {
+        Objects.requireNonNull(this.attrs);
+        this.recordSizeAndDuration(this.attrs, size, this.startAt, LocalDateTime.now());
     }
 
     public String getId() {
@@ -39,22 +58,22 @@ public class Measurement implements Iterable<Record> {
         return new ArrayList<>(columnNames);
     }
 
-    public void add(Record record) {
+    void add(Record record) {
         this.records.add(record);
     }
 
-    public void addAll(List<Record> records) {
+    void addAll(List<Record> records) {
         this.records.addAll(records);
     }
 
-    public void recordDuration(Map<String, String> attrs,
+    void recordDuration(Map<String, String> attrs,
                                LocalDateTime startAt, LocalDateTime endAt) {
         Record record = this.newRecord(attrs);
         record.setStartAt(startAt);
         record.setEndAt(endAt);
     }
 
-    public void recordSizeAndDuration(Map<String, String> attrs,
+    void recordSizeAndDuration(Map<String, String> attrs,
                                    long size,
                                    LocalDateTime startAt, LocalDateTime endAt) {
         Record record = this.newRecord(attrs);
@@ -78,7 +97,7 @@ public class Measurement implements Iterable<Record> {
     }
 
     public Record getLast() {
-        if (records.size() > 0) {
+        if (!records.isEmpty()) {
             return get(this.size() - 1);
         } else {
             return Record.NULL;
@@ -92,7 +111,7 @@ public class Measurement implements Iterable<Record> {
      * If no records are there, returns Duration of ZERO
      */
     public Duration getLastRecordDuration() {
-        if (records.size() > 0) {
+        if (!records.isEmpty()) {
             return this.getLast().getDuration();
         } else {
             return Duration.ZERO;
@@ -153,14 +172,14 @@ public class Measurement implements Iterable<Record> {
         List<Record> recordsWithSize = records.stream()
                 .filter(rc -> rc.getSize() > 0)
                 .collect(Collectors.toList());
-        return recordsWithSize.size() > 0;
+        return !recordsWithSize.isEmpty();
     }
 
     public boolean hasRecordWithDuration() {
         List<Record> recordsWithDuration = records.stream()
                 .filter(rc -> rc.getDurationMillis() > 0)
                 .collect(Collectors.toList());
-        return recordsWithDuration.size() > 0;
+        return !recordsWithDuration.isEmpty();
     }
 
     public long getAverageSize() {
@@ -190,13 +209,13 @@ public class Measurement implements Iterable<Record> {
         JsonObject jo = new JsonObject();
         jo.addProperty("id", this.getId());
         JsonArray columnNameArray = new JsonArray();
-        for (int i = 0; i < columnNames.size(); i++) {
-            columnNameArray.add(columnNames.get(i));
+        for (String columnName : columnNames) {
+            columnNameArray.add(columnName);
         }
         jo.add("columnNames", columnNameArray);
         JsonArray recordArray = new JsonArray();
-        for (int i = 0; i < records.size(); i++) {
-            recordArray.add(records.get(i).toJsonObject());
+        for (Record record : records) {
+            recordArray.add(record.toJsonObject());
         }
         jo.add("records", recordArray);
         Gson gson = new Gson();
@@ -218,7 +237,7 @@ public class Measurement implements Iterable<Record> {
         public Builder(String id, List<String> columnNames) {
             Objects.requireNonNull(id);
             Objects.requireNonNull(columnNames);
-            if (columnNames.size() == 0) {
+            if (columnNames.isEmpty()) {
                 throw new IllegalArgumentException("columnNames must not be empty");
             }
             this.id = id;

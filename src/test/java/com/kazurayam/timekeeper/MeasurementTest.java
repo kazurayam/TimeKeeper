@@ -31,6 +31,27 @@ public class MeasurementTest {
     }
 
     @Test
+    public void test_recordDuration() throws InterruptedException {
+        LocalDateTime startAt = LocalDateTime.now();
+        Thread.sleep(1000L);
+        LocalDateTime endAt = LocalDateTime.now();
+        m.recordDuration(Collections.singletonMap("foo", "bar"), startAt, endAt);
+        Record record = m.getLast();
+        long duration = record.getDurationMillis();
+        assertEquals(Math.floor(1000 / 1000), Math.floor(duration / 1000));
+    }
+
+    @Test
+    public void test_before_after() throws InterruptedException {
+        m.before(Collections.singletonMap("foo", "bar"));
+        Thread.sleep(1000L);
+        m.after();
+        Record record = m.getLast();
+        long duration = record.getDurationMillis();
+        assertEquals(Math.floor(1000 / 1000), Math.floor(duration / 1000));
+    }
+
+    @Test
     public void test_getId() {
         assertEquals("foo", m.getId());
     }

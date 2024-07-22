@@ -14,17 +14,11 @@ public class Table {
     private final Measurement measurement;
     private final List<RecordComparator> recordComparatorList;
     private final Boolean requireSorting;
-    private final Boolean requireDescription;
-    private final Boolean requireLegend;
-    private final Boolean requireGraph;
 
     private Table(Builder builder) {
         this.measurement = builder.measurement;
         this.recordComparatorList = builder.recordComparatorList;
         this.requireSorting = builder.requireSorting;
-        this.requireDescription = builder.requireDescription;
-        this.requireLegend = builder.requireLegend;
-        this.requireGraph = builder.requireGraph;
     }
 
     public Measurement getMeasurement() {
@@ -47,12 +41,6 @@ public class Table {
         }
     }
 
-    public Boolean requireDescription() { return this.requireDescription; }
-
-    public Boolean requireLegend() { return this.requireLegend; }
-
-    public Boolean requireGraph() { return this.requireGraph; }
-
     /**
      * clone the Measurement object with the records are sorted by the RecordComparator
      *
@@ -63,7 +51,7 @@ public class Table {
                 new Measurement.Builder(measurement.getId(), measurement.getColumnNames())
                         .build();
         List<Record> records = measurement.cloneRecords();
-        if (this.recordComparatorList.size() > 0) {
+        if (!this.recordComparatorList.isEmpty()) {
             RecordComparator chain = new ChainedRecordComparator(this.recordComparatorList);
             records.sort(chain);
         }
@@ -78,18 +66,12 @@ public class Table {
         private final Measurement measurement;
         private List<RecordComparator> recordComparatorList;
         private Boolean requireSorting;
-        private Boolean requireDescription;
-        private Boolean requireLegend;
-        private Boolean requireGraph;
         //
         public Builder(Measurement measurement) {
             Objects.requireNonNull(measurement);
             this.measurement = measurement;
             this.recordComparatorList = new ArrayList<>();
             this.requireSorting = false;
-            this.requireDescription = true;
-            this.requireLegend = true;
-            this.requireGraph = true;
         }
 
         /**
@@ -102,9 +84,6 @@ public class Table {
             this.measurement = measurement;   // replace the Measurement contained
             this.recordComparatorList = source.recordComparatorList;
             this.requireSorting = source.requireSorting;
-            this.requireDescription = source.requireDescription;
-            this.requireLegend = source.requireLegend;
-            this.requireGraph = source.requireGraph;
         }
         //
         public Builder sortByAttributes() {
@@ -169,21 +148,6 @@ public class Table {
             RecordComparator rc = new RecordComparatorBySize(rowOrder);
             this.recordComparatorList.add(rc);
             this.requireSorting = true;
-            return this;
-        }
-        //
-        public Builder noDescription() {
-            this.requireDescription = false;
-            return this;
-        }
-        //
-        public Builder noLegend() {
-            this.requireLegend = false;
-            return this;
-        }
-        //
-        public Builder noGraph() {
-            this.requireGraph = false;
             return this;
         }
         //

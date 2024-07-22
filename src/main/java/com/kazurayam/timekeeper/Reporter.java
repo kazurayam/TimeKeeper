@@ -8,8 +8,8 @@ import java.nio.file.Path;
 
 public interface Reporter {
 
-    void report(Table table, OutputStream outputStream) throws IOException;
+    void report(Table table, ReportOptions opts, OutputStream outputStream) throws IOException;
 
-    void report(TableList tableList, OutputStream outputStream) throws IOException;
+    void report(TableList tableList, ReportOptions opts, OutputStream outputStream) throws IOException;
 
 }

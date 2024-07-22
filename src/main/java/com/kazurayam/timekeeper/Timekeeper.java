@@ -32,16 +32,25 @@ public class Timekeeper {
     }
 
     public void report(Path outputFile) throws IOException {
-        this.report(outputFile, FORMAT.MARKDOWN);
+        this.report(outputFile,
+                new ReportOptions.Builder().build(),
+                FORMAT.MARKDOWN);
     }
 
     public void report(Path outputFile, FORMAT format) throws IOException {
+        this.report(outputFile,
+                new ReportOptions.Builder().build(),
+                format);
+    }
+
+    public void report(Path outputFile, ReportOptions opts, FORMAT format)
+            throws IOException {
         if (format == FORMAT.MARKDOWN) {
             MarkdownReporter reporter = new MarkdownReporter();
-            reporter.report(tableList, outputFile);
+            reporter.report(tableList, opts, outputFile);
         } else if (format == FORMAT.CSV) {
             CSVReporter reporter = new CSVReporter();
-            reporter.report(tableList, outputFile);
+            reporter.report(tableList, opts, outputFile);
         } else {
             throw new IllegalArgumentException(
                     String.format("%s is not supported", format.toString()));
