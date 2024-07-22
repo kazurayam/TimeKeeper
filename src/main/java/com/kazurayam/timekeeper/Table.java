@@ -63,7 +63,7 @@ public class Table {
                 new Measurement.Builder(measurement.getId(), measurement.getColumnNames())
                         .build();
         List<Record> records = measurement.cloneRecords();
-        if (this.recordComparatorList.size() > 0) {
+        if (!this.recordComparatorList.isEmpty()) {
             RecordComparator chain = new ChainedRecordComparator(this.recordComparatorList);
             records.sort(chain);
         }

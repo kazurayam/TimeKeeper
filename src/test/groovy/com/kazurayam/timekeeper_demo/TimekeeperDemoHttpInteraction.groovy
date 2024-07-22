@@ -56,20 +56,14 @@ class TimekeeperDemoHttpInteraction {
             String[] items = line.split("\\|")
             URL url = new URL(items[1])
             // mark the startAt timestamp
-            LocalDateTime beforeGet = LocalDateTime.now()
-            // do the heavy task
+            m.before(["Case": items[0], "URL": items[1]])
+            // do a heavy task
             String content = getHttpResponceContent(url)
-            // mark the endAt timestamp
             LocalDateTime afterGet = LocalDateTime.now()
             File outFile = outDir.resolve(url.getHost() + ".html").toFile()
             outFile.text = content
-            // record the stats
-            m.recordSizeAndDuration(
-                    ["Case": items[0], "URL": items[1]],
-                    outFile.length(),   // size of the HTTP response body
-                    beforeGet,          // startAt
-                    afterGet            // endAt
-            )
+            // record the file size and how long it took to finish the process
+            m.after(outFile.length())
         }
     }
 
