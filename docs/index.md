@@ -13,10 +13,11 @@
         -   [Sorting rows in table](#sorting-rows-in-table)
         -   [Options of report formatting](#options-of-report-formatting)
         -   [Report in CSV format](#report-in-csv-format)
+    -   [Related links](#related-links)
 
 # Timekeeper
 
-Timekeeper is a Java/Groovy library that helps tests to compile performance reports in Markdown.
+Timekeeper is a Java/Groovy library that helps tests to author performance reports in Markdown.
 
 ## Motivation
 
@@ -324,6 +325,9 @@ You can find a sample code at
 
 The sample code has this method:
 
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes() {
+            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -334,9 +338,6 @@ The sample code has this method:
             tk.add(table)
             tk.report(outDir_.resolve("sortByAttributes.md"))
         }
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
 
 Please note the following fragment:
 
@@ -366,6 +367,9 @@ The output looks like this:
 
 You can sort in descending order.
 
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
+            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -376,9 +380,6 @@ You can sort in descending order.
             tk.add(table)
             tk.report(outDir_.resolve("sortByAttributes_descending.md"))
         }
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
 
 Please note this fragment where you specify the descending order.
 
@@ -404,6 +405,9 @@ The output looks like this:
 
 You can choose columns as sort key out of the Attributes.
 
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
+            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -414,9 +418,6 @@ You can choose columns as sort key out of the Attributes.
             tk.add(table)
             tk.report(outDir_.resolve("sortByAttributes_URL.md"))
         }
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
 
 Please note the following fragment:
 
@@ -448,6 +449,9 @@ The output will look like this:
 
 You can sort rows by duration.
 
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
+            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -458,9 +462,6 @@ You can sort rows by duration.
             tk.add(table)
             tk.report(outDir_.resolve("sortByDuration_descending.md"))
         }
-
-
-        @Test
 
 The output is like this:
 
@@ -493,9 +494,6 @@ You can sort rows by Attributes first, then secondly by duration. Perhaps this i
             tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
         }
 
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
-
 The output looks like this:
 
     ## get URL, save HTML into file
@@ -516,6 +514,9 @@ The output looks like this:
 
 You can sort rows by size, of course.
 
+        @Test
+        void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
+            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -526,7 +527,6 @@ You can sort rows by size, of course.
             tk.add(table)
             tk.report(outDir_.resolve("sortBySize_ascending.md"))
         }
-    }
 
 The output is like this:
 
@@ -595,6 +595,7 @@ The default format of Timekeeper report contains a few portions that may look ve
 
 #### no legend
 
+        @Test
         void demo_noLegend() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
@@ -624,6 +625,7 @@ Please note that there is no legend printed here.
 
 #### no description
 
+        @Test
         void demo_noDescription() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
@@ -653,6 +655,7 @@ Please note that there is no description like "sorted by duration (ascending)" p
 
 #### no duration graph
 
+        @Test
         void demo_noGraph() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
@@ -686,6 +689,7 @@ Here there is no column of "graph".
 
 You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 
+        @Test
         void demo_the_simplest() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
@@ -697,7 +701,6 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
             doRecording(m1)
             tk.report(outDir_.resolve("the_simplest.md"))
         }
-    }
 
 Then you will get output as follows, which has the simplest format that Timekeeper can print.
 
@@ -727,3 +730,7 @@ You want to specify the 2nd parameter to `Timekeeper#report(Path, Timekeeper.FOR
             Timekeeper tk = runSeleniumTest();
             tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
         }
+
+## Related links
+
+-   GitHub repository [kazurayam/timekeeper](https://github.com/kazurayam/timekeeper/)

@@ -8,13 +8,24 @@ public class DataFormatter {
     private DataFormatter() {}
 
     /**
-     * stringify a Duration to "minutes:seconds", or "hours:minutes:seconds"
+     * Stringify a Duration to "minutes:seconds", or "hours:minutes:seconds".
+     * A duration in millisecond will be rounded up to 1000 milliseconds.
+     * Therefore, a duration of 456 milliseconds will be formatted
+     * into a string "00:01"
      *
      * @param duration value in milliseconds to be formatted into "mm:ss"
-     * @return 45 seconds will be "00:45"
+     * @return 65 seconds will be formatted into "01:05".
+     * 45 seconds will be "00:45".
+     * 1456 milliseconds will be "00:01".
+     * 456 milliseconds will be "00:01".
      */
     public static String formatDuration(Duration duration) {
-        int s = (int) duration.toMillis() / 1000;
+        int s;
+        if (duration.toMillis() < 1000) {
+            s = 1;
+        } else {
+            s = (int) duration.toMillis() / 1000;
+        }
         if (s >= 60 * 60) {
             return String.format("%d:%02d:%02d", s / 3600, (s % 3600) / 60, (s % 60));
         } else {

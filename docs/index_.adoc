@@ -1,6 +1,6 @@
 = Timekeeper
 
-Timekeeper is a Java/Groovy library that helps tests to compile performance reports in Markdown.
+Timekeeper is a Java/Groovy library that helps tests to author performance reports in Markdown.
 
 == Motivation
 
@@ -135,7 +135,7 @@ The sample code has this method:
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=106..118]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=103..116]
 ----
 
 Please note the following fragment:
@@ -162,7 +162,7 @@ You can sort in descending order.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=134..146]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=131..143]
 ----
 
 Please note this fragment where you specify the descending order.
@@ -186,7 +186,7 @@ You can choose columns as sort key out of the Attributes.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=120..132]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=117..129]
 ----
 
 Please note the following fragment:
@@ -215,7 +215,7 @@ You can sort rows by duration.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=162..174]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=159..171]
 ----
 
 The output is like this:
@@ -232,7 +232,7 @@ You can sort rows by Attributes first, then secondly by duration. Perhaps this i
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=148..160]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=148..157]
 ----
 
 The output looks like this:
@@ -248,7 +248,7 @@ You can sort rows by size, of course.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=177..189]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=174..186]
 ----
 
 The output is like this:
@@ -304,7 +304,7 @@ The default format of Timekeeper report contains a few portions that may look ve
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=61..70]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=60..69]
 ----
 
 Please note the line of `.noLegend()`
@@ -322,7 +322,7 @@ Please note that there is no legend printed here.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=50..59]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=49..58]
 ----
 
 Please note the line of `.noDescription()`
@@ -338,7 +338,7 @@ Please note that there is no description like "sorted by duration (ascending)" p
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=72..81]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=71..80]
 ----
 
 Please note the line of `.noGraph()` here.
@@ -356,7 +356,7 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=83..94]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=82..93]
 ----
 
 
