@@ -70,7 +70,6 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
     import java.nio.file.Files
     import java.nio.file.Path
     import java.nio.file.Paths
-    import java.time.LocalDateTime
 
     // This test takes 2 minutes to finish
     @Disabled
@@ -99,14 +98,13 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
             tk.report(outDir_.resolve("planned_sleep.md"))
         }
 
-        private void doRecording(Measurement m1) {
+        private static void doRecording(Measurement m1) {
             for (int i in [13, 3, 7]) {
-                LocalDateTime beforeSleep = LocalDateTime.now()
-                // do a processing that could take long time.
-                Thread.sleep(i * 1000L)
-                LocalDateTime afterSleep = LocalDateTime.now()
-                m1.recordDuration(["Case": "sleeping for " + i + " secs"],
-                        beforeSleep, afterSleep)
+                m1.before(["Case": "sleeping for " + i + " secs"])
+                Thread.sleep(i * 1000L)    // do something that takes long time.
+                m1.after()
+            }
+        }
 
 This code outputs the following Markdown text.
 
@@ -127,7 +125,9 @@ This code outputs the following Markdown text.
 
 This Markdown text will be rendered like this:
 
-![planned sleep](images/planned_sleep.png)
+<figure>
+<img src="images/planned_sleep.png" alt="planned sleep" />
+</figure>
 
 ### Example2 HTTP GET & save HTML
 
@@ -191,20 +191,14 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
                 String[] items = line.split("\\|")
                 URL url = new URL(items[1])
                 // mark the startAt timestamp
-                LocalDateTime beforeGet = LocalDateTime.now()
-                // do the heavy task
+                m.before(["Case": items[0], "URL": items[1]])
+                // do a heavy task
                 String content = getHttpResponceContent(url)
-                // mark the endAt timestamp
                 LocalDateTime afterGet = LocalDateTime.now()
                 File outFile = outDir.resolve(url.getHost() + ".html").toFile()
                 outFile.text = content
-                // record the stats
-                m.recordSizeAndDuration(
-                        ["Case": items[0], "URL": items[1]],
-                        outFile.length(),   // size of the HTTP response body
-                        beforeGet,          // startAt
-                        afterGet            // endAt
-                )
+                // record the file size and how long it took to finish the process
+                m.after(outFile.length())
             }
         }
 
@@ -228,6 +222,12 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
             }
             streamReader.close()
             con.disconnect()
+
+            // sleep a while in between 1.0 - 5.0 seconds at random
+            Thread.sleep((long)(4000 * Math.random() + 1000))
+
+            return sb.toString()
+        }
 
 This code will output the following Markdown text.
 
@@ -278,7 +278,9 @@ The test emits the following Markdown text:
 
 This Markdown text will be rendered on browser like this:
 
-![selenium](images/selenium.png)
+<figure>
+<img src="images/selenium.png" alt="selenium" />
+</figure>
 
 The code is here:
 
@@ -322,11 +324,6 @@ You can find a sample code at
 
 The sample code has this method:
 
-        //-----------------------------------------------------------------
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByAttributes() {
-            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -334,6 +331,12 @@ The sample code has this method:
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes().noLegend().build()
+            tk.add(table)
+            tk.report(outDir_.resolve("sortByAttributes.md"))
+        }
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
 
 Please note the following fragment:
 
@@ -363,12 +366,6 @@ The output looks like this:
 
 You can sort in descending order.
 
-            tk.report(outDir_.resolve("sortByAttributes_URL.md"))
-        }
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
-            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -376,6 +373,12 @@ You can sort in descending order.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes( RowOrder.DESCENDING ).noLegend().build()
+            tk.add(table)
+            tk.report(outDir_.resolve("sortByAttributes_descending.md"))
+        }
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
 
 Please note this fragment where you specify the descending order.
 
@@ -401,12 +404,6 @@ The output looks like this:
 
 You can choose columns as sort key out of the Attributes.
 
-            tk.report(outDir_.resolve("sortByAttributes.md"))
-        }
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByAttributes_URL() {
-            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -414,6 +411,12 @@ You can choose columns as sort key out of the Attributes.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes(["URL"]).noLegend().build()
+            tk.add(table)
+            tk.report(outDir_.resolve("sortByAttributes_URL.md"))
+        }
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByAttributes_descending() {
 
 Please note the following fragment:
 
@@ -445,12 +448,6 @@ The output will look like this:
 
 You can sort rows by duration.
 
-            tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
-        }
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
-            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -458,6 +455,12 @@ You can sort rows by duration.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByDuration( RowOrder.DESCENDING ).noLegend().build()
+            tk.add(table)
+            tk.report(outDir_.resolve("sortByDuration_descending.md"))
+        }
+
+
+        @Test
 
 The output is like this:
 
@@ -479,12 +482,6 @@ The output is like this:
 
 You can sort rows by Attributes first, then secondly by duration. Perhaps this is the most useful way of sorting a Timekeeper’s table.
 
-            tk.report(outDir_.resolve("sortByAttributes_descending.md"))
-        }
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortByAttributesThenDuration() {
-            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -492,6 +489,12 @@ You can sort rows by Attributes first, then secondly by duration. Perhaps this i
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortByAttributes().thenByDuration().noLegend().build()
+            tk.add(table)
+            tk.report(outDir_.resolve("sortByAttributesThenDuration.md"))
+        }
+
+        @Test
+        void test_HTTPGetAndSaveResponse_sortByDuration_descending() {
 
 The output looks like this:
 
@@ -513,12 +516,6 @@ The output looks like this:
 
 You can sort rows by size, of course.
 
-        }
-
-
-        @Test
-        void test_HTTPGetAndSaveResponse_sortBySize_ascending() {
-            Timekeeper tk = new Timekeeper()
             Measurement interactions = new Measurement.Builder(
                     "get URL, save HTML into file", ["Case", "URL"]).build()
             // interact with URL, save the HTML into files
@@ -526,6 +523,10 @@ You can sort rows by size, of course.
             // print the report
             Table table = new Table.Builder(interactions)
                     .sortBySize().noLegend().build()
+            tk.add(table)
+            tk.report(outDir_.resolve("sortBySize_ascending.md"))
+        }
+    }
 
 The output is like this:
 
@@ -594,16 +595,15 @@ The default format of Timekeeper report contains a few portions that may look ve
 
 #### no legend
 
-            doRecording(m1)
-            tk.report(outDir_.resolve("noDescription.md"))
-        }
-
-        @Test
         void demo_noLegend() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
             tk.add(new Table.Builder(m1)
                     .noLegend()   // require no legend for the table
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("noLegend.md"))
+        }
 
 Please note the line of `.noLegend()`
 
@@ -624,16 +624,15 @@ Please note that there is no legend printed here.
 
 #### no description
 
-                m1.getLast().getDurationMillis() < 20 * 1000
-            }
-        }
-
-        @Test
         void demo_noDescription() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
             tk.add(new Table.Builder(m1)
                     .noDescription()   // require no description
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("noDescription.md"))
+        }
 
 Please note the line of `.noDescription()`
 
@@ -654,16 +653,15 @@ Please note that there is no description like "sorted by duration (ascending)" p
 
 #### no duration graph
 
-            doRecording(m1)
-            tk.report(outDir_.resolve("noLegend.md"))
-        }
-
-        @Test
         void demo_noGraph() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
             tk.add(new Table.Builder(m1)
                     .noGraph()   // require no duration graph
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("noGraph.md"))
+        }
 
 Please note the line of `.noGraph()` here.
 
@@ -688,11 +686,6 @@ Here there is no column of "graph".
 
 You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 
-            doRecording(m1)
-            tk.report(outDir_.resolve("noGraph.md"))
-        }
-
-        @Test
         void demo_the_simplest() {
             Timekeeper tk = new Timekeeper()
             Measurement m1 = new Measurement.Builder("How long it waited", ["Case"]).build()
@@ -700,6 +693,11 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
                     .noDescription()  // require no description
                     .noLegend()       // require no legend
                     .noGraph()        // require no duration graph
+                    .build())
+            doRecording(m1)
+            tk.report(outDir_.resolve("the_simplest.md"))
+        }
+    }
 
 Then you will get output as follows, which has the simplest format that Timekeeper can print.
 
