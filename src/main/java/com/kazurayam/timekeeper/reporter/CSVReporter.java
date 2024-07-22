@@ -2,18 +2,13 @@ package com.kazurayam.timekeeper.reporter;
 
 import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.Record;
-import com.kazurayam.timekeeper.Reporter;
+import com.kazurayam.timekeeper.ReportOptions;
 import com.kazurayam.timekeeper.Table;
-import com.kazurayam.timekeeper.TableList;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class CSVReporter extends AbstractReporter {
@@ -25,8 +20,9 @@ public class CSVReporter extends AbstractReporter {
      * @param table
      * @param writer
      */
-    protected void compileContent(Table table, Writer writer) throws IOException {
+    protected void compileContent(Table table, ReportOptions opts, Writer writer) throws IOException {
         Objects.requireNonNull(table);
+        Objects.requireNonNull(opts);
         Objects.requireNonNull(writer);
         PrintWriter pw = new PrintWriter(new BufferedWriter(writer));
         Measurement measurement = table.getMeasurement();
@@ -45,7 +41,7 @@ public class CSVReporter extends AbstractReporter {
         if (measurement.hasRecordWithDuration()) {
             sb0.append(",");
             sb0.append("duration");
-            if (table.requireGraph()) {
+            if (opts.requireGraph()) {
                 sb0.append(",");
                 sb0.append("graph");
             }
@@ -69,7 +65,7 @@ public class CSVReporter extends AbstractReporter {
                 // print duration
                 sb2.append(",");
                 sb2.append(DataFormatter.formatDuration(record.getDuration()));
-                if (table.requireGraph()) {
+                if (opts.requireGraph()) {
                     // print duration graph
                     sb2.append(",");
                     sb2.append(DataFormatter.toGraph(record.getDuration()));
@@ -101,12 +97,12 @@ public class CSVReporter extends AbstractReporter {
         pw.println();
         //
         pw.println("## " + measurement.getId());
-        if (table.requireDescription()) {
+        if (opts.requireDescription()) {
             pw.println(table.getDescription());
         }
         pw.println();
         //
-        if (table.requireLegend()) {
+        if (opts.requireLegend()) {
             if (measurement.hasRecordWithSize()) {
                 pw.println("The unit of size is bytes");
                 pw.println("");

@@ -2,6 +2,7 @@ package com.kazurayam.timekeeper.reporter;
 
 import com.kazurayam.timekeeper.Measurement;
 import com.kazurayam.timekeeper.Record;
+import com.kazurayam.timekeeper.ReportOptions;
 import com.kazurayam.timekeeper.Table;
 import com.kazurayam.timekeeper.TableList;
 
@@ -17,39 +18,39 @@ public class MarkdownReporter extends AbstractReporter {
     public MarkdownReporter() {}
 
     @Override
-    public void report(TableList tableList, Writer writer) throws IOException {
+    public void report(TableList tableList, ReportOptions opts, Writer writer) throws IOException {
         for (Table table : tableList) {
-            this.processTable(table, writer);
+            this.processTable(table, opts, writer);
         }
         writer.close();
     }
 
     @Override
-    public void report(Table table, Writer writer) throws IOException {
-        this.processTable(table, writer);
+    public void report(Table table, ReportOptions opts, Writer writer) throws IOException {
+        this.processTable(table, opts, writer);
         writer.close();
     }
 
-    protected void processTable(Table table, Writer writer) {
+    protected void processTable(Table table, ReportOptions opts, Writer writer) {
         Objects.requireNonNull(table);
         Measurement m = (table.requireSorting()) ?
                 table.sorted() : table.getMeasurement();
         Table sortedTable = new Table.Builder(table, m).build();
-        this.compileContent(sortedTable, writer);
+        this.compileContent(sortedTable, opts, writer);
     }
 
 
     /**
      * compile the content of report
      */
-    protected void compileContent(Table table, Writer writer) {
+    protected void compileContent(Table table, ReportOptions opts, Writer writer) {
         Objects.requireNonNull(table);
         Objects.requireNonNull(writer);
         PrintWriter pw = new PrintWriter(new BufferedWriter(writer));
         Measurement measurement = table.getMeasurement();
         pw.println("## " + measurement.getId());
         pw.println("");
-        if (table.requireDescription()) {
+        if (opts.requireDescription()) {
             pw.println(table.getDescription());
             pw.println("");
         }
@@ -65,7 +66,7 @@ public class MarkdownReporter extends AbstractReporter {
         }
         if (measurement.hasRecordWithDuration()) {
             sb0.append("duration|");
-            if (table.requireGraph()) {
+            if (opts.requireGraph()) {
                 sb0.append("graph|");
             }
         }
@@ -82,7 +83,7 @@ public class MarkdownReporter extends AbstractReporter {
         }
         if (measurement.hasRecordWithDuration()) {
             sb1.append("----:|");  // duration
-            if (table.requireGraph()) {
+            if (opts.requireGraph()) {
                 sb1.append(":----|");  // duration graph
             }
         }
@@ -106,7 +107,7 @@ public class MarkdownReporter extends AbstractReporter {
                 // print duration
                 sb2.append(DataFormatter.formatDuration(record.getDuration()));
                 sb2.append("|");
-                if (table.requireGraph()) {
+                if (opts.requireGraph()) {
                     // print duration graph
                     sb2.append("`");
                     sb2.append(DataFormatter.toGraph(record.getDuration()));
@@ -135,7 +136,7 @@ public class MarkdownReporter extends AbstractReporter {
         if (measurement.hasRecordWithDuration()) {
             sb3.append(DataFormatter.formatDuration(measurement.getAverageDuration()));
             sb3.append("|");
-            if (table.requireGraph()) {
+            if (opts.requireGraph()) {
                 sb3.append(" |");
             }
         }
@@ -144,7 +145,7 @@ public class MarkdownReporter extends AbstractReporter {
         //
 
         //
-        if (table.requireLegend()) {
+        if (opts.requireLegend()) {
             if (measurement.hasRecordWithSize()) {
                 pw.println("The unit of size is bytes");
                 pw.println("");

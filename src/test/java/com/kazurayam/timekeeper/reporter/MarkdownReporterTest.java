@@ -1,6 +1,7 @@
 package com.kazurayam.timekeeper.reporter;
 
 import com.kazurayam.timekeeper.Measurement;
+import com.kazurayam.timekeeper.ReportOptions;
 import com.kazurayam.timekeeper.Table;
 import com.kazurayam.timekeeper.TestHelper;
 import org.junit.jupiter.api.BeforeAll;
@@ -39,7 +40,7 @@ public class MarkdownReporterTest {
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).build();
         //logger.debug("measurement.size() is " + measurement.size());
-        reporter.report(table, md);
+        reporter.report(table, ReportOptions.DEFAULT, md);
         assertTrue(Files.exists(md), "no output");
         assertTrue(Files.size(md) > 0, "empty output");
     }
@@ -50,7 +51,7 @@ public class MarkdownReporterTest {
         MarkdownReporter reporter = new MarkdownReporter();
         Measurement measurement = TestHelper.makeMeasurement();
         Table table = new Table.Builder(measurement).build();
-        reporter.report(table, sw);
+        reporter.report(table, ReportOptions.DEFAULT, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertTrue(content.length() > 0);
@@ -62,8 +63,9 @@ public class MarkdownReporterTest {
         StringWriter sw = new StringWriter();
         MarkdownReporter reporter = new MarkdownReporter();
         Measurement measurement = TestHelper.makeMeasurement();
-        Table table = new Table.Builder(measurement).noDescription().build();
-        reporter.report(table, sw);
+        Table table = new Table.Builder(measurement).build();
+        ReportOptions opts = new ReportOptions.Builder().noDescription().build();
+        reporter.report(table, opts, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertFalse(content.contains("as events flowed"));
@@ -74,8 +76,9 @@ public class MarkdownReporterTest {
         StringWriter sw = new StringWriter();
         MarkdownReporter reporter = new MarkdownReporter();
         Measurement measurement = TestHelper.makeMeasurement();
-        Table table = new Table.Builder(measurement).noLegend().build();
-        reporter.report(table, sw);
+        Table table = new Table.Builder(measurement).build();
+        ReportOptions opts = new ReportOptions.Builder().noLegend().build();
+        reporter.report(table, opts, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertFalse(content.contains("minutes:seconds"));
@@ -86,8 +89,9 @@ public class MarkdownReporterTest {
         StringWriter sw = new StringWriter();
         MarkdownReporter reporter = new MarkdownReporter();
         Measurement measurement = TestHelper.makeMeasurement();
-        Table table = new Table.Builder(measurement).noGraph().build();
-        reporter.report(table, sw);
+        Table table = new Table.Builder(measurement).build();
+        ReportOptions opts = new ReportOptions.Builder().noGraph().build();
+        reporter.report(table, opts, sw);
         String content = sw.toString();
         //logger.debug(content);
         assertFalse(content.contains("|graph|"));

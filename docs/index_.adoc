@@ -387,3 +387,7 @@ import com.kazurayam.timekeeper.Timekeeper
         tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
     }
 ----
+
+== Related links
+
+-  GitHub repository link:https://github.com/kazurayam/timekeeper/[kazurayam/timekeeper]

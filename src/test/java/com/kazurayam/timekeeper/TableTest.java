@@ -255,14 +255,4 @@ public class TableTest {
             throw new IllegalStateException("unable to proceed");
         }
     }
-
-
-    @Test
-    public void test_noDescription() {
-        Measurement m = stuffRecordsToSort(
-                new Measurement.Builder("foo", Collections.singletonList("URL")).build());
-        Table t = new Table.Builder(m)
-                .noDescription().build();
-        assertNotNull(t);
-    }
 }
