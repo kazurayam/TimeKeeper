@@ -38,7 +38,7 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimeKeeperDemoMinimal.groovy[lines=1..49]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimeKeeperDemoMinimal.groovy[lines=1..47]
 ----
 
 This code outputs the following Markdown text.
