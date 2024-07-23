@@ -5,6 +5,8 @@ public class ReportOptions {
     public static final ReportOptions DEFAULT =
             new ReportOptions.Builder().build();
 
+    public static final ReportOptions NODESCRIPTION_NOLEGEND =
+            new ReportOptions.Builder().noDescription().noLegend().build();
     private final Boolean requireDescription;
 
     private final Boolean requireLegend;
