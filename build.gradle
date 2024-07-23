@@ -9,7 +9,7 @@ plugins {
 
 group = 'com.kazurayam'
 archivesBaseName = "timekeeper"
-version = '0.4.5'
+version = '0.5.0-SNAPSHOT'
 
 ext.isReleaseVersion = ! version.endsWith("SNAPSHOT")
 
@@ -37,6 +37,7 @@ dependencies {
     testImplementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.0.3'
     testImplementation group: 'ru.yandex.qatools.ashot', name: 'ashot', version: '1.5.4'
     testImplementation group: 'com.kazurayam', name: 'ashotwrapper', version: '0.1.0'
+    testImplementation 'com.google.code.gson:gson:2.11.0'
 
 }
 

@@ -33,15 +33,10 @@ public abstract class AbstractReporter implements Reporter {
         if (!Files.exists(parent)) {
             Files.createDirectories(parent);
         }
-        report(table, opts, Files.newOutputStream(output));
+        report(table, opts, Files.newBufferedWriter(output));
     }
 
     @Override
-    public void report(Table table, ReportOptions opts, OutputStream os) throws IOException {
-        Writer writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-        report(table, opts, writer);
-    }
-
     public void report(Table table, ReportOptions opts, Writer writer) throws IOException {
         Objects.requireNonNull(table);
         Objects.requireNonNull(opts);
@@ -59,16 +54,10 @@ public abstract class AbstractReporter implements Reporter {
     }
 
     public void report(TableList tableList, ReportOptions opts, Path output) throws IOException {
-        OutputStream os = Files.newOutputStream(output);
-        report(tableList, opts, os);
+        report(tableList, opts, Files.newBufferedWriter(output, StandardCharsets.UTF_8));
     }
 
     @Override
-    public void report(TableList tableList, ReportOptions opts, OutputStream os) throws IOException {
-        Writer writer = new OutputStreamWriter(os, StandardCharsets.UTF_8);
-        report(tableList, opts, writer);
-    }
-
     public void report(TableList tableList, ReportOptions opts, Writer writer) throws IOException {
         Objects.requireNonNull(tableList);
         Objects.requireNonNull(writer);

@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,20 +32,19 @@ public class TimekeeperTest {
     }
 
     @Test
-    public void test_constructor() {
-        Timekeeper tk = new Timekeeper();
+    public void test_Builder() {
+        Timekeeper tk = new Timekeeper.Builder().build();
         assertNotNull(tk);
     }
 
     @Test
-    public void test_void_add_get_size() {
-        Timekeeper tk = new Timekeeper();
+    public void test_size() {
         Measurement m = TestHelper.makeMeasurement();
-        Table table = new Table.Builder(m).build();
-        tk.add(table);
-        Table result = tk.get(0);
-        assertNotNull(result);
+        Timekeeper tk = new Timekeeper.Builder()
+                .table(new Table.Builder(m).build())
+                .build();
         assertEquals(1, tk.size());
+        assertNotNull(tk.get(0));
     }
 
     @Test
@@ -51,12 +52,25 @@ public class TimekeeperTest {
         Path caseOutputDir = classOutput.resolve("test_report_MARKDOWN");
         Files.createDirectories(caseOutputDir);
         Path markdown = caseOutputDir.resolve("report.md");
-        Timekeeper tk = new Timekeeper();
+
         Measurement m = TestHelper.makeMeasurement();
-        Table table = new Table.Builder(m).build();
-        tk.add(table);
+        Timekeeper tk = new Timekeeper.Builder()
+                .table(new Table.Builder(m).build())
+                .build();
         tk.report(markdown, ReportOptions.NODESCRIPTION_NOLEGEND);
         assertTrue(Files.exists(markdown));
+    }
+
+    @Test
+    public void test_report_into_Writer() throws IOException {
+        Measurement m = TestHelper.makeMeasurement();
+        Timekeeper tk = new Timekeeper.Builder()
+                .table(new Table.Builder(m).build())
+                .build();
+        StringWriter sw = new StringWriter();
+        tk.report(sw);
+        Method method = new Object(){}.getClass().getEnclosingMethod();
+        logger.info(String.format("[%s] %s", method.getName(), sw.toString()));
     }
 
     @Test
@@ -64,10 +78,11 @@ public class TimekeeperTest {
         Path caseOutputDir = classOutput.resolve("test_report_CSV");
         Files.createDirectories(caseOutputDir);
         Path csv = caseOutputDir.resolve("report.csv");
-        Timekeeper tk = new Timekeeper();
+        //
         Measurement m = TestHelper.makeMeasurement();
-        Table table = new Table.Builder(m).build();
-        tk.add(table);
+        Timekeeper tk = new Timekeeper.Builder()
+                .table(new Table.Builder(m).build())
+                .build();
         tk.reportCSV(csv, ReportOptions.NODESCRIPTION_NOLEGEND);
         assertTrue(Files.exists(csv));
     }
