@@ -71,30 +71,21 @@ class TimekeeperDemoWithSelenium {
     void demo_with_selenium_report_Markdown() {
         Timekeeper tk = runSeleniumTest();
         tk.report(outDir_.resolve("report.md"))
-        // same as
-        //tk.report(outDir_.resolve("report.md"), Timekeeper.FORMAT.MARKDOWN)
     }
 
     @Test
     void demo_with_selenium_report_CSV() {
         Timekeeper tk = runSeleniumTest();
-        tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
+        tk.reportCSV(outDir_.resolve("report.csv"))
     }
 
     Timekeeper runSeleniumTest() {
-        Timekeeper tk = new Timekeeper()
         Measurement navigating = new Measurement.Builder(
                 "How long it took to navigate to URLs", ["URL"])
                 .build()
-        tk.add(new Table.Builder(navigating)
-                .noLegend()
-                .build())
         Measurement screenshooting = new Measurement.Builder(
                 "How long it took to take shootshots", ["URL"])
                 .build()
-        tk.add(new Table.Builder(screenshooting)
-                .noLegend()
-                .build())
         // process all URLs in the CSV file
         Path csv = Paths.get(".").resolve("src/test/fixtures/URLs.csv");
         for (Tuple t in parseCSVfile(csv)) {
@@ -112,6 +103,10 @@ class TimekeeperDemoWithSelenium {
             Path imageFile = this.takeFullPageScreenshot(driver_, outDir_, filename)
             screenshooting.after(imageFile.toFile().size())
         }
+        Timekeeper tk = new Timekeeper.Builder()
+                .table(new Table.Builder(navigating).build())
+                .table(new Table.Builder(screenshooting).build())
+                .build()
         return tk
     }
 
@@ -137,7 +132,7 @@ class TimekeeperDemoWithSelenium {
      * @param csv
      * @return
      */
-    private List<Tuple2> parseCSVfile(Path csv) {
+    private static List<Tuple2> parseCSVfile(Path csv) {
         List<Tuple2> result = new ArrayList<Tuple2>()
         List<String> lines = csv.toFile() as List<String>
         for (String line in lines) {
