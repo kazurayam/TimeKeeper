@@ -47,16 +47,28 @@ public class TimekeeperTest {
     }
 
     @Test
-    public void test_report() throws IOException {
-        Path caseOutputDir = classOutput.resolve("test_report");
+    public void test_report_MARKDOWN() throws IOException {
+        Path caseOutputDir = classOutput.resolve("test_report_MARKDOWN");
         Files.createDirectories(caseOutputDir);
         Path markdown = caseOutputDir.resolve("report.md");
         Timekeeper tk = new Timekeeper();
         Measurement m = TestHelper.makeMeasurement();
         Table table = new Table.Builder(m).build();
         tk.add(table);
-        tk.report(markdown, Timekeeper.FORMAT.MARKDOWN);
+        tk.report(markdown, ReportOptions.NODESCRIPTION_NOLEGEND);
         assertTrue(Files.exists(markdown));
     }
 
+    @Test
+    public void test_report_CSV() throws IOException {
+        Path caseOutputDir = classOutput.resolve("test_report_CSV");
+        Files.createDirectories(caseOutputDir);
+        Path csv = caseOutputDir.resolve("report.csv");
+        Timekeeper tk = new Timekeeper();
+        Measurement m = TestHelper.makeMeasurement();
+        Table table = new Table.Builder(m).build();
+        tk.add(table);
+        tk.reportCSV(csv, ReportOptions.NODESCRIPTION_NOLEGEND);
+        assertTrue(Files.exists(csv));
+    }
 }

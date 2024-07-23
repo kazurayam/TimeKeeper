@@ -8,11 +8,6 @@ import java.nio.file.Path;
 
 public class Timekeeper {
 
-    public enum FORMAT {
-        MARKDOWN,
-        CSV
-    }
-
     private final TableList tableList;
 
     public Timekeeper() {
@@ -33,27 +28,23 @@ public class Timekeeper {
 
     public void report(Path outputFile) throws IOException {
         this.report(outputFile,
-                new ReportOptions.Builder().build(),
-                FORMAT.MARKDOWN);
+                new ReportOptions.Builder().build());
     }
 
-    public void report(Path outputFile, FORMAT format) throws IOException {
-        this.report(outputFile,
-                new ReportOptions.Builder().build(),
-                format);
-    }
-
-    public void report(Path outputFile, ReportOptions opts, FORMAT format)
+    public void report(Path outputFile, ReportOptions opts)
             throws IOException {
-        if (format == FORMAT.MARKDOWN) {
-            MarkdownReporter reporter = new MarkdownReporter();
-            reporter.report(tableList, opts, outputFile);
-        } else if (format == FORMAT.CSV) {
-            CSVReporter reporter = new CSVReporter();
-            reporter.report(tableList, opts, outputFile);
-        } else {
-            throw new IllegalArgumentException(
-                    String.format("%s is not supported", format.toString()));
-        }
+        MarkdownReporter reporter = new MarkdownReporter();
+        reporter.report(tableList, opts, outputFile);
+    }
+
+    public void reportCSV(Path outputFile) throws IOException {
+        CSVReporter reporter = new CSVReporter();
+        reporter.report(tableList, ReportOptions.DEFAULT, outputFile);
+    }
+
+    public void reportCSV(Path outputFile, ReportOptions opts)
+            throws IOException {
+        CSVReporter reporter = new CSVReporter();
+        reporter.report(tableList, opts, outputFile);
     }
 }
