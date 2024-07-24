@@ -38,7 +38,7 @@ The following example is a minimalistic example of utilizing the Timekeeper libr
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimeKeeperDemoMinimal.groovy[lines=1..47]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimeKeeperDemoMinimal.groovy[lines=1..50]
 ----
 
 This code outputs the following Markdown text.
@@ -58,7 +58,7 @@ The following code processes a list URLs. It makes HTTP GET request, save the re
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=1..95]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=1..97]
 ----
 
 This code will output the following Markdown text.
@@ -135,7 +135,7 @@ The sample code has this method:
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=103..116]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=103..117]
 ----
 
 Please note the following fragment:
@@ -162,7 +162,7 @@ You can sort in descending order.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=131..143]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=135..149]
 ----
 
 Please note this fragment where you specify the descending order.
@@ -186,7 +186,7 @@ You can choose columns as sort key out of the Attributes.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=117..129]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=119..133]
 ----
 
 Please note the following fragment:
@@ -215,7 +215,7 @@ You can sort rows by duration.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=159..171]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=166..179]
 ----
 
 The output is like this:
@@ -232,7 +232,7 @@ You can sort rows by Attributes first, then secondly by duration. Perhaps this i
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=148..157]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=151..164]
 ----
 
 The output looks like this:
@@ -248,7 +248,7 @@ You can sort rows by size, of course.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=174..186]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoHttpInteraction.groovy[lines=182..195]
 ----
 
 The output is like this:
@@ -304,7 +304,7 @@ The default format of Timekeeper report contains a few portions that may look ve
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=60..69]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=65..76]
 ----
 
 Please note the line of `.noLegend()`
@@ -322,7 +322,7 @@ Please note that there is no legend printed here.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=49..58]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=52..63]
 ----
 
 Please note the line of `.noDescription()`
@@ -338,7 +338,7 @@ Please note that there is no description like "sorted by duration (ascending)" p
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=71..80]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=78..89]
 ----
 
 Please note the line of `.noGraph()` here.
@@ -356,7 +356,7 @@ You can call `.noDescription()`, `.noLegend()` and `.noGraph()` together.
 
 [source, groovy]
 ----
-include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=82..93]
+include::../src/test/groovy/com/kazurayam/timekeeper_demo/TimekeeperDemoMinimal.groovy[lines=91..102]
 ----
 
 
@@ -376,7 +376,7 @@ This is the simplest format that Timekeeper can print.
 Timekeeper generates a report in Markdown text format as default.
 Optionally you can generate a report in CSV format.
 
-You want to specify the 2nd parameter to `Timekeeper#report(Path, Timekeeper.FORMAT.CSV)`
+You want to call another method `Timekeeper#reportCSV(Path)`
 ----
 import com.kazurayam.timekeeper.Timekeeper
 ...
@@ -384,7 +384,7 @@ import com.kazurayam.timekeeper.Timekeeper
     @Test
     void demo_with_selenium_report_CSV() {
         Timekeeper tk = runSeleniumTest();
-        tk.report(outDir_.resolve("report.csv"), Timekeeper.FORMAT.CSV)
+        tk.reportCSV(outDir_.resolve("report.csv"))
     }
 ----
 

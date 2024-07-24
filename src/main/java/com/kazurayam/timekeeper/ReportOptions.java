@@ -4,6 +4,21 @@ public class ReportOptions {
 
     public static final ReportOptions DEFAULT =
             new ReportOptions.Builder().build();
+    public static final ReportOptions NODESCRIPTION =
+            new ReportOptions.Builder()
+                    .noDescription().build();
+    public static final ReportOptions NOLEGEND =
+            new ReportOptions.Builder()
+                    .noLegend().build();
+    public static final ReportOptions NOGRAPH =
+            new ReportOptions.Builder()
+                    .noGraph().build();
+    public static final ReportOptions NODESCRIPTION_NOLEGEND =
+            new ReportOptions.Builder()
+                    .noDescription().noLegend().build();
+    public static final ReportOptions NODESCRIPTION_NOLEGEND_NOGRAPH =
+            new ReportOptions.Builder()
+                    .noDescription().noLegend().noGraph().build();
 
     private final Boolean requireDescription;
 
